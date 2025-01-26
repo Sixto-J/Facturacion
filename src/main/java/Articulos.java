@@ -1,20 +1,21 @@
-public class Articulo(){
+
+
+public class Articulos {
 
 
     private String nombreArticulo;
     private String descripcionArticulo;
-    private int idArticulo
-    private String codigoArticulo
-    private String codigoBarrasArticulo
-    private String descripcionArticulo
-    private double costeArticulo
-    private double margenComercialArticulo
-    private double pvpArticulo
-    private double stockArticulo
-    private String observacionesArticulo
-    private int proveedorArticulo
+    private int idArticulo;
+    private String codigoArticulo;
+    private String codigoBarrasArticulo;
+    private double costeArticulo;
+    private double margenComercialArticulo;
+    private double pvpArticulo;
+    private double stockArticulo;
+    private String observacionesArticulo;
+    private int proveedorArticulo;
 
-    public Articulo(String nombreArticulo, String descripcionArticulo, int idArticulo, String codigoArticulo, String codigoBarrasArticulo, String descripcionArticulo, double costeArticulo, double margenComercialArticulo, double pvpArticulo, double stockArticulo, String observacionesArticulo, int proveedorArticulo) {
+    public Articulos(String nombreArticulo, String descripcionArticulo, int idArticulo, String codigoArticulo, String codigoBarrasArticulo, double costeArticulo, double margenComercialArticulo, double pvpArticulo, double stockArticulo, String observacionesArticulo, int proveedorArticulo) {
         this.nombreArticulo = nombreArticulo;
         this.descripcionArticulo = descripcionArticulo;
         this.idArticulo = idArticulo;
@@ -73,15 +74,21 @@ public class Articulo(){
     public double getStockArticulo() {
         return stockArticulo;
     }
+
+
+    public void crearArticulo(){
+
+    }
+    public void modificarArticulo(){
+
+    }
+    public void verArticulo(){
+
+    }
+
+
+
+
 }
 
 
-public void crearArticulo(){
-
-}
-public void modificarArticulo(){
-
-}
-public void verArticulo(){
-
-}

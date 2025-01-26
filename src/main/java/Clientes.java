@@ -77,7 +77,7 @@ public class Clientes{
     }
 
     public void setProvinciaCliente(String provinciaCliente) {
-        this.provinciaCliente = provinciaCliente
+        this.provinciaCliente = provinciaCliente;
     }
 
 

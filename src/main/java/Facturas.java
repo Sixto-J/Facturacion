@@ -1,5 +1,6 @@
+import java.util.Date;
 
-public class Facturas() {
+public class Facturas {
 
 
     private int idFacturaCliente;
@@ -8,13 +9,14 @@ public class Facturas() {
     private int idClienteFactura;
     private double baseImponibleFacturaCliente;
     private double ivaFacturaCliente;
-    private double totalFacturaCliente
-    private String hashFacturaCiente
-    private String qrFacturaCliente
-    private boolean cobradaFactura
-    private int formaCobroFactura
-    private Date fechaCobroFactura
-    private String observacionesFacturaClientes
+    private double totalFacturaCliente;
+    private String hashFacturaCiente;
+    private String qrFacturaCliente;
+    private boolean cobradaFactura;
+    private int formaCobroFactura;
+    private Date fechaCobroFactura;
+    private String observacionesFacturaClientes;
+
 
     public Facturas(double baseImponibleFacturaCliente, boolean cobradaFactura, Date fechaCobroFactura, Date fechaFacturaCliente, int formaCobroFactura, String hashFacturaCiente, int idClienteFactura, int idFacturaCliente, double ivaFacturaCliente, int numeroFacturaCliente, String observacionesFacturaClientes, String qrFacturaCliente, double totalFacturaCliente) {
         this.baseImponibleFacturaCliente = baseImponibleFacturaCliente;

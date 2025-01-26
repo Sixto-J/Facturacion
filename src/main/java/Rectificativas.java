@@ -1,17 +1,18 @@
+import java.util.Date;
 
 public class Rectificativas {
 
 
-    private int idRectificativaCliente,
-    private int numeroRectificativaCliente
-    private Date fechaRectificativaCliente
-    private int idClienteRectificativaCliente
-    private double baseImponibleRectificativaCliente
-    private double ivaRectificativaCliente
-    private double totalRectificativaCliente
-    private String hashRectificativaCliente
-    private String qrRectificativaCliente
-    private String observacionesRectificativaCliente
+    private int idRectificativaCliente;
+    private int numeroRectificativaCliente;
+    private Date fechaRectificativaCliente;
+    private int idClienteRectificativaCliente;
+    private double baseImponibleRectificativaCliente;
+    private double ivaRectificativaCliente;
+    private double totalRectificativaCliente;
+    private String hashRectificativaCliente;
+    private String qrRectificativaCliente;
+    private String observacionesRectificativaCliente;
 
 
     public Rectificativas(double totalRectificativaCliente, String qrRectificativaCliente, String observacionesRectificativaCliente, int numeroRectificativaCliente, double ivaRectificativaCliente, int idRectificativaCliente, int idClienteRectificativaCliente, String hashRectificativaCliente, Date fechaRectificativaCliente, double baseImponibleRectificativaCliente) {
