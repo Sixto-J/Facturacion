@@ -1,6 +1,7 @@
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class ConexionDB {
 
@@ -8,30 +9,24 @@ public class ConexionDB {
 // or you will have problems!
     static Connection conn = null;
 
-    public static void main(String[] args) {
+            public static Connection getConnection() throws SQLException {
+                String url = "jdbc:mysql://localhost:3306/gestion";
+                String username = "root";
+                String password = "22_michu";
+                try {
+                    // Load the JDBC driver
+                    Class.forName("com.mysql.cj.jdbc.Driver");
+                    // Create a connection
+                    Connection connection = DriverManager.getConnection(url, username, password);
+                    // Perform database operations
+                    // Close the connection
+                    connection.close();
+                    return connection;
+                } catch (ClassNotFoundException | SQLException e) {
+                    e.printStackTrace();
+                }
 
-
-        String url = "jdbc:mysql://localhost:3306/gestion";
-        String username = "root";
-        String password = "22_michu";
-        try {
-            // Load the JDBC driver
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            // Create a connection
-            Connection connection = DriverManager.getConnection(url, username, password);
-            // Perform database operations
-            // Close the connection
-            connection.close();
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-        }
-
-
-
-
-
-
-
+            }
 
 
                /* // The newInstance() call is a work around for some
@@ -41,16 +36,11 @@ public class ConexionDB {
 
                 Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
 
-
-
             }  catch (SQLException ex) {
                 // handle any errors
                 System.out.println("SQLException: " + ex.getMessage());
                 System.out.println("SQLState: " + ex.getSQLState());
                 System.out.println("VendorError: " + ex.getErrorCode());
             }*/
-
-
-    }  // end main
-
+               public static void main(String[] args) {}  // end main
 }  // end class

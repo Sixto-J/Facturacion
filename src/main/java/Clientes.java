@@ -1,3 +1,6 @@
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Clientes{
     private int id;
@@ -35,47 +38,36 @@ public class Clientes{
     public int getId() {
         return id;
     }
-
     public void setId(int id) {
         this.id = id;
     }
-
     public String getNombreCliente() {
         return nombreCliente;
     }
-
     public void setNombreCliente(String nombreCliente) {
         this.nombreCliente = nombreCliente;
     }
-
     public String getDireccionCliente() {
         return direccionCliente;
     }
-
     public void setDireccionCliente(String direccionCliente) {
         this.direccionCliente = direccionCliente;
     }
-
     public String getCpCliente() {
         return cpCliente;
     }
-
     public void setCpCliente(String cpCliente) {
         this.cpCliente = cpCliente;
     }
-
     public String getPoblacionCliente() {
         return poblacionCliente;
     }
-
     public void setPoblacionCliente(String poblacionCliente) {
         this.poblacionCliente = poblacionCliente;
     }
-
     public String getProvinciaCliente() {
         return provinciaCliente;
     }
-
     public void setProvinciaCliente(String provinciaCliente) {
         this.provinciaCliente = provinciaCliente;
     }
@@ -91,5 +83,36 @@ public class Clientes{
     public void VerCliente(){
 
     }
+
+
+
+
+
+
+
+
+    public List<Clientes> obtenerClientes() {
+        List<Clientes> clientes = new ArrayList<>();
+        String query = "SELECT nombre, pais FROM clientes"; // Cambia 'clientes' por el nombre de tu tabla
+        try (
+             Connection connection = ConexionDB.getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(query)) {
+
+            while (resultSet.next()) {
+                String nombre = resultSet.getString("nombre");
+                String pais = resultSet.getString("pais");
+                Clientes cliente = new Clientes(nombre, pais);
+                clientes.add(cliente);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return clientes;
+    }
+
+
+
 
 }

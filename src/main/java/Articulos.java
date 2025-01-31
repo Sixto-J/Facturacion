@@ -1,4 +1,9 @@
-
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Articulos {
 
@@ -34,47 +39,36 @@ public class Articulos {
     public String getCodigoArticulo() {
         return codigoArticulo;
     }
-
     public String getCodigoBarrasArticulo() {
         return codigoBarrasArticulo;
     }
-
     public double getCosteArticulo() {
         return costeArticulo;
     }
-
     public String getDescripcionArticulo() {
         return descripcionArticulo;
     }
-
     public int getIdArticulo() {
         return idArticulo;
     }
-
     public double getMargenComercialArticulo() {
         return margenComercialArticulo;
     }
-
     public String getNombreArticulo() {
         return nombreArticulo;
     }
-
     public String getObservacionesArticulo() {
         return observacionesArticulo;
     }
-
     public int getProveedorArticulo() {
         return proveedorArticulo;
     }
-
     public double getPvpArticulo() {
         return pvpArticulo;
     }
-
     public double getStockArticulo() {
         return stockArticulo;
     }
-
 
     public void crearArticulo(){
 
@@ -84,6 +78,29 @@ public class Articulos {
     }
     public void verArticulo(){
 
+    }
+
+
+
+    public List<Articulos> obtenerArticulos() {
+        List<Articulos> articulos = new ArrayList<>();
+        String query = "SELECT idArticulo, nombreArticulo FROM articulos"; // Cambia 'clientes' por el nombre de tu tabla
+        try (
+                Connection connection = ConexionDB.getConnection();
+                Statement statement = connection.createStatement();
+                ResultSet resultSet = statement.executeQuery(query)) {
+
+            while (resultSet.next()) {
+                String idArticulo= resultSet.getString("idArticulo");
+                String nombreArticulo = resultSet.getString("nombreArticulo");
+                Articulos articulo = new Articulos(idArticulo,nombreArticulo);
+                articulos.add(articulo);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return articulos;
     }
 
 

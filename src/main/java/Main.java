@@ -11,7 +11,7 @@ public class Main extends JFrame {
 
 
     private JTextArea textArea;
-    private JButton generateButton, generateClientes, generateArticulos, generateFacturas;
+    private JButton generateButton, generateClientes, generateArticulos, generateFacturas, generarAyuda;
 
     public Main() {
         setTitle("Facturacion");
@@ -53,8 +53,21 @@ public class Main extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
 
+                generateXML();
+
             }
         });
+
+        generarAyuda = new JButton("Ayuda");
+        generarAyuda.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                generateXML();
+
+            }
+        });
+
 
         JPanel panel = new JPanel();
         panel.setLayout(new FlowLayout());
@@ -62,6 +75,7 @@ public class Main extends JFrame {
         panel.add(generateClientes);
         panel.add(generateFacturas);
         panel.add(generateArticulos);
+        panel.add(generarAyuda);
         add(panel, BorderLayout.NORTH);
     }
 
