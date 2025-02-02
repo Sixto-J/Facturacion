@@ -1,33 +1,50 @@
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
 
-public class ConexionDB {
+public class ConexionDB implements AutoCloseable {
 
     // Notice, do not import com.mysql.cj.jdbc.*
 // or you will have problems!
-    static Connection conn = null;
+    private Connection conn;
 
-            public static Connection getConnection() throws SQLException {
-                String url = "jdbc:mysql://localhost:3306/gestion";
-                String username = "root";
-                String password = "22_michu";
-                try {
-                    // Load the JDBC driver
-                    Class.forName("com.mysql.cj.jdbc.Driver");
-                    // Create a connection
-                    Connection connection = DriverManager.getConnection(url, username, password);
-                    // Perform database operations
-                    // Close the connection
-                    connection.close();
-                    return connection;
-                } catch (ClassNotFoundException | SQLException e) {
-                    e.printStackTrace();
-                }
+    public ConexionDB() {
+        String url = "jdbc:mysql://localhost:3306/gestion";
+        String username = "root";
+        String password = "22_michu";
+        try {
+            // Load the JDBC driver
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            // Create a connection
+            conn = DriverManager.getConnection(url, username, password);
+            // Perform database operations
+            // Close the connection
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
 
+    }
+
+    // Method to get the connection
+    public Connection getConnection() {
+        return conn;
+    }
+
+    // Override the close method to close the connection
+    @Override
+    public void close() {
+        if (conn != null) {
+            try {
+                conn.close();
+                System.out.println("Connection closed.");
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
+        }
 
+    }
+
+}
 
                /* // The newInstance() call is a work around for some
                 // broken Java implementations
@@ -42,5 +59,5 @@ public class ConexionDB {
                 System.out.println("SQLState: " + ex.getSQLState());
                 System.out.println("VendorError: " + ex.getErrorCode());
             }*/
-               public static void main(String[] args) {}  // end main
-}  // end class
+        // public static void main (String[]args){ }  // end main
+    // end class

@@ -1,8 +1,9 @@
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
-public class Clientes{
+public class Clientes {
     private int id;
     private String nombreCliente;
     private String direccionCliente;
@@ -18,7 +19,10 @@ public class Clientes{
     private double descuentoCliente;
     private String observacionesCliente;
 
-    public Clientes(int id, String nombreCliente, String direccionCliente, String cpCliente, String poblacionCliente, String provinciaCliente, String paisCliente, String cifCliente, String telCliente, String emailCliente, String ibanCliente, double riesgoCliente, double descuentoCliente, String observacionesCliente) {
+    public Clientes(int id, String nombreCliente, String direccionCliente, String cpCliente,
+                    String poblacionCliente, String provinciaCliente, String paisCliente, String cifCliente,
+                    String telCliente, String emailCliente, String ibanCliente, double riesgoCliente,
+                    double descuentoCliente, String observacionesCliente) {
         this.id = id;
         this.nombreCliente = nombreCliente;
         this.direccionCliente = direccionCliente;
@@ -35,6 +39,10 @@ public class Clientes{
         this.observacionesCliente = observacionesCliente;
     }
 
+    public Clientes() {
+
+    }
+
     public int getId() {
         return id;
     }
@@ -47,72 +55,93 @@ public class Clientes{
     public void setNombreCliente(String nombreCliente) {
         this.nombreCliente = nombreCliente;
     }
-    public String getDireccionCliente() {
-        return direccionCliente;
+
+
+
+
+    public void CrearCliente() {
     }
-    public void setDireccionCliente(String direccionCliente) {
-        this.direccionCliente = direccionCliente;
+    public void ModificarCliente() {
     }
-    public String getCpCliente() {
-        return cpCliente;
-    }
-    public void setCpCliente(String cpCliente) {
-        this.cpCliente = cpCliente;
-    }
-    public String getPoblacionCliente() {
-        return poblacionCliente;
-    }
-    public void setPoblacionCliente(String poblacionCliente) {
-        this.poblacionCliente = poblacionCliente;
-    }
-    public String getProvinciaCliente() {
-        return provinciaCliente;
-    }
-    public void setProvinciaCliente(String provinciaCliente) {
-        this.provinciaCliente = provinciaCliente;
+    public void VerCliente() {
     }
 
 
-    public void CrearCliente(){
-
+    // Override toString() method
+    @Override
+    public String toString() {
+        return "Client{" +
+                "name='" + nombreCliente + '\'' +
+                ", idr='" + id + '\'' +
+                ", address='" + direccionCliente + '\'' +
+                '}';
     }
 
-    public void ModificarCliente(){
 
-    }
-    public void VerCliente(){
+    public List<Clientes> crearAñadirClientes() {
+        List<Clientes> lista_clientes = new ArrayList<>();
 
-    }
+        try (ConexionDB conn = new ConexionDB()) {
+            Connection connection = conn.getConnection();
 
-
-
-
-
-
-
-
-    public List<Clientes> obtenerClientes() {
-        List<Clientes> clientes = new ArrayList<>();
-        String query = "SELECT nombre, pais FROM clientes"; // Cambia 'clientes' por el nombre de tu tabla
-        try (
-             Connection connection = ConexionDB.getConnection();
-             Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(query)) {
-
-            while (resultSet.next()) {
-                String nombre = resultSet.getString("nombre");
-                String pais = resultSet.getString("pais");
-                Clientes cliente = new Clientes(nombre, pais);
-                clientes.add(cliente);
+            if (connection == null) {
+                System.out.println("Failed to establish a database connection.");
+                return lista_clientes; // Return empty list if connection failed
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+
+            String query = "INSERT INTO clientes (nombreCliente, paisCliente, direccionCliente, cpCliente," +
+                    " poblacionCliente, provinciaCliente," +
+                    "cifCliente, telCliente, emailCliente, ibanCliente, riesgoCliente, descuentoCliente," +
+                    "observacionesCliente) VALUES ()";
+
+            try (Statement statement = connection.createStatement();
+                 ResultSet resultSet = statement.executeQuery(query)) {
+
+                if (!resultSet.isBeforeFirst()) { // Check if the ResultSet is empty
+                    System.out.println("No rows found in the ResultSet.");
+                } else {
+
+
+                    while (resultSet.next()) {
+
+                        System.out.println("Processing row: " + resultSet.getRow());
+
+                        id = resultSet.getInt("id");
+                        nombreCliente = resultSet.getString("nombreCliente");
+                        paisCliente = resultSet.getString("paisCliente");
+                        direccionCliente = resultSet.getString("direccionCliente");
+                        cpCliente = resultSet.getString("cpCliente");
+                        poblacionCliente = resultSet.getString("poblacionCliente");
+                        provinciaCliente = resultSet.getString("provinciaCliente");
+                        cifCliente = resultSet.getString("cifCliente");
+                        telCliente = resultSet.getString("telCliente");
+                        emailCliente = resultSet.getString("emailCliente");
+                        ibanCliente = resultSet.getString("ibanCliente");
+                        riesgoCliente = resultSet.getDouble("riesgoCliente");
+                        descuentoCliente = resultSet.getDouble("descuentoCliente");
+                        observacionesCliente = resultSet.getString("observacionesCliente");
+
+                        Clientes cliente = new Clientes(id, nombreCliente, paisCliente, direccionCliente, cpCliente, poblacionCliente, provinciaCliente,
+                                cifCliente, telCliente, emailCliente, ibanCliente, riesgoCliente, descuentoCliente, observacionesCliente);
+
+                        lista_clientes.add(cliente);
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
-        return clientes;
+
+        return lista_clientes;
+
+
     }
-
-
 
 
 }
+
+

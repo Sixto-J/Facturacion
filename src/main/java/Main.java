@@ -28,6 +28,7 @@ public class Main extends JFrame {
         generateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
                 generateXML();
             }
         });
@@ -36,6 +37,8 @@ public class Main extends JFrame {
         generateClientes.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                new ClientInfoTable();
 
             }
         });

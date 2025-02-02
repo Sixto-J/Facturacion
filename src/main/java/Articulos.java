@@ -20,13 +20,15 @@ public class Articulos {
     private String observacionesArticulo;
     private int proveedorArticulo;
 
-    public Articulos(String nombreArticulo, String descripcionArticulo, int idArticulo, String codigoArticulo, String codigoBarrasArticulo, double costeArticulo, double margenComercialArticulo, double pvpArticulo, double stockArticulo, String observacionesArticulo, int proveedorArticulo) {
+    public Articulos(int idArticulo, String nombreArticulo, String descripcionArticulo, String codigoArticulo,
+                     String codigoBarrasArticulo,double costeArticulo,
+                     double margenComercialArticulo,double pvpArticulo,
+                     double stockArticulo, String observacionesArticulo, int proveedorArticulo) {
+        this.idArticulo = idArticulo;
         this.nombreArticulo = nombreArticulo;
         this.descripcionArticulo = descripcionArticulo;
-        this.idArticulo = idArticulo;
         this.codigoArticulo = codigoArticulo;
         this.codigoBarrasArticulo = codigoBarrasArticulo;
-        this.descripcionArticulo = descripcionArticulo;
         this.costeArticulo = costeArticulo;
         this.margenComercialArticulo = margenComercialArticulo;
         this.pvpArticulo = pvpArticulo;
@@ -84,16 +86,33 @@ public class Articulos {
 
     public List<Articulos> obtenerArticulos() {
         List<Articulos> articulos = new ArrayList<>();
-        String query = "SELECT idArticulo, nombreArticulo FROM articulos"; // Cambia 'clientes' por el nombre de tu tabla
-        try (
-                Connection connection = ConexionDB.getConnection();
-                Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery(query)) {
+        String query = "SELECT idArticulo, nombreArticulo, descripcionArticulo, codigoArticulo," +
+                " codigoBarrasArticulo FROM articulos"; // Cambia 'clientes' por el nombre de tu tabla
+
+
+        try (ConexionDB conn = new ConexionDB()) {
+
+            Connection connection = conn.getConnection();
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
 
             while (resultSet.next()) {
-                String idArticulo= resultSet.getString("idArticulo");
-                String nombreArticulo = resultSet.getString("nombreArticulo");
-                Articulos articulo = new Articulos(idArticulo,nombreArticulo);
+                idArticulo= resultSet.getInt("idArticulo");
+                nombreArticulo = resultSet.getString("nombreArticulo");
+                descripcionArticulo = resultSet.getString("descripcionArticulo");
+                codigoArticulo = resultSet.getString("codigoArticulo");
+                codigoBarrasArticulo = resultSet.getString("codigoBarrasArticulo");
+                costeArticulo = resultSet.getDouble("costeArticulo");
+                margenComercialArticulo = resultSet.getDouble("margenComercialArticulo");
+                pvpArticulo = resultSet.getDouble("pvpArticulo");
+                stockArticulo = resultSet.getDouble("stockArticulo");
+                observacionesArticulo = resultSet.getString("observacionesArticulo");
+                proveedorArticulo = resultSet.getInt("proveedorArticulo");
+
+                Articulos articulo = new Articulos(idArticulo,nombreArticulo,
+                        descripcionArticulo, codigoArticulo,
+                        codigoBarrasArticulo, costeArticulo, margenComercialArticulo, pvpArticulo, stockArticulo, observacionesArticulo,
+                        proveedorArticulo);
                 articulos.add(articulo);
             }
         } catch (SQLException e) {
