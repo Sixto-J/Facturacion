@@ -13,6 +13,15 @@ public class Main extends JFrame {
     private JTextArea textArea;
     private JButton generateButton, generateClientes, generateArticulos, generateFacturas, generarAyuda;
 
+
+    public static void main (String[] args){
+        SwingUtilities.invokeLater(() -> {
+            Main app = new Main();
+            app.setVisible(true);
+        });
+    }
+
+
     public Main() {
         setTitle("Facturacion");
         setSize(500, 400);
@@ -56,7 +65,7 @@ public class Main extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                generateXML();
+
 
             }
         });
@@ -66,7 +75,7 @@ public class Main extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                generateXML();
+
 
             }
         });
@@ -116,15 +125,6 @@ public class Main extends JFrame {
             JOptionPane.showMessageDialog(this, "Error writing to file: " + e.getMessage());
         }
 
-    }
-
-
-
-    public static void main (String[] args){
-        SwingUtilities.invokeLater(() -> {
-            Main app = new Main();
-            app.setVisible(true);
-        });
     }
 
     }

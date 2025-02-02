@@ -3,6 +3,8 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.*;
 import java.util.List;
 import java.util.Vector;
@@ -51,10 +53,11 @@ public class ClientInfoTable {
             // Create a DefaultTableModel and JTable
             model = new DefaultTableModel(); //clientesArray, columnNames
             table = new JTable(model);
-
+            table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
             // Establish database connection
-            try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/gestion","root", "22_michu");
+            try (ConexionDB cdb = new ConexionDB();
+                 Connection connection = cdb.getConnection();
                  Statement statement = connection.createStatement()) {
 
                 // Execute SELECT query
@@ -70,6 +73,9 @@ public class ClientInfoTable {
                 column_Names.add(metaData.getColumnName(i));
             }
             model.setColumnIdentifiers(column_Names);
+
+
+
             // Add rows to the model
             while (resultSet.next()) {
                 Vector<Object> row = new Vector<>();
@@ -78,6 +84,7 @@ public class ClientInfoTable {
                 }
                 model.addRow(row);
             }
+
             // Set the model to the table
             table.setModel(model);
 
@@ -98,14 +105,35 @@ public class ClientInfoTable {
                         int column = e.getColumn();
                         Object newValue = model.getValueAt(row, column);
                         int id = (int) table.getValueAt(row, 0);
-                        updateDatabase(id, column, newValue);
+
+                        updateRowDatabase(id, column, newValue);
 
 
                         System.out.println("Row " + row + " Column " + column + " edited. New value: " + newValue);
                         // Trigger any additional action here
 
-                       String query = "UPDATE clientes SET ContactName =" + newValue +",  City = 'Frankfurt'" +
-                               "  WHERE CustomerID = 1;";
+                      // String query = "UPDATE clientes SET ContactName =" + newValue +",  City = 'Frankfurt'" +
+                      //         "  WHERE CustomerID = 1;";
+                    }
+                }
+            });
+
+            // JButton to eliminate row
+
+            // Create a delete button
+            JButton deleteButton = new JButton("Delete Selected Row");
+            deleteButton.setPreferredSize(new Dimension(120,50));
+
+            deleteButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    int selectedRow = table.getSelectedRow();
+                    if (selectedRow != -1) {
+                        int id = (int) model.getValueAt(selectedRow, 0); // Assuming the first column is the ID
+                        deleteRowFromDatabase(id);
+                        model.removeRow(selectedRow); // Remove from the table model
+                    } else {
+                        JOptionPane.showMessageDialog(frame, "Please select a row to delete.");
                     }
                 }
             });
@@ -113,38 +141,50 @@ public class ClientInfoTable {
             // Add the JTable to a JScrollPane
             JScrollPane scrollPane = new JScrollPane(table);
             frame.add(scrollPane, BorderLayout.CENTER);
+            frame.add(deleteButton, BorderLayout.AFTER_LAST_LINE);
 
             // Set the frame visibility
             frame.setVisible(true);
 
         }
 
-    private static void updateDatabase(int id, int column, Object newValue) {
+    private static void updateRowDatabase(int id, int column, Object newValue) {
         String columnName = "";
         switch (column) {
             case 1:
                 columnName = "nombreCliente";
                 break;
             case 2:
-                columnName = "paisCLiente";
-                break;
-            case 3:
                 columnName = "direccionCliente";
                 break;
-            case 4:
+            case 3:
                 columnName = "cpCliente";
                 break;
+            case 4:
+                columnName = "poblacionCliente";
+                break;
             case 5:
-                columnName = "cifCliente";
+                columnName = "provinciaCliente";
                 break;
             case 6:
+                columnName = "paisCliente";
+                break;
+            case 7:
+                columnName = "cifCliente";
+                break;
+            case 8:
+                columnName = "telCliente";
+                break;
+            case 9:
                 columnName = "emailCliente";
                 break;
         }
 
         String updateQuery = "UPDATE clientes SET " + columnName + " = ? WHERE id = ?"; // Replace with your table name
 
-        try (Connection connection = ConexionDB.getConnection();
+        try (
+                ConexionDB cdb = new ConexionDB();
+                Connection connection = cdb.getConnection();
 
              PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
 
@@ -158,5 +198,28 @@ public class ClientInfoTable {
             e.printStackTrace();
         }
     }
+
+
+    private static void deleteRowFromDatabase(int id) {
+        String deleteQuery = "DELETE FROM clientes WHERE id = ?"; // Replace with your table name
+
+        try (ConexionDB cdb = new ConexionDB();
+             Connection connect = cdb.getConnection();
+             PreparedStatement preparedStatement = connect.prepareStatement(deleteQuery)) {
+
+            preparedStatement.setInt(1, id);
+            int rowsAffected = preparedStatement.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Deleted row with ID: " + id);
+            } else {
+                System.out.println("No row found with ID: " + id);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    
 
     }

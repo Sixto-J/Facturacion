@@ -81,8 +81,8 @@ public class Clientes {
     public List<Clientes> crearAñadirClientes() {
         List<Clientes> lista_clientes = new ArrayList<>();
 
-        try (ConexionDB conn = new ConexionDB()) {
-            Connection connection = conn.getConnection();
+        try (ConexionDB cdb = new ConexionDB()) {
+            Connection connection = cdb.getConnection();
 
             if (connection == null) {
                 System.out.println("Failed to establish a database connection.");
