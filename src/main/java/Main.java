@@ -24,7 +24,7 @@ public class Main extends JFrame {
 
     public Main() {
         setTitle("Facturacion");
-        setSize(500, 400);
+        setSize(600, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
@@ -70,12 +70,12 @@ public class Main extends JFrame {
             }
         });
 
-        generarAyuda = new JButton("Ayuda");
+        generarAyuda = new JButton("Crear Clientes");
         generarAyuda.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-
+            new ClientesFormInputData();
 
             }
         });

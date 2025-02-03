@@ -17,7 +17,7 @@ public class ClientInfoTable {
         public ClientInfoTable() {
             // Create a new JFrame
             JFrame frame = new JFrame("Client Information");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
             frame.setSize(600, 400);
             frame.setLayout(new BorderLayout());
 
@@ -194,6 +194,7 @@ public class ClientInfoTable {
 
             System.out.println("Updated " + columnName + " for ID " + id + " to " + newValue);
 
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -219,7 +220,7 @@ public class ClientInfoTable {
             e.printStackTrace();
         }
     }
-    
-    
+
+
 
     }
