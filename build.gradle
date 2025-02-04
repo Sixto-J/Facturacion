@@ -13,8 +13,9 @@ dependencies {
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     implementation 'mysql:mysql-connector-java:8.0.33' // Use the latest stable version
+    implementation 'com.itextpdf:kernel:7.2.0' // Replace with the desired version
+    implementation 'com.itextpdf:layout:7.2.0' // If you also need the layout module}
 }
-
 test {
     useJUnitPlatform()
 }
