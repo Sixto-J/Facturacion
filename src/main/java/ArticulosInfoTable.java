@@ -1,0 +1,205 @@
+
+import javax.swing.*;
+        import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+        import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.*;
+import java.util.Vector;
+
+public class ArticulosInfoTable {
+
+    private DefaultTableModel model;
+    private JTable table;
+
+    public ArticulosInfoTable() {
+        // Create a new JFrame
+        JFrame frame = new JFrame("Article Information");
+        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        frame.setSize(600, 400);
+        frame.setLayout(new BorderLayout());
+
+
+        String[] columnNames = {"idArticulo", "codigoArticulo", "codigoBarrasArticulo", "descripcionArticulo",
+                "costeArticulo", "margenComercialArticulo", "pvpArticulo", "proveedorArticulo",
+                "stockArticulo", "observacionesArticulo", "familiaArticulo"};
+
+
+
+        // Create a DefaultTableModel and JTable
+        model = new DefaultTableModel(); //clientesArray, columnNames
+        table = new JTable(model);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        // Establish database connection
+        try (ConexionDB cdb = new ConexionDB();
+             Connection connection = cdb.getConnection();
+             Statement statement = connection.createStatement()) {
+
+            // Execute SELECT query
+            String query = "SELECT * FROM articulos"; // Replace with your table name
+            ResultSet resultSet = statement.executeQuery(query);
+
+            // Get metadata to retrieve column names
+            ResultSetMetaData metaData = resultSet.getMetaData();
+            int columnCount = metaData.getColumnCount();
+            // Add column names to the model
+            Vector<String> column_Names = new Vector<>();
+            for (int i = 1; i <= columnCount; i++) {
+                column_Names.add(metaData.getColumnName(i));
+            }
+            model.setColumnIdentifiers(column_Names);
+
+
+
+            // Add rows to the model
+            while (resultSet.next()) {
+                Vector<Object> row = new Vector<>();
+                for (int i = 1; i <= columnCount; i++) {
+                    row.add(resultSet.getObject(i));
+                }
+                model.addRow(row);
+            }
+
+            // Set the model to the table
+            table.setModel(model);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+
+
+        // Add a TableModelListener to handle edits
+        model.addTableModelListener(new TableModelListener() {
+            @Override
+            public void tableChanged(TableModelEvent e) {
+                // Check if the event is for an edit
+                if (e.getType() == TableModelEvent.UPDATE) {
+                    int row = e.getFirstRow();
+                    int column = e.getColumn();
+                    Object newValue = model.getValueAt(row, column);
+                    int id = (int) table.getValueAt(row, 0);
+
+                    updateRowDatabase(id, column, newValue);
+
+
+                    System.out.println("Row " + row + " Column " + column + " edited. New value: " + newValue);
+                    // Trigger any additional action here
+
+
+                }
+            }
+        });
+
+        // JButton to eliminate row
+
+        // Create a delete button
+        JButton deleteButton = new JButton("Delete Selected Row");
+        deleteButton.setPreferredSize(new Dimension(120,50));
+
+        deleteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = table.getSelectedRow();
+                if (selectedRow != -1) {
+                    int id = (int) model.getValueAt(selectedRow, 0); // Assuming the first column is the ID
+                    deleteRowFromDatabase(id);
+                    model.removeRow(selectedRow); // Remove from the table model
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Please select a row to delete.");
+                }
+            }
+        });
+
+        // Add the JTable to a JScrollPane
+        JScrollPane scrollPane = new JScrollPane(table);
+        frame.add(scrollPane, BorderLayout.CENTER);
+        frame.add(deleteButton, BorderLayout.AFTER_LAST_LINE);
+
+        // Set the frame visibility
+        frame.setVisible(true);
+
+    }
+
+    private static void updateRowDatabase(int id, int column, Object newValue) {
+        String columnName = "";
+        switch (column) {
+            case 1:
+                columnName = "codigoArticulo";
+                break;
+            case 2:
+                columnName = "codigoBarrasArticulo";
+                break;
+            case 3:
+                columnName = "descripcionArticulo";
+                break;
+            case 4:
+                columnName = "costeArticulo";
+                break;
+            case 5:
+                columnName = "margenComercialArticulo";
+                break;
+            case 6:
+                columnName = "pvpArticulo";
+                break;
+            case 7:
+                columnName = "proveedorArticulo";
+                break;
+            case 8:
+                columnName = "stockArticulo";
+                break;
+            case 9:
+                columnName = "observacionesArticulo";
+                break;
+            case 10:
+                columnName = "familiaArticulo";
+        }
+
+        String updateQuery = "UPDATE articulos SET " + columnName + " = ? WHERE id = ?"; // Replace with your table name
+
+        try (
+                ConexionDB cdb = new ConexionDB();
+                Connection connection = cdb.getConnection();
+
+                PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
+
+            preparedStatement.setObject(1, newValue);
+            preparedStatement.setInt(2, id);
+            preparedStatement.executeUpdate();
+
+            System.out.println("Updated " + columnName + " for ID " + id + " to " + newValue);
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private static void deleteRowFromDatabase(int id) {
+        String deleteQuery = "DELETE FROM articulos WHERE id = ?"; // Replace with your table name
+
+        try (ConexionDB cdb = new ConexionDB();
+             Connection connect = cdb.getConnection();
+             PreparedStatement preparedStatement = connect.prepareStatement(deleteQuery)) {
+
+            preparedStatement.setInt(1, id);
+            int rowsAffected = preparedStatement.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Deleted row with ID: " + id);
+            } else {
+                System.out.println("No row found with ID: " + id);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+}

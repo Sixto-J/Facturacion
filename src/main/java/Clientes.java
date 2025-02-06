@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Vector;
 
 public class Clientes {
-    private int id;
+    private int idCliente;
     private String nombreCliente;
     private String direccionCliente;
     private String cpCliente;
@@ -23,7 +23,7 @@ public class Clientes {
                     String poblacionCliente, String provinciaCliente, String paisCliente, String cifCliente,
                     String telCliente, String emailCliente, String ibanCliente, double riesgoCliente,
                     double descuentoCliente, String observacionesCliente) {
-        this.id = id;
+        this.idCliente = id;
         this.nombreCliente = nombreCliente;
         this.direccionCliente = direccionCliente;
         this.cpCliente = cpCliente;
@@ -44,10 +44,10 @@ public class Clientes {
     }
 
     public int getId() {
-        return id;
+        return idCliente;
     }
     public void setId(int id) {
-        this.id = id;
+        this.idCliente = idCliente;
     }
     public String getNombreCliente() {
         return nombreCliente;
@@ -72,7 +72,7 @@ public class Clientes {
     public String toString() {
         return "Client{" +
                 "name='" + nombreCliente + '\'' +
-                ", idr='" + id + '\'' +
+                ", idr='" + idCliente + '\'' +
                 ", address='" + direccionCliente + '\'' +
                 '}';
     }
@@ -106,7 +106,7 @@ public class Clientes {
 
                         System.out.println("Processing row: " + resultSet.getRow());
 
-                        id = resultSet.getInt("id");
+                        idCliente = resultSet.getInt("idCliente");
                         nombreCliente = resultSet.getString("nombreCliente");
                         paisCliente = resultSet.getString("paisCliente");
                         direccionCliente = resultSet.getString("direccionCliente");
@@ -121,7 +121,7 @@ public class Clientes {
                         descuentoCliente = resultSet.getDouble("descuentoCliente");
                         observacionesCliente = resultSet.getString("observacionesCliente");
 
-                        Clientes cliente = new Clientes(id, nombreCliente, paisCliente, direccionCliente, cpCliente, poblacionCliente, provinciaCliente,
+                        Clientes cliente = new Clientes(idCliente, nombreCliente, paisCliente, direccionCliente, cpCliente, poblacionCliente, provinciaCliente,
                                 cifCliente, telCliente, emailCliente, ibanCliente, riesgoCliente, descuentoCliente, observacionesCliente);
 
                         lista_clientes.add(cliente);

@@ -11,7 +11,8 @@ public class Main extends JFrame {
 
 
     private JTextArea textArea;
-    private JButton generateButton, generateClientes, generateArticulos, generateFacturas, generarAyuda;
+    private JButton generateFactura, verInfoClientes, verInfoArticulos, verFacturas,
+            generarFormularioClientes, generarFormularioArticulos;
 
 
     public static void main (String[] args){
@@ -24,7 +25,7 @@ public class Main extends JFrame {
 
     public Main() {
         setTitle("Facturacion");
-        setSize(600, 500);
+        setSize(900, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
@@ -33,8 +34,8 @@ public class Main extends JFrame {
         textArea.setWrapStyleWord(true);
         add(new JScrollPane(textArea), BorderLayout.CENTER);
 
-        generateButton = new JButton("Generar Factura");
-        generateButton.addActionListener(new ActionListener() {
+        generateFactura = new JButton("Generar Factura");
+        generateFactura.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
@@ -42,36 +43,37 @@ public class Main extends JFrame {
             }
         });
 
-        generateClientes = new JButton("Clientes");
-        generateClientes.addActionListener(new ActionListener() {
+        verInfoClientes = new JButton("InfoClientes");
+        verInfoClientes.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                new ClientInfoTable();
+                new ClientesInfoTable();
 
             }
         });
 
-        generateArticulos = new JButton("Articulos");
-        generateArticulos.addActionListener(new ActionListener() {
+        verInfoArticulos = new JButton("InfoArticulos");
+        verInfoArticulos.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                new ArticulosInfoTable();
 
             }
         });
 
-        generateFacturas = new JButton("Facturas");
-        generateFacturas.addActionListener(new ActionListener() {
+        verFacturas = new JButton("InfoFacturas");
+        verFacturas.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
 
 
             }
         });
 
-        generarAyuda = new JButton("Crear Clientes");
-        generarAyuda.addActionListener(new ActionListener() {
+        generarFormularioClientes = new JButton("Crear Clientes");
+        generarFormularioClientes.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
@@ -80,14 +82,26 @@ public class Main extends JFrame {
             }
         });
 
+        generarFormularioArticulos= new JButton("Crear Articulos");
+        generarFormularioArticulos.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                new ArticulosFormInputData();
+
+            }
+        });
+
 
         JPanel panel = new JPanel();
         panel.setLayout(new FlowLayout());
-        panel.add(generateButton);
-        panel.add(generateClientes);
-        panel.add(generateFacturas);
-        panel.add(generateArticulos);
-        panel.add(generarAyuda);
+        panel.add(generateFactura);
+        panel.add(verFacturas);
+        panel.add(generarFormularioClientes);
+        panel.add(verInfoClientes);
+        panel.add(generarFormularioArticulos);
+        panel.add(verInfoArticulos);
+
         add(panel, BorderLayout.NORTH);
     }
 

@@ -6,15 +6,14 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
-import java.util.List;
 import java.util.Vector;
 
-public class ClientInfoTable {
+public class ClientesInfoTable {
 
     private DefaultTableModel model;
     private JTable table;
 
-        public ClientInfoTable() {
+        public ClientesInfoTable() {
             // Create a new JFrame
             JFrame frame = new JFrame("Client Information");
             frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);

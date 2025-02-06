@@ -7,16 +7,22 @@ import java.io.FileNotFoundException;
 import static com.itextpdf.kernel.pdf.PdfName.Document;
 
 public class PrintPdfExample {
-    public static void main(String[] args) throws Exception {
-        try (PdfDocument pdfDoc = new PdfDocument(new PdfWriter("./hello-pdf.pdf"));
 
+
+ /*   public static void main(String[] args) throws Exception {
+        try (PdfDocument pdfDoc = new PdfDocument(new PdfWriter("hello-pdf.pdf"));
              Document document = new Document(pdfDoc)) {
             document.add(new Paragraph("Hello PDF!"));
+        }
+    }*/
+}
 
 
 
 
-    /* Cuando haya que escribir
+
+
+/* Cuando haya que escribir
             String dest = "/Users/sixto/Downloads/sample.pdf";
             PdfWriter writer = new PdfWriter(dest);
 
@@ -65,18 +71,8 @@ public class PrintPdfExample {
       doc.add(table);
       */
 
-            //https://www.tutorialspoint.com/itext/itext_creating_pdf_document.htm
-            //https://www.tutorialspoint.com/itext/itext_formatting_cell_contents.htm
-        }
-    }
-}
-
-
-
-
-
-
-
+//https://www.tutorialspoint.com/itext/itext_creating_pdf_document.htm
+//https://www.tutorialspoint.com/itext/itext_formatting_cell_contents.htm
 
 
 

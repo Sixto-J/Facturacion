@@ -18,7 +18,11 @@ public class Facturas {
     private String observacionesFacturaClientes;
 
 
-    public Facturas(double baseImponibleFacturaCliente, boolean cobradaFactura, Date fechaCobroFactura, Date fechaFacturaCliente, int formaCobroFactura, String hashFacturaCiente, int idClienteFactura, int idFacturaCliente, double ivaFacturaCliente, int numeroFacturaCliente, String observacionesFacturaClientes, String qrFacturaCliente, double totalFacturaCliente) {
+    public Facturas(double baseImponibleFacturaCliente, boolean cobradaFactura,
+                    Date fechaCobroFactura, Date fechaFacturaCliente, int formaCobroFactura,
+                    String hashFacturaCiente, int idClienteFactura, int idFacturaCliente,
+                    double ivaFacturaCliente, int numeroFacturaCliente, String observacionesFacturaClientes,
+                    String qrFacturaCliente, double totalFacturaCliente) {
         this.baseImponibleFacturaCliente = baseImponibleFacturaCliente;
         this.cobradaFactura = cobradaFactura;
         this.fechaCobroFactura = fechaCobroFactura;
