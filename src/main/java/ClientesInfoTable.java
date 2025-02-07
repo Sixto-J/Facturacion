@@ -17,7 +17,7 @@ public class ClientesInfoTable {
             // Create a new JFrame
             JFrame frame = new JFrame("Client Information");
             frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-            frame.setSize(600, 400);
+            frame.setSize(1600, 1000);
             frame.setLayout(new BorderLayout());
 
 

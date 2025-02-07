@@ -5,6 +5,8 @@ import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 import java.io.FileNotFoundException;
 import static com.itextpdf.kernel.pdf.PdfName.Document;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.element.Cell;
 
 public class PrintPdfExample {
 
@@ -15,9 +17,42 @@ public class PrintPdfExample {
             document.add(new Paragraph("Hello PDF!"));
         }
     }*/
+
+
+    public void createTable(String[] args) {
+        String destiny = "table.pdf"; // Destination file path
+
+        try {
+            PdfWriter writer = new PdfWriter(destiny);
+            PdfDocument pdfDoc = new PdfDocument(writer);
+            Document document = new Document(pdfDoc);
+
+            // Create a table with 3 columns
+            Table table = new Table(3);
+            table.addCell(new Cell().add(new Paragraph("Header 1")));
+            table.addCell(new Cell().add(new Paragraph("Header 2")));
+            table.addCell(new Cell().add(new Paragraph("Header 3")));
+
+            // Add some data
+            for (int i = 1; i <= 5; i++) {
+                table.addCell(new Cell().add( new Paragraph("Row " + i + ", Col 1")));
+                table.addCell(new Cell().add(new Paragraph("Row " + i + ", Col 2")));
+                table.addCell(new Cell().add(new Paragraph("Row " + i + ", Col 3")));
+            }
+
+            // Add the table to the document
+            document.add(table);
+
+            // Close the document
+            document.close();
+            System.out.println("PDF with table created successfully.");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }
-
-
 
 
 

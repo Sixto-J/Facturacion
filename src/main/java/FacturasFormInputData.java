@@ -28,7 +28,7 @@ public class FacturasFormInputData extends JFrame {
     public FacturasFormInputData() {
 
         setTitle("Datos de la factura");
-        setSize(1000, 1000);
+        setSize(1000, 900);
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         setLayout(new GridLayout(15, 4));
 
