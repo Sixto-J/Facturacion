@@ -113,13 +113,13 @@ public class ArticulosFormInputData extends JFrame {
             pstmt.setString(1, codigoArticulo.getText());
             pstmt.setString(2, codigoBarrasArticulo.getText());
             pstmt.setString(3, descripcionArticulo.getText());
-            pstmt.setString(4, costeArticulo.getText());
-            pstmt.setString(5, margenComercialArticulo.getText());
-            pstmt.setString(6, pvpArticulo.getText());
-            pstmt.setString(7, proveedorArticulo.getText());
-            pstmt.setString(8, stockArticulo.getText());
+            pstmt.setDouble(4, Double.valueOf(costeArticulo.getText()));
+            pstmt.setDouble(5, Double.valueOf(margenComercialArticulo.getText()));
+            pstmt.setDouble(6, Double.valueOf(pvpArticulo.getText()));
+            pstmt.setInt(7, Integer.valueOf(proveedorArticulo.getText()));
+            pstmt.setInt(8, Integer.valueOf(stockArticulo.getText()));
             pstmt.setString(9, observacionesArticulo.getText());
-            pstmt.setString(10, familiaArticulo.getText());
+            pstmt.setInt(10, Integer.valueOf(familiaArticulo.getText()));
 
 
             pstmt.executeUpdate();

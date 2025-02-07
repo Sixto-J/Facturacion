@@ -3,7 +3,7 @@ USE gestion;
 SHOW TABLES FROM gestion;
 
 
-
+DROP DATABASE gestion;
 DROP TABLE IF EXISTS clientes;
 
 INSERT INTO clientes (nombreCliente, direccionCliente, cpCliente, poblacionCliente, provinciaCliente, paisCliente, cifCliente, telCliente, emailCliente, ibanCliente, riesgoCliente, descuentoCliente, observacionesCliente)
@@ -13,22 +13,23 @@ SELECT * FROM clientes;
 
 
 
-
 -- Tabla: facturasClientes
 CREATE TABLE facturasClientes (
 idFacturaCliente INT AUTO_INCREMENT PRIMARY KEY,
 numeroFacturaCliente INT NOT NULL UNIQUE,
 fechaFacturaCliente DATE NOT NULL,
 idClienteFactura INT NOT NULL,
-baseImponibleFacturaCliente DOUBLE NOT NULL,
-ivaFacturaCliente DOUBLE NOT NULL,
-totalFacturaCliente DOUBLE NOT NULL,
-hashFacturaCiente VARCHAR(128),
-qrFacturaCliente VARCHAR(4296),
+baseImponibleFacturaCliente DECIMAL(10,10) NOT NULL,
+ivaFacturaCliente DECIMAL(5,5) NOT NULL,
+totalFacturaCliente DECIMAL(10,10) NOT NULL,
+hashFacturaCiente VARCHAR(512),
+qrFacturaCliente VARCHAR(4256),
 cobradaFactura BOOLEAN NOT NULL,
 formaCobroFactura INT NOT NULL,
 fechaCobroFactura DATE NOT NULL,
-observacionesFacturaClientes TEXT
+observacionesFacturaClientes TEXT,
+KEY `idClienteFactura` (`idClienteFactura`),
+CONSTRAINT `facturasclientes_ibfk_1` FOREIGN KEY (`idClienteFactura`) REFERENCES `clientes` (`idCliente`)
 );
 
 -- Tabla: articulos
@@ -42,21 +43,27 @@ margenComercialArticulo DOUBLE,
 pvpArticulo DOUBLE,
 proveedorArticulo INT,
 stockArticulo DOUBLE,
-observacionesArticulo TEXT
+observacionesArticulo TEXT,
+familiaArticulo INT,
+
+
+KEY `familiaArticulo` (`familiaArticulo`),
+KEY `proveedorArticulo` (`proveedorArticulo`),
+CONSTRAINT `articulos_ibfk_1` FOREIGN KEY (`familiaArticulo`) REFERENCES `familiaArticulos` (`idFamiliaArticulos`),
+CONSTRAINT `articulos_ibfk_2` FOREIGN KEY (`proveedorArticulo`) REFERENCES `proveedores` (`idProveedor`)
 );
+
+DROP TABLE articulos;
 
 -- Tabla: familiaArticulos
 CREATE TABLE IF NOT EXISTS familiaArticulos (
 idFamiliaArticulos INT AUTO_INCREMENT PRIMARY KEY,
 codigoFamiliaArticulos VARCHAR(40) NOT NULL UNIQUE,
-denominacionFamilias VARCHAR(80) NOT NULL UNIQUE,
-familiaArticulo INT,
-articulos VARCHAR(40),
-FOREIGN KEY (articulos) REFERENCES articulos(codigoArticulo)
+denominacionFamilias VARCHAR(80) NOT NULL UNIQUE
 );
 
 -- Tabla: rectificativasClientes
-CREATE TABLE rectificativasClientes (
+CREATE TABLE IF NOT EXISTS rectificativasClientes (
 idRectificativaCliente INT AUTO_INCREMENT PRIMARY KEY,
 numeroRectificativaCliente INT NOT NULL UNIQUE,
 fechaRectificativaCliente DATE NOT NULL,
@@ -66,7 +73,10 @@ ivaRectificativaCliente DOUBLE NOT NULL,
 totalRectificativaCliente DOUBLE NOT NULL,
 hashRectificativaCliente VARCHAR(128),
 qrRectificativaCliente VARCHAR(4296),
-observacionesRectificativaCliente TEXT
+observacionesRectificativaCliente TEXT,
+
+KEY `idClienteRectificativaCliente` (`idClienteRectificativaCliente`),
+CONSTRAINT `rectificativasclientes_ibfk_1` FOREIGN KEY (`idClienteRectificativaCliente`) REFERENCES `clientes`(`idCliente`)
 );
 
 -- Tabla: lineasFacturasClientes
@@ -80,11 +90,13 @@ pvpArticulo DOUBLE NOT NULL,
 ivaArticulo DOUBLE NOT NULL,
 idProveedorArticulo INT NOT NULL,
 nombreProveedorArticulo VARCHAR(80),
-articulos VARCHAR(40),
-FOREIGN KEY (articulos) REFERENCES articulos(codigoArticulo)
+KEY `numeroFacturaCliente` (`numeroFacturaCliente`),
+KEY `idArticulo` (`idArticulo`),
+KEY `idProveedorArticulo` (`idProveedorArticulo`),
+CONSTRAINT `lineasfacturasclientes_ibfk_1` FOREIGN KEY (`numeroFacturaCliente`) REFERENCES `facturasclientes` (`idFacturaCliente`),
+CONSTRAINT `lineasfacturasclientes_ibfk_2` FOREIGN KEY (`idArticulo`) REFERENCES `articulos` (`idArticulo`),
+CONSTRAINT `lineasfacturasclientes_ibfk_3` FOREIGN KEY (`idProveedorArticulo`) REFERENCES `proveedores` (`idProveedor`)
 );
-
-
 
 
 
@@ -92,7 +104,7 @@ FOREIGN KEY (articulos) REFERENCES articulos(codigoArticulo)
 DROP TABLE IF EXISTS clientes;
 -- Tabla: clientes
 CREATE TABLE IF NOT EXISTS clientes (
-id INT AUTO_INCREMENT PRIMARY KEY,
+idCliente INT AUTO_INCREMENT PRIMARY KEY,
 nombreCliente VARCHAR(80) NOT NULL,
 direccionCliente VARCHAR(80),
 cpCliente VARCHAR(10),
@@ -103,27 +115,20 @@ cifCliente VARCHAR(12) NOT NULL UNIQUE,
 telCliente VARCHAR(16),
 emailCliente VARCHAR(80),
 ibanCliente VARCHAR(40),
-riesgoCliente DOUBLE,
-descuentoCliente DOUBLE,
+riesgoCliente DECIMAL (6,4),
+descuentoCliente DECIMAL (6,4),
 observacionesCliente TEXT
-#facturasClientes INT,
-#rectificativasClientes INT,
-#lineasFacturasClientes INT,
-#FOREIGN KEY (facturasClientes) REFERENCES facturasClientes(idFacturaCliente),
-#FOREIGN KEY (rectificativasClientes) REFERENCES rectificativasClientes(idRectificativaCliente),
-#FOREIGN KEY (lineasFacturasClientes) REFERENCES lineasFacturasClientes(idLineaFacturaCliente)
 );
-
 
 
 -- Tabla: tiposIVA
 CREATE TABLE IF NOT EXISTS tiposIva (
-idTipoIva INT AUTO_INCREMENT PRIMARY KEY,
-iva DOUBLE NOT NULL,
-observacionesTipoIva TEXT,
-familiaArticulos INT,
-FOREIGN KEY (familiaArticulos) REFERENCES familiaArticulos(idFamiliaArticulos)
+idTipoIva INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+iva DECIMAL(10,10) NOT NULL,
+observacionesTipoIva TEXT
 );
+
+DROP TABLE tiposIVA;
 
 
 -- Tabla: formaPago
@@ -133,19 +138,16 @@ tipoFormaPago VARCHAR(40) NOT NULL,
 fechaCobroFormaPago DATE NOT NULL,
 observacionesFormaPago TEXT,
 cliente INT,
-FOREIGN KEY (cliente) REFERENCES clientes(id)
+FOREIGN KEY (cliente) REFERENCES clientes(idCliente)
 );
-
 
 
 DROP TABLE formaPago;
 
 
-
-
 -- Tabla: proveedores
 CREATE TABLE IF NOT EXISTS proveedores (
-id INT AUTO_INCREMENT PRIMARY KEY,
+idProveedor INT AUTO_INCREMENT PRIMARY KEY,
 nombreProveedor VARCHAR(80) NOT NULL,
 direccionProveedor VARCHAR(80),
 cpProveedor VARCHAR(10),
@@ -158,7 +160,7 @@ emailProveedor VARCHAR(80),
 ibanProveedor VARCHAR(40),
 riesgoProveedor DOUBLE,
 descuentoProveedor DOUBLE,
-observacionesProveedor TEXT,
-articulos VARCHAR(40),
-FOREIGN KEY (articulos) REFERENCES articulos(codigoArticulo)
+observacionesProveedor TEXT
 );
+
+SHOW TABLES;

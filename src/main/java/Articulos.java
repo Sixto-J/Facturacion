@@ -16,14 +16,14 @@ public class Articulos {
     private double margenComercialArticulo;
     private double pvpArticulo;
     private int proveedorArticulo;
-    private double stockArticulo;
+    private int stockArticulo;
     private String observacionesArticulo;
     private int familiaArticulo;
 
     public Articulos(int idArticulo, String codigoArticulo,
                      String codigoBarrasArticulo, String descripcionArticulo, double costeArticulo,
                      double margenComercialArticulo, double pvpArticulo, int proveedorArticulo,
-                     double stockArticulo, String observacionesArticulo, int familiaArticulo) {
+                     int stockArticulo, String observacionesArticulo, int familiaArticulo) {
         this.idArticulo = idArticulo;
         this.codigoArticulo = codigoArticulo;
         this.codigoBarrasArticulo = codigoBarrasArticulo;
@@ -41,59 +41,43 @@ public class Articulos {
     public String getCodigoArticulo() {
         return codigoArticulo;
     }
-
     public String getCodigoBarrasArticulo() {
         return codigoBarrasArticulo;
     }
-
     public double getCosteArticulo() {
         return costeArticulo;
     }
-
     public String getDescripcionArticulo() {
         return descripcionArticulo;
     }
-
     public int getIdArticulo() {
         return idArticulo;
     }
-
     public double getMargenComercialArticulo() {
         return margenComercialArticulo;
     }
-
-    public int getFamiliaArticulo() {
-        return familiaArticulo;
-    }
-
+    public int getFamiliaArticulo() { return familiaArticulo;}
     public String getObservacionesArticulo() {
         return observacionesArticulo;
     }
-
     public int getProveedorArticulo() {
         return proveedorArticulo;
     }
-
     public double getPvpArticulo() {
         return pvpArticulo;
     }
-
-    public double getStockArticulo() {
+    public int getStockArticulo() {
         return stockArticulo;
     }
 
 
     public void crearArticulo() {
-
     }
-
     public void modificarArticulo() {
-
     }
-
     public void verArticulo() {
-
     }
+
 
 
     public List<Articulos> obtenerArticulos() {
@@ -130,8 +114,9 @@ public class Articulos {
                         margenComercialArticulo = resultSet.getDouble("margenComercialArticulo");
                         pvpArticulo = resultSet.getDouble("pvpArticulo");
                         proveedorArticulo = resultSet.getInt("proveedorArticulo");
-                        stockArticulo = resultSet.getDouble("stockArticulo");
+                        stockArticulo = resultSet.getInt("stockArticulo");
                         observacionesArticulo = resultSet.getString("observacionesArticulo");
+                        familiaArticulo = resultSet.getInt("familiaArticulo");
 
                         Articulos articulo = new Articulos(idArticulo, codigoArticulo, codigoBarrasArticulo,
                                 descripcionArticulo,
