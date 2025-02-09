@@ -67,6 +67,7 @@ public class FacturasInfoTable {
             // Set the model to the table
             table.setModel(model);
 
+
         } catch (SQLException e) {
             e.printStackTrace();
         }

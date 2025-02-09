@@ -2,9 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
 
 public class ArticulosFormInputData extends JFrame {
 
@@ -14,10 +13,10 @@ public class ArticulosFormInputData extends JFrame {
     private JTextField costeArticulo;
     private JTextField margenComercialArticulo;
     private JTextField pvpArticulo;
-    private JTextField proveedorArticulo;
+    private JComboBox proveedorArticulo;
     private JTextField stockArticulo;
     private JTextField observacionesArticulo;
-    private JTextField familiaArticulo;
+    private JComboBox familiaArticulo;
 
 
     private JButton submitButton;
@@ -44,14 +43,61 @@ public class ArticulosFormInputData extends JFrame {
         margenComercialArticulo = new JTextField();
         JLabel pvpArticuloLabel = new JLabel("pvpArticulo");
         pvpArticulo = new JTextField();
+
+
+
+
         JLabel proveedorArticuloLabel = new JLabel("proveedorArticulo");
-        proveedorArticulo = new JTextField();
+        JLabel familiaArticuloLabel = new JLabel("familiaArticulo:");
+
+        try (ConexionDB cdb = new ConexionDB();
+             Connection connection = cdb.getConnection();
+             Statement statement = connection.createStatement()) {
+
+            // Execute SELECT query
+            String query_proveedor = "SELECT idProveedor, nombreProveedor FROM proveedores"; // Replace with your table name
+            ResultSet resultSet_proveedor = statement.executeQuery(query_proveedor);
+
+            ArrayList<String> proveedores = new ArrayList<>();
+            ArrayList<String> nombre_proveedores = new ArrayList<>();
+
+
+            while(resultSet_proveedor.next()){
+                proveedores.add(String.valueOf(resultSet_proveedor.getInt("idProveedor")));
+                nombre_proveedores.add(resultSet_proveedor.getString("nombreProveedor"));
+
+            }
+
+            DefaultComboBoxModel<String> model_proveedores = new DefaultComboBoxModel<>(proveedores.toArray(new String[0]));
+            proveedorArticulo = new JComboBox<>(model_proveedores);
+
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        try (ConexionDB cdb = new ConexionDB();
+             Connection connection = cdb.getConnection();
+             Statement statement = connection.createStatement()) {
+        String query_familia = "SELECT idFamiliaArticulos FROM familiaArticulos";
+        ResultSet resultSet_familia = statement.executeQuery(query_familia);
+        ArrayList<String> familia_articulo = new ArrayList<>();
+        while(resultSet_familia.next()){
+            familia_articulo.add(String.valueOf(resultSet_familia.getInt("idProveedor")));
+        }
+        DefaultComboBoxModel<String> model_familia = new DefaultComboBoxModel<>(familia_articulo.toArray(new String[0]));
+        familiaArticulo = new JComboBox<>(model_familia);
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+
         JLabel stockArticuloLabel = new JLabel("stockArticulo");
         stockArticulo = new JTextField();
         JLabel observacionesArticuloLabel = new JLabel("observacionesArticulo");
         observacionesArticulo = new JTextField();
-        JLabel familiaArticuloLabel = new JLabel("familiaArticulo:");
-        familiaArticulo = new JTextField();
 
 
 
@@ -87,7 +133,7 @@ public class ArticulosFormInputData extends JFrame {
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                insertCustomer();
+                insertArticulo();
             }
         });
 
@@ -97,7 +143,7 @@ public class ArticulosFormInputData extends JFrame {
 
 
 
-    private void insertCustomer() {
+    private void insertArticulo() {
 
 
 
@@ -116,10 +162,10 @@ public class ArticulosFormInputData extends JFrame {
             pstmt.setDouble(4, Double.valueOf(costeArticulo.getText()));
             pstmt.setDouble(5, Double.valueOf(margenComercialArticulo.getText()));
             pstmt.setDouble(6, Double.valueOf(pvpArticulo.getText()));
-            pstmt.setInt(7, Integer.valueOf(proveedorArticulo.getText()));
+            pstmt.setInt(7, Integer.valueOf(String.valueOf(proveedorArticulo.getSelectedItem())));
             pstmt.setInt(8, Integer.valueOf(stockArticulo.getText()));
             pstmt.setString(9, observacionesArticulo.getText());
-            pstmt.setInt(10, Integer.valueOf(familiaArticulo.getText()));
+            pstmt.setInt(10, Integer.valueOf(String.valueOf(familiaArticulo.getSelectedItem())));
 
 
             pstmt.executeUpdate();
@@ -139,10 +185,10 @@ public class ArticulosFormInputData extends JFrame {
         costeArticulo.setText("");
         margenComercialArticulo.setText("");
         pvpArticulo.setText("");
-        proveedorArticulo.setText("");
+        proveedorArticulo.setSelectedIndex(0);
         stockArticulo.setText("");
         observacionesArticulo.setText("");
-        familiaArticulo.setText("");
+        familiaArticulo.setSelectedIndex(0);
     }
 
 }

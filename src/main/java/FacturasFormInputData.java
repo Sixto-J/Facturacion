@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Objects;
 
 
 public class FacturasFormInputData extends JFrame {
@@ -17,12 +18,14 @@ public class FacturasFormInputData extends JFrame {
     private JTextField totalFacturaCliente;
     private JTextField hashFacturaCliente;
     private JTextField qrFacturaCliente;
-    private JTextField cobradaFactura;
+    private JComboBox cobradaFactura;
     private JTextField formaCobroFactura;
     private JTextField fechaCobroFactura;
     private JTextField observacionesFacturaCliente;
 
     private JButton submitButton;
+
+    private double base_imponible;
 
 
     public FacturasFormInputData() {
@@ -44,14 +47,22 @@ public class FacturasFormInputData extends JFrame {
         baseImponibleFacturaCliente = new JTextField();
         JLabel ivaFacturaClienteLabel = new JLabel("IVA");
         ivaFacturaCliente = new JTextField();
+
+
         JLabel totalFacturaClienteLabel = new JLabel("Total");
         totalFacturaCliente = new JTextField();
+        totalFacturaCliente.setEnabled(false);
+
+
         JLabel hashFacturaClienteLabel = new JLabel("Hash");
         hashFacturaCliente = new JTextField();
         JLabel qrFacturaClienteLabel = new JLabel("QR");
         qrFacturaCliente = new JTextField();
+
         JLabel cobradaFacturaLabel = new JLabel("Cobrada");
-        cobradaFactura = new JTextField();
+        String[] cobradaFacturaOptions = {"yes", "no"};
+        cobradaFactura = new JComboBox<>(cobradaFacturaOptions);
+
         JLabel formaCobroFacturaLabel = new JLabel("Forma de cobro");
         formaCobroFactura = new JTextField();
         JLabel fechaCobroFacturaLabel = new JLabel("Fecha de cobro");
@@ -79,8 +90,10 @@ public class FacturasFormInputData extends JFrame {
         add(hashFacturaCliente);
         add(qrFacturaClienteLabel);
         add(qrFacturaCliente);
+
         add(cobradaFacturaLabel);
         add(cobradaFactura);
+
         add(formaCobroFacturaLabel);
         add(formaCobroFactura);
         add(fechaCobroFacturaLabel);
@@ -95,15 +108,35 @@ public class FacturasFormInputData extends JFrame {
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                insertCustomer();
+                if ( !Objects.equals(totalFacturaCliente.getText(), "") && totalFacturaCliente.isEnabled()){
+                    insertFactura();
+                }else{
+                    //mensaje de error
+                }
             }
         });
+
+        JButton verLineaProductos = new JButton("Ver linea de productos");
+        verLineaProductos.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                String numfactura = numeroFacturaCliente.getText();
+                new lineasFacturaFormInputData(numfactura);
+            }
+        });
+
+
+        //listener en el JFrame
+        //totalFacturaCliente.setEnabled(true);
+        //totalFacturaCliente.setText(base_imponible);
+
 
         this.setVisible(true);
     }
 
 
-    private void insertCustomer() {
+    private void insertFactura() {
 
 
 
@@ -125,7 +158,7 @@ public class FacturasFormInputData extends JFrame {
             pstmt.setString(6, totalFacturaCliente.getText());
             pstmt.setString(7, hashFacturaCliente.getText());
             pstmt.setString(8, qrFacturaCliente.getText());
-            pstmt.setString(9, cobradaFactura.getText());
+            pstmt.setString(9, String.valueOf(cobradaFactura.getSelectedItem()));
             pstmt.setString(10, formaCobroFactura.getText());
             pstmt.setDouble(11, Double.valueOf(fechaCobroFactura.getText()));
             pstmt.setString(13, observacionesFacturaCliente.getText());
@@ -150,7 +183,7 @@ public class FacturasFormInputData extends JFrame {
         totalFacturaCliente.setText("");
         hashFacturaCliente.setText("");
         qrFacturaCliente.setText("");
-        cobradaFactura.setText("");
+        cobradaFactura.setSelectedIndex(0);
         formaCobroFactura.setText("");
         fechaCobroFactura.setText("");
         observacionesFacturaCliente.setText("");
