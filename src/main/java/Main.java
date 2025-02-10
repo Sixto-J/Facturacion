@@ -78,7 +78,7 @@ public class Main extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-            new ClientesFormInputData();
+                new ClientesFormInputData();
 
             }
         });
@@ -107,4 +107,4 @@ public class Main extends JFrame {
     }
 
 
-    }
+}

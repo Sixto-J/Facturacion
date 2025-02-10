@@ -11,7 +11,7 @@ public class ConexionDB implements AutoCloseable {
     public ConexionDB() {
         String url = "jdbc:mysql://localhost:3306/gestion";
         String username = "root";
-        String password = "22_michu";
+        String password = "22michu";
         try {
             // Load the JDBC driver
             Class.forName("com.mysql.cj.jdbc.Driver");
