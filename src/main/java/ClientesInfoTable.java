@@ -15,7 +15,7 @@ public class ClientesInfoTable {
 
         public ClientesInfoTable() {
             // Create a new JFrame
-            JFrame frame = new JFrame("Client Information");
+            JFrame frame = new JFrame("Datos de clientes");
             frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
             frame.setSize(1600, 1000);
             frame.setLayout(new BorderLayout());
@@ -23,7 +23,7 @@ public class ClientesInfoTable {
 
             //Sample client data
             //String[] columnNames = {"Client ID", "Name", "Email", "Phone"};
-
+/*
             String[] columnNames = {"id", "nombreCliente", "pais", "direccionCliente", "cpCliente", "poblacionCliente", "provinciaCliente",
                     "cifCliente", "telCliente", "emailCliente", "ibanCliente",
                     "riesgoCliente", "descuentoCliente", "observacionesCliente"};
@@ -37,7 +37,7 @@ public class ClientesInfoTable {
             };
 
 
-         /*   Clientes clientes_aux = new Clientes();
+            Clientes clientes_aux = new Clientes();
             List <Clientes> lista_clientes = clientes_aux.obtenerClientes();
             for (Clientes cliente : lista_clientes) { System.out.println(cliente); }
             System.out.println("Tamaño del array bidimensional: "+ lista_clientes.size());
@@ -49,48 +49,13 @@ public class ClientesInfoTable {
             }*/
 
 
+            Clientes cliente = new Clientes();
             // Create a DefaultTableModel and JTable
-            model = new DefaultTableModel(); //clientesArray, columnNames
+            model = cliente.obtener_clientes();
             table = new JTable(model);
             table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
-            // Establish database connection
-            try (ConexionDB cdb = new ConexionDB();
-                 Connection connection = cdb.getConnection();
-                 Statement statement = connection.createStatement()) {
-
-                // Execute SELECT query
-                String query = "SELECT * FROM clientes"; // Replace with your table name
-                ResultSet resultSet = statement.executeQuery(query);
-
-            // Get metadata to retrieve column names
-            ResultSetMetaData metaData = resultSet.getMetaData();
-            int columnCount = metaData.getColumnCount();
-            // Add column names to the model
-            Vector<String> column_Names = new Vector<>();
-            for (int i = 1; i <= columnCount; i++) {
-                column_Names.add(metaData.getColumnName(i));
-            }
-            model.setColumnIdentifiers(column_Names);
-
-
-
-            // Add rows to the model
-            while (resultSet.next()) {
-                Vector<Object> row = new Vector<>();
-                for (int i = 1; i <= columnCount; i++) {
-                    row.add(resultSet.getObject(i));
-                }
-                model.addRow(row);
-            }
-
             // Set the model to the table
             table.setModel(model);
-
-        } catch (SQLException e) {
-                e.printStackTrace();
-            }
-
 
 
 

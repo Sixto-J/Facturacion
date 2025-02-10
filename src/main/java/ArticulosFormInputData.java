@@ -101,7 +101,7 @@ public class ArticulosFormInputData extends JFrame {
 
 
 
-        submitButton = new JButton("Submit");
+        submitButton = new JButton("Crear artículo");
 
         // Add components to the frame
         add(codigoArticuloLabel);
@@ -144,8 +144,6 @@ public class ArticulosFormInputData extends JFrame {
 
 
     private void insertArticulo() {
-
-
 
         String query = "INSERT INTO codigoArticulo, codigoBarrasArticulo, descripcionArticulo, costeArticulo, margenComercialArticulo," +
                 " pvpArticulo, proveedorArticulo, stockArticulo, observacionesArticulo, familiaArticulo," +

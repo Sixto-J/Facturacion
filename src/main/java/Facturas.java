@@ -1,4 +1,7 @@
+import javax.swing.table.DefaultTableModel;
+import java.sql.*;
 import java.util.Date;
+import java.util.Vector;
 
 public class Facturas {
 
@@ -16,6 +19,8 @@ public class Facturas {
     private int formaCobroFactura;
     private Date fechaCobroFactura;
     private String observacionesFacturaClientes;
+
+    private DefaultTableModel model;
 
 
     public Facturas(double baseImponibleFacturaCliente, boolean cobradaFactura,
@@ -38,71 +43,62 @@ public class Facturas {
         this.totalFacturaCliente = totalFacturaCliente;
     }
 
-    public double getTotalFacturaCliente() {
-        return totalFacturaCliente;
+    public Facturas(){
+
     }
 
-    public String getQrFacturaCliente() {
-        return qrFacturaCliente;
-    }
-
-    public String getObservacionesFacturaClientes() {
-        return observacionesFacturaClientes;
-    }
-
-    public int getNumeroFacturaCliente() {
-        return numeroFacturaCliente;
-    }
-
-    public double getIvaFacturaCliente() {
-        return ivaFacturaCliente;
-    }
-
-    public int getIdFacturaCliente() {
-        return idFacturaCliente;
-    }
-
-    public int getIdClienteFactura() {
-        return idClienteFactura;
-    }
-
-    public String getHashFacturaCiente() {
-        return hashFacturaCiente;
-    }
-
-    public int getFormaCobroFactura() {
-        return formaCobroFactura;
-    }
-
-    public Date getFechaFacturaCliente() {
-        return fechaFacturaCliente;
-    }
-
-    public Date getFechaCobroFactura() {
-        return fechaCobroFactura;
-    }
 
     public boolean isCobradaFactura() {
         return cobradaFactura;
     }
-
-    public double getBaseImponibleFacturaCliente() {
-        return baseImponibleFacturaCliente;
-    }
+    public void crearFacturas() {} // calculo IVA y total
+    public void verFacturas() {}
 
 
-    public void crearFacturas() {
 
-        // calculo IVA y total
+    public DefaultTableModel obtener_facturas(){
 
-    }
+        // Establish database connection
+        try (ConexionDB cdb = new ConexionDB();
+             Connection connection = cdb.getConnection();
+             Statement statement = connection.createStatement()) {
 
-    public void verFacturas() {
+            model = new DefaultTableModel();
+
+            // Execute SELECT query
+            String query = "SELECT * FROM facturasClientes"; // Replace with your table name
+            ResultSet resultSet = statement.executeQuery(query);
+
+            // Get metadata to retrieve column names
+            ResultSetMetaData metaData = resultSet.getMetaData();
+            int columnCount = metaData.getColumnCount();
+            // Add column names to the model
+            Vector<String> column_Names = new Vector<>();
+            for (int i = 1; i <= columnCount; i++) {
+                column_Names.add(metaData.getColumnName(i));
+            }
+            model.setColumnIdentifiers(column_Names);
+
+
+
+            // Add rows to the model
+            while (resultSet.next()) {
+                Vector<Object> row = new Vector<>();
+                for (int i = 1; i <= columnCount; i++) {
+                    row.add(resultSet.getObject(i));
+                }
+                model.addRow(row);
+            }
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return model;
+
 
     }
 
 
 }
-
-
-

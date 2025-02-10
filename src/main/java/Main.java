@@ -103,7 +103,7 @@ public class Main extends JFrame {
         panel.add(generarFormularioArticulos);
         panel.add(verInfoArticulos);
 
-        add(panel, BorderLayout.NORTH);
+        add(panel, BorderLayout.CENTER);
     }
 
 

@@ -11,7 +11,6 @@ public class lineasFacturaFormInputData extends JFrame {
 
 
     private JTextField numeroFacturaCliente; // setted
-    String numFactura;// por parametro
 
     private JTextField idArticulo; //select
     private JTextField descripcionArticulo; // select
@@ -36,11 +35,29 @@ public class lineasFacturaFormInputData extends JFrame {
 
 
 
+
+
+
+        JLabel buscadorArticuloLabel = new JLabel("Buscar artículo");
+        JTextField buscadorArticulo = new JTextField();
+
+        String articulo_query = "SELECT idArticulo from articulos WHERE idArticulo ='" + buscadorArticulo.getText()+"';";
+
+
+
+
+
+
+
+
+
+
         // Create labels and text fields
         JLabel numeroFacturaClienteLabel = new JLabel("Número Factura de cliente");
         numeroFacturaCliente = new JTextField();
         numeroFacturaCliente.setText(numFactura);
         numeroFacturaCliente.setEnabled(false);
+
         add(numeroFacturaClienteLabel); // Add components to the frame
         add(numeroFacturaCliente);
 

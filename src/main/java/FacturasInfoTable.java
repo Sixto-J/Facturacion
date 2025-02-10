@@ -17,60 +17,27 @@ public class FacturasInfoTable {
 
     public FacturasInfoTable() {
         // Create a new JFrame
-        JFrame frame = new JFrame("Facturas");
+        JFrame frame = new JFrame("Datos de facturas");
         frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         frame.setSize(1600, 1000);
         frame.setLayout(new BorderLayout());
 
 
-        String[] columnNames = { "ID", "NumeroFactura", "FechaFactura", "IDCliente",
+ /*       String[] columnNames = { "ID", "NumeroFactura", "FechaFactura", "IDCliente",
                 "BaseImponible", "IVA", "Total", "Hash", "QR", "Cobrada", "FormaCobro",
-                "FechaCobro","Observaciones"};
+                "FechaCobro","Observaciones"};*/
+
 
 
 
         // Create a DefaultTableModel and JTable
-        model = new DefaultTableModel();
+        Facturas factura = new Facturas();
+        model = factura.obtener_facturas();
         table = new JTable(model);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
-        // Establish database connection
-        try (ConexionDB cdb = new ConexionDB();
-             Connection connection = cdb.getConnection();
-             Statement statement = connection.createStatement()) {
-
-            // Execute SELECT query
-            String query = "SELECT * FROM facturasClientes"; // Replace with your table name
-            ResultSet resultSet = statement.executeQuery(query);
-
-            // Get metadata to retrieve column names
-            ResultSetMetaData metaData = resultSet.getMetaData();
-            int columnCount = metaData.getColumnCount();
-            // Add column names to the model
-            Vector<String> column_Names = new Vector<>();
-            for (int i = 1; i <= columnCount; i++) {
-                column_Names.add(metaData.getColumnName(i));
-            }
-            model.setColumnIdentifiers(column_Names);
+        table.setModel(model);
 
 
-
-            // Add rows to the model
-            while (resultSet.next()) {
-                Vector<Object> row = new Vector<>();
-                for (int i = 1; i <= columnCount; i++) {
-                    row.add(resultSet.getObject(i));
-                }
-                model.addRow(row);
-            }
-
-            // Set the model to the table
-            table.setModel(model);
-
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
 
 
         // Add the JTable to a JScrollPane

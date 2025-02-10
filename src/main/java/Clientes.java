@@ -1,3 +1,4 @@
+import javax.swing.table.DefaultTableModel;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,7 @@ public class Clientes {
     private double riesgoCliente;
     private double descuentoCliente;
     private String observacionesCliente;
+    private DefaultTableModel model;
 
     public Clientes(int id, String nombreCliente, String direccionCliente, String cpCliente,
                     String poblacionCliente, String provinciaCliente, String paisCliente, String cifCliente,
@@ -43,28 +45,9 @@ public class Clientes {
 
     }
 
-    public int getId() {
-        return idCliente;
-    }
-    public void setId(int id) {
-        this.idCliente = idCliente;
-    }
-    public String getNombreCliente() {
-        return nombreCliente;
-    }
-    public void setNombreCliente(String nombreCliente) {
-        this.nombreCliente = nombreCliente;
-    }
-
-
-
-
-    public void CrearCliente() {
-    }
-    public void ModificarCliente() {
-    }
-    public void VerCliente() {
-    }
+    public void CrearCliente() {}
+    public void ModificarCliente() {}
+    public void VerCliente() {}
 
 
     // Override toString() method
@@ -78,7 +61,50 @@ public class Clientes {
     }
 
 
-    public List<Clientes> crearAñadirClientes() {
+    public DefaultTableModel obtener_clientes() {
+
+        // Establish database connection
+        try (ConexionDB cdb = new ConexionDB();
+             Connection connection = cdb.getConnection();
+             Statement statement = connection.createStatement()) {
+
+
+            // Create a DefaultTableModel and JTable
+            model = new DefaultTableModel(); //clientesArray, columnNames
+
+
+            // Execute SELECT query
+            String query = "SELECT * FROM clientes"; // Replace with your table name
+            ResultSet resultSet = statement.executeQuery(query);
+
+            // Get metadata to retrieve column names
+            ResultSetMetaData metaData = resultSet.getMetaData();
+            int columnCount = metaData.getColumnCount();
+            // Add column names to the model
+            Vector<String> column_Names = new Vector<>();
+            for (int i = 1; i <= columnCount; i++) {
+                column_Names.add(metaData.getColumnName(i));
+            }
+            model.setColumnIdentifiers(column_Names);
+
+
+
+            // Add rows to the model
+            while (resultSet.next()) {
+                Vector<Object> row = new Vector<>();
+                for (int i = 1; i <= columnCount; i++) {
+                    row.add(resultSet.getObject(i));
+                }
+                model.addRow(row);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return model;
+    }
+
+   /*   public List<Clientes> obtener_clientes_v1() {
         List<Clientes> lista_clientes = new ArrayList<>();
 
         try (ConexionDB cdb = new ConexionDB()) {
@@ -139,7 +165,7 @@ public class Clientes {
         return lista_clientes;
 
 
-    }
+    }*/
 
 
 }

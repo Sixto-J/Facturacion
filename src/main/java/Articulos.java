@@ -1,9 +1,9 @@
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 public class Articulos {
 
@@ -19,6 +19,9 @@ public class Articulos {
     private int stockArticulo;
     private String observacionesArticulo;
     private int familiaArticulo;
+
+    private DefaultTableModel model;
+
 
     public Articulos(int idArticulo, String codigoArticulo,
                      String codigoBarrasArticulo, String descripcionArticulo, double costeArticulo,
@@ -37,50 +40,65 @@ public class Articulos {
         this.familiaArticulo = familiaArticulo;
     }
 
+    public Articulos(){
 
-    public String getCodigoArticulo() {
-        return codigoArticulo;
-    }
-    public String getCodigoBarrasArticulo() {
-        return codigoBarrasArticulo;
-    }
-    public double getCosteArticulo() {
-        return costeArticulo;
-    }
-    public String getDescripcionArticulo() {
-        return descripcionArticulo;
-    }
-    public int getIdArticulo() {
-        return idArticulo;
-    }
-    public double getMargenComercialArticulo() {
-        return margenComercialArticulo;
-    }
-    public int getFamiliaArticulo() { return familiaArticulo;}
-    public String getObservacionesArticulo() {
-        return observacionesArticulo;
-    }
-    public int getProveedorArticulo() {
-        return proveedorArticulo;
-    }
-    public double getPvpArticulo() {
-        return pvpArticulo;
-    }
-    public int getStockArticulo() {
-        return stockArticulo;
     }
 
 
-    public void crearArticulo() {
-    }
-    public void modificarArticulo() {
-    }
-    public void verArticulo() {
-    }
+    public void crearArticulo() {}
+    public void modificarArticulo() {}
+    public void verArticulo() {}
 
 
 
-    public List<Articulos> obtenerArticulos() {
+
+
+
+    public DefaultTableModel obtener_articulos() {
+
+        // Establish database connection
+        try (ConexionDB cdb = new ConexionDB();
+             Connection connection = cdb.getConnection();
+             Statement statement = connection.createStatement()) {
+
+
+            // Create a DefaultTableModel and JTable
+            model = new DefaultTableModel(); //clientesArray, columnNames
+
+
+            // Execute SELECT query
+            String query = "SELECT * FROM articulos"; // Replace with your table name
+            ResultSet resultSet = statement.executeQuery(query);
+
+            // Get metadata to retrieve column names
+            ResultSetMetaData metaData = resultSet.getMetaData();
+            int columnCount = metaData.getColumnCount();
+            // Add column names to the model
+            Vector<String> column_Names = new Vector<>();
+            for (int i = 1; i <= columnCount; i++) {
+                column_Names.add(metaData.getColumnName(i));
+            }
+            model.setColumnIdentifiers(column_Names);
+
+
+
+            // Add rows to the model
+            while (resultSet.next()) {
+                Vector<Object> row = new Vector<>();
+                for (int i = 1; i <= columnCount; i++) {
+                    row.add(resultSet.getObject(i));
+                }
+                model.addRow(row);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return model;
+    }
+
+
+    public List<Articulos> obtener_articulos_v1(){
         List<Articulos> lista_articulos = new ArrayList<>();
         String query = "SELECT idArticulo, codigoArticulo, codigoBarrasArticulo, descripcionArticulo, costeArticulo," +
                 " margenComercialArticulo, pvpArticulo, proveedorArticulo, stockArticulo," +
@@ -132,8 +150,6 @@ public class Articulos {
 
             return lista_articulos;
         }
-
-
     }
 
 
