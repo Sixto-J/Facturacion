@@ -29,15 +29,15 @@ public class FacturasFormInputData extends JFrame {
     public FacturasFormInputData() {
 
         setTitle("Datos de la factura");
-        setSize(800, 900);
+        setSize(1200, 800);
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         setLayout(new GridBagLayout());
 
 
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.HORIZONTAL; // Fill horizontally
+        gbc.fill = GridBagConstraints.BOTH; // Fill both
         gbc.insets = new Insets(5, 20, 5, 20); // Add padding around components
-
+        //gbc.weightx=3;
 
 
 
@@ -139,75 +139,89 @@ public class FacturasFormInputData extends JFrame {
         // Add components to the frame with gbc values
         gbc.gridx = 0; gbc.gridy = 0;
         add(numeroFacturaClienteLabel, gbc);
-        gbc.gridx = 1; gbc.gridy = 0; gbc.gridwidth = 10;
+        gbc.gridx = 1; gbc.gridy = 0; gbc.gridwidth = 1;
+        numeroFacturaCliente.setPreferredSize(new Dimension(240, 40));
         add(numeroFacturaCliente, gbc);
 
         gbc.gridx = 0; gbc.gridy = 1;
         add(fechaFacturaClienteLabel, gbc);
         gbc.gridx = 1; gbc.gridy = 1;
+        fechaFacturaCliente.setPreferredSize(new Dimension(240, 40));
         add(fechaFacturaCliente, gbc);
 
         gbc.gridx = 0; gbc.gridy = 2;
         add(idClienteFacturaLabel, gbc);
         gbc.gridx = 1; gbc.gridy = 2;
+        idClienteFactura.setPreferredSize(new Dimension(240, 40));
         add(idClienteFactura, gbc);
 
         gbc.gridx = 0; gbc.gridy = 3;
         add(baseImponibleFacturaClienteLabel, gbc);
         gbc.gridx = 1; gbc.gridy = 3;
+        baseImponibleFacturaCliente.setPreferredSize(new Dimension(240, 40));
         add (baseImponibleFacturaCliente, gbc);
 
         gbc.gridx = 0; gbc.gridy = 4;
         add(ivaFacturaClienteLabel, gbc);
         gbc.gridx = 1; gbc.gridy = 4;
+        ivaFacturaCliente.setPreferredSize(new Dimension(240, 40));
         add(ivaFacturaCliente, gbc);
 
         gbc.gridx = 0; gbc.gridy = 5;
         add(totalFacturaClienteLabel, gbc);
         gbc.gridx = 1; gbc.gridy = 5;
+        totalFacturaCliente.setPreferredSize(new Dimension(240, 40));
         add(totalFacturaCliente, gbc);
 
         gbc.gridx = 0; gbc.gridy = 6;
         add(hashFacturaClienteLabel, gbc);
         gbc.gridx = 1; gbc.gridy = 6;
+        hashFacturaCliente.setPreferredSize(new Dimension(240, 40));
         add(hashFacturaCliente, gbc);
 
         gbc.gridx = 0; gbc.gridy = 7;
         add(qrFacturaClienteLabel, gbc);
         gbc.gridx = 1; gbc.gridy = 7;
+        qrFacturaCliente.setPreferredSize(new Dimension(240, 40));
         add(qrFacturaCliente, gbc);
 
         gbc.gridx = 0; gbc.gridy = 8;
         add(cobradaFacturaLabel, gbc);
         gbc.gridx = 1; gbc.gridy = 8;
+        cobradaFactura.setPreferredSize(new Dimension(240, 40));
         add(cobradaFactura, gbc);
 
         gbc.gridx = 0; gbc.gridy = 9;
         add(formaCobroFacturaLabel, gbc);
         gbc.gridx = 1; gbc.gridy = 9;
+        formaCobroFactura.setPreferredSize(new Dimension(240, 40));
         add(formaCobroFactura, gbc);
 
         gbc.gridx = 0; gbc.gridy = 10;
         add(fechaCobroFacturaLabel, gbc);
         gbc.gridx = 1; gbc.gridy = 10;
+        fechaCobroFactura.setPreferredSize(new Dimension(240, 40));
         add(fechaCobroFactura, gbc);
 
         gbc.gridx = 0; gbc.gridy = 11;
         add(observacionesLabel, gbc);
         gbc.gridx = 1; gbc.gridy = 11;
+        observacionesFacturaCliente.setPreferredSize(new Dimension(240, 40));
         add(observacionesFacturaCliente, gbc);
 
         //add(new JLabel());  Empty cell
 
 
         verLineaProductos = new JButton("Ver linea de productos");
-        gbc.gridx = 2; gbc.gridy = 12; gbc.gridwidth = 2; // Span across two columns
+        gbc.gridx = 2; gbc.gridy = 10; gbc.gridwidth = 2; // Span across two columns
         gbc.anchor = GridBagConstraints.CENTER; // Center the button
+        verLineaProductos.setPreferredSize(new Dimension(230, 40));
         add(verLineaProductos, gbc);
 
         submitButton = new JButton("Crear factura");
-        gbc.gridx = 2; gbc.gridy = 13; gbc.gridwidth = 2;
+        gbc.gridx = 2; gbc.gridy = 11; gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER; // Center the button
+        submitButton.setPreferredSize(new Dimension(230, 40));
         add(submitButton, gbc);
 
         //listener en el JFrame

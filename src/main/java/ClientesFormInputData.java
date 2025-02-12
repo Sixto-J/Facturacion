@@ -36,6 +36,7 @@ public class ClientesFormInputData extends JFrame {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL; // Fill horizontally
         gbc.insets = new Insets(5, 20, 5, 20);
+        gbc.weightx=2;
 
         // Create labels and text fields
         JLabel nombreLabel = new JLabel("Nombre");

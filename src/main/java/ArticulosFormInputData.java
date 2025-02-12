@@ -33,6 +33,7 @@ public class ArticulosFormInputData extends JFrame {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL; // Fill horizontally
         gbc.insets = new Insets(5, 25, 5, 25);
+        gbc.weightx=2;
 
 
         // Create labels and text fields
