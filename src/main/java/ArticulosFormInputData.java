@@ -25,9 +25,14 @@ public class ArticulosFormInputData extends JFrame {
     public ArticulosFormInputData() {
 
         setTitle("Formulario de Articulos");
-        setSize(1000, 1000);
+        setSize(750, 750);
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        setLayout(new GridLayout(15, 4));
+        setLayout(new GridBagLayout());
+
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL; // Fill horizontally
+        gbc.insets = new Insets(5, 25, 5, 25);
 
 
         // Create labels and text fields
@@ -48,7 +53,7 @@ public class ArticulosFormInputData extends JFrame {
 
 
         JLabel proveedorArticuloLabel = new JLabel("proveedorArticulo");
-        JLabel familiaArticuloLabel = new JLabel("familiaArticulo:");
+        JLabel familiaArticuloLabel = new JLabel("familiaArticulo");
 
         try (ConexionDB cdb = new ConexionDB();
              Connection connection = cdb.getConnection();
@@ -104,30 +109,78 @@ public class ArticulosFormInputData extends JFrame {
         submitButton = new JButton("Crear artículo");
 
         // Add components to the frame
-        add(codigoArticuloLabel);
-        add(codigoArticulo);
-        add(codigoBarrasArticuloLabel);
-        add(codigoBarrasArticulo);
-        add(descripcionArticuloLabel);
-        add(descripcionArticulo);
-        add(costeArticuloLabel);
-        add(costeArticulo);
-        add(margenComercialArticuloLabel);
-        add(margenComercialArticulo);
-        add(pvpArticuloLabel);
-        add(pvpArticulo);
-        add(proveedorArticuloLabel);
-        add(proveedorArticulo);
-        add(stockArticuloLabel);
-        add(stockArticulo);
-        add(observacionesArticuloLabel);
-        add(observacionesArticulo);
-        add(familiaArticuloLabel);
-        add(familiaArticulo);
 
+        gbc.gridx = 0; gbc.gridy = 0;
+        add(codigoArticuloLabel, gbc);
+        gbc.gridx = 1; gbc.gridy = 0; gbc.gridwidth = 20;
+        codigoArticulo.setPreferredSize(new Dimension(250, 40));
+        add(codigoArticulo, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 1;
+        add(codigoBarrasArticuloLabel,gbc);
+        gbc.gridx = 1; gbc.gridy = 1; gbc.gridwidth = 20;
+        codigoBarrasArticulo.setPreferredSize(new Dimension(250, 40));
+        add(codigoBarrasArticulo, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 2;
+        add(descripcionArticuloLabel,gbc);
+        gbc.gridx = 1; gbc.gridy = 2; gbc.gridwidth = 20;
+        descripcionArticulo.setPreferredSize(new Dimension(250, 40));
+        add(descripcionArticulo, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 3;
+        add(costeArticuloLabel,gbc);
+        gbc.gridx = 1; gbc.gridy = 3; gbc.gridwidth = 20;
+        costeArticulo.setPreferredSize(new Dimension(250, 40));
+        add(costeArticulo, gbc);
+
+
+        gbc.gridx = 0; gbc.gridy = 4;
+        add(margenComercialArticuloLabel,gbc);
+        gbc.gridx = 1; gbc.gridy = 4; gbc.gridwidth = 20;
+        margenComercialArticulo.setPreferredSize(new Dimension(250, 40));
+        add(margenComercialArticulo, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 5;
+        add(pvpArticuloLabel,gbc);
+        gbc.gridx = 1; gbc.gridy = 5; gbc.gridwidth = 20;
+        pvpArticulo.setPreferredSize(new Dimension(250, 40));
+        add(pvpArticulo, gbc);
+
+
+        gbc.gridx = 0; gbc.gridy = 6;
+        add(proveedorArticuloLabel,gbc);
+        gbc.gridx = 1; gbc.gridy = 6; gbc.gridwidth = 20;
+        proveedorArticulo.setPreferredSize(new Dimension(250, 40));
+        add(proveedorArticulo, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 7;
+        add(stockArticuloLabel,gbc);
+        gbc.gridx = 1; gbc.gridy = 7; gbc.gridwidth = 20;
+        stockArticulo.setPreferredSize(new Dimension(250, 40));
+        add(stockArticulo, gbc);
+
+
+        gbc.gridx = 0; gbc.gridy = 8;
+        add(observacionesArticuloLabel,gbc);
+        gbc.gridx = 1; gbc.gridy = 8; gbc.gridwidth = 20;
+        observacionesArticulo.setPreferredSize(new Dimension(250, 40));
+        add(observacionesArticulo, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 9;
+        add(familiaArticuloLabel,gbc);
+        gbc.gridx = 1; gbc.gridy = 9; gbc.gridwidth = 20;
+        familiaArticulo.setPreferredSize(new Dimension(250, 40));
+        add(familiaArticulo, gbc);
 
         add(new JLabel()); // Empty cell
-        add(submitButton);
+
+        gbc.gridx = 2; gbc.gridy = 10; gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER; // Center the button
+        submitButton.setPreferredSize(new Dimension(150, 40));
+        add(submitButton, gbc);
+
+
 
         // Add action listener for the submit button
         submitButton.addActionListener(new ActionListener() {

@@ -28,10 +28,14 @@ public class ClientesFormInputData extends JFrame {
     public ClientesFormInputData() {
 
         setTitle("Formulario de Clientes");
-        setSize(1000, 1000);
+        setSize(800, 800);
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        setLayout(new GridLayout(15, 4));
+        //setLayout(new GridLayout(15, 4));
+        setLayout(new GridBagLayout());
 
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL; // Fill horizontally
+        gbc.insets = new Insets(5, 20, 5, 20);
 
         // Create labels and text fields
         JLabel nombreLabel = new JLabel("Nombre");
@@ -62,39 +66,98 @@ public class ClientesFormInputData extends JFrame {
         observaciones = new JTextField();
 
 
-        submitButton = new JButton("Submit");
+        submitButton = new JButton("Crear cliente");
 
         // Add components to the frame
-        add(nombreLabel);
-        add(nombre);
-        add(paisLabel);
-        add(pais);
-        add(direccionLabel);
-        add(direccion);
-        add(cpLabel);
-        add (cp);
-        add(poblacionLabel);
-        add(poblacion);
-        add(provinciaLabel);
-        add(provincia);
-        add(CIFLabel);
-        add(CIF);
-        add(telefonoLabel);
-        add(telefono);
-        add(emailLabel);
-        add(email);
-        add(ibanLabel);
-        add(IBAN);
-        add(riesgoLabel);
-        add(riesgo);
-        add(descuentoLabel);
-        add(descuento);
-        add(observacionesLabel);
-        add(observaciones);
+
+        gbc.gridx = 0; gbc.gridy = 0;
+        add(nombreLabel, gbc);
+        gbc.gridx = 1; gbc.gridy = 0; gbc.gridwidth = 20;
+        nombre.setPreferredSize(new Dimension(250, 40));
+        add(nombre, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 1;
+        add(direccionLabel, gbc);
+        gbc.gridx = 1; gbc.gridy = 1;
+        direccion.setPreferredSize(new Dimension(250, 40));
+        add(direccion, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 2;
+        add(cpLabel, gbc);
+        gbc.gridx = 1; gbc.gridy = 2;
+        cp.setPreferredSize(new Dimension(250, 40));
+        add(cp, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 3;
+        add(poblacionLabel, gbc);
+        gbc.gridx = 1; gbc.gridy = 3;
+        poblacion.setPreferredSize(new Dimension(250, 40));
+        add (poblacion, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 4;
+        add(provinciaLabel, gbc);
+        gbc.gridx = 1; gbc.gridy = 4;
+        provincia.setPreferredSize(new Dimension(250, 40));
+        add(provincia, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 5;
+        add(paisLabel, gbc);
+        gbc.gridx = 1; gbc.gridy = 5;
+        pais.setPreferredSize(new Dimension(250, 40));
+        add(pais, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 6;
+        add(CIFLabel, gbc);
+        gbc.gridx = 1; gbc.gridy = 6;
+        CIF.setPreferredSize(new Dimension(250, 40));
+        add(CIF, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 7;
+        add(telefonoLabel, gbc);
+        gbc.gridx = 1; gbc.gridy = 7;
+        telefono.setPreferredSize(new Dimension(250, 40));
+        add(telefono, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 8;
+        add(emailLabel, gbc);
+        gbc.gridx = 1; gbc.gridy = 8;
+        email.setPreferredSize(new Dimension(250, 40));
+        add(email, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 9;
+        add(ibanLabel, gbc);
+        gbc.gridx = 1; gbc.gridy = 9;
+        IBAN.setPreferredSize(new Dimension(250, 40));
+        add(IBAN, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 10;
+        add(riesgoLabel, gbc);
+        gbc.gridx = 1; gbc.gridy = 10;
+        riesgo.setPreferredSize(new Dimension(250, 40));
+        add(riesgo, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 11;
+        add(descuentoLabel, gbc);
+        gbc.gridx = 1; gbc.gridy = 11;
+        descuento.setPreferredSize(new Dimension(250, 40));
+        add(descuento, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 12;
+        add(observacionesLabel, gbc);
+        gbc.gridx = 1; gbc.gridy = 12;
+        observaciones.setPreferredSize(new Dimension(250, 40));
+        add(observaciones, gbc);
+
 
         add(new JLabel()); // Empty cell
-        add(submitButton);
 
+        gbc.gridx = 2; gbc.gridy = 13; gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER; // Center the button
+        submitButton.setPreferredSize(new Dimension(150, 40));
+        add(submitButton, gbc);
+
+
+        //listener en el JFrame
         // Add action listener for the submit button
         submitButton.addActionListener(new ActionListener() {
             @Override
