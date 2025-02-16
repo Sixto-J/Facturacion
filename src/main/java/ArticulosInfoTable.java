@@ -38,9 +38,13 @@ public class ArticulosInfoTable {
         // Set the model to the table
         table.setModel(model);
 
+        // Add the JTable to a JScrollPane
+        JScrollPane scrollPane = new JScrollPane(table);
+        frame.add(scrollPane, BorderLayout.CENTER);
 
 
-
+        // Set the frame visibility
+        frame.setVisible(true);
 
 
         // Add a TableModelListener to handle edits
@@ -63,9 +67,9 @@ public class ArticulosInfoTable {
             }
         });
 
-        // JButton to eliminate row
 
-        // Create a delete button
+
+        // Create a delete button // JButton to eliminate row
         JButton deleteButton = new JButton("Delete Selected Row");
         deleteButton.setPreferredSize(new Dimension(120,50));
 
@@ -84,14 +88,7 @@ public class ArticulosInfoTable {
                 }
             }
         });
-
-        // Add the JTable to a JScrollPane
-        JScrollPane scrollPane = new JScrollPane(table);
-        frame.add(scrollPane, BorderLayout.CENTER);
         frame.add(deleteButton, BorderLayout.AFTER_LAST_LINE);
-
-        // Set the frame visibility
-        frame.setVisible(true);
 
     }
 

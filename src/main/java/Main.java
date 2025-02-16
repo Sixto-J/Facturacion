@@ -106,5 +106,4 @@ public class Main extends JFrame {
         add(panel, BorderLayout.CENTER);
     }
 
-
 }

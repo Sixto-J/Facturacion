@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -31,26 +32,14 @@ public class FacturasFormInputData extends JFrame {
         setTitle("Datos de la factura");
         setSize(1200, 800);
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        setLayout(new GridBagLayout());
-
-
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.BOTH; // Fill both
-        gbc.insets = new Insets(5, 20, 5, 20); // Add padding around components
-        //gbc.weightx=3;
-
-
+        //getContentPane().setLayout(new GridBagLayout());
+        setLayout(new BorderLayout());
 
         // Create labels and text fields
         JLabel numeroFacturaClienteLabel = new JLabel("Número Factura de cliente");
         numeroFacturaCliente = new JTextField();
-        //numeroFacturaCliente.setPreferredSize(new Dimension(100, 50));
-
-
         JLabel fechaFacturaClienteLabel = new JLabel("Fecha factura de cliente");
         fechaFacturaCliente = new JTextField();
-
-
 
 
         JLabel idClienteFacturaLabel = new JLabel("Id Cliente");
@@ -63,7 +52,7 @@ public class FacturasFormInputData extends JFrame {
 
             ArrayList<String> idClientes = new ArrayList<>();
 
-            while(resultSet_cliente.next()){
+            while (resultSet_cliente.next()) {
                 idClientes.add(String.valueOf(resultSet_cliente.getInt("idCliente")));
 
             }
@@ -75,11 +64,9 @@ public class FacturasFormInputData extends JFrame {
         }
 
 
-
         JLabel baseImponibleFacturaClienteLabel = new JLabel("Base Imponible");
         baseImponibleFacturaCliente = new JTextField();
         baseImponibleFacturaCliente.setEnabled(false);
-
 
 
         JLabel ivaFacturaClienteLabel = new JLabel("IVA");
@@ -92,7 +79,7 @@ public class FacturasFormInputData extends JFrame {
 
             ArrayList<String> tiposIva = new ArrayList<>();
 
-            while(resultSet_iva.next()){
+            while (resultSet_iva.next()) {
                 tiposIva.add(String.valueOf(resultSet_iva.getInt("idTipoIva")));
 
             }
@@ -104,28 +91,24 @@ public class FacturasFormInputData extends JFrame {
         }
 
 
-
         JLabel totalFacturaClienteLabel = new JLabel("Total");
         totalFacturaCliente = new JTextField();
         totalFacturaCliente.setEnabled(false);
 
         Double total;
-        if(totalFacturaCliente.isEnabled()){
+        if (totalFacturaCliente.isEnabled()) {
             total = Double.valueOf(baseImponibleFacturaCliente.getText()) * Double.valueOf(String.valueOf(ivaFacturaCliente.getSelectedItem()));
             totalFacturaCliente.setText(String.valueOf(total));
         }
-
 
 
         JLabel hashFacturaClienteLabel = new JLabel("Hash");
         hashFacturaCliente = new JTextField();
         JLabel qrFacturaClienteLabel = new JLabel("QR");
         qrFacturaCliente = new JTextField();
-
         JLabel cobradaFacturaLabel = new JLabel("Cobrada");
         String[] cobradaFacturaOptions = {"yes", "no"};
         cobradaFactura = new JComboBox<>(cobradaFacturaOptions);
-
         JLabel formaCobroFacturaLabel = new JLabel("Forma de cobro");
         formaCobroFactura = new JTextField();
         JLabel fechaCobroFacturaLabel = new JLabel("Fecha de cobro");
@@ -134,102 +117,78 @@ public class FacturasFormInputData extends JFrame {
         observacionesFacturaCliente = new JTextField();
 
 
-
-
+        GridBagConstraints gbc = new GridBagConstraints();
         // Add components to the frame with gbc values
-        gbc.gridx = 0; gbc.gridy = 0;
-        add(numeroFacturaClienteLabel, gbc);
-        gbc.gridx = 1; gbc.gridy = 0; gbc.gridwidth = 1;
-        numeroFacturaCliente.setPreferredSize(new Dimension(240, 40));
-        add(numeroFacturaCliente, gbc);
+        gbc.insets = new Insets(5, 10, 5, 10); // Add padding around components
 
-        gbc.gridx = 0; gbc.gridy = 1;
-        add(fechaFacturaClienteLabel, gbc);
-        gbc.gridx = 1; gbc.gridy = 1;
-        fechaFacturaCliente.setPreferredSize(new Dimension(240, 40));
-        add(fechaFacturaCliente, gbc);
+        JPanel formPanel = new JPanel(new GridBagLayout());
 
-        gbc.gridx = 0; gbc.gridy = 2;
-        add(idClienteFacturaLabel, gbc);
-        gbc.gridx = 1; gbc.gridy = 2;
-        idClienteFactura.setPreferredSize(new Dimension(240, 40));
-        add(idClienteFactura, gbc);
+        settingGrBLayout(formPanel,gbc, 0, 0,numeroFacturaClienteLabel);
+        settingGrBLayout(formPanel,gbc, 0, 1,fechaFacturaClienteLabel);
+        settingGrBLayout(formPanel,gbc, 0, 2,idClienteFacturaLabel);
+        settingGrBLayout(formPanel,gbc, 0, 3,baseImponibleFacturaClienteLabel);
+        settingGrBLayout(formPanel,gbc, 0, 4,ivaFacturaClienteLabel);
+        settingGrBLayout(formPanel,gbc, 0, 5,totalFacturaClienteLabel);
+        settingGrBLayout(formPanel,gbc, 0, 6,hashFacturaClienteLabel);
+        settingGrBLayout(formPanel,gbc, 0, 7,qrFacturaClienteLabel);
+        settingGrBLayout(formPanel,gbc, 0, 8,cobradaFacturaLabel);
+        settingGrBLayout(formPanel,gbc, 0, 9,formaCobroFacturaLabel);
+        settingGrBLayout(formPanel,gbc, 0, 10,fechaCobroFacturaLabel);
+        settingGrBLayout(formPanel,gbc, 0, 11,observacionesLabel);
 
-        gbc.gridx = 0; gbc.gridy = 3;
-        add(baseImponibleFacturaClienteLabel, gbc);
-        gbc.gridx = 1; gbc.gridy = 3;
-        baseImponibleFacturaCliente.setPreferredSize(new Dimension(240, 40));
-        add (baseImponibleFacturaCliente, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 4;
-        add(ivaFacturaClienteLabel, gbc);
-        gbc.gridx = 1; gbc.gridy = 4;
-        ivaFacturaCliente.setPreferredSize(new Dimension(240, 40));
-        add(ivaFacturaCliente, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 5;
-        add(totalFacturaClienteLabel, gbc);
-        gbc.gridx = 1; gbc.gridy = 5;
-        totalFacturaCliente.setPreferredSize(new Dimension(240, 40));
-        add(totalFacturaCliente, gbc);
+        gbc.ipadx=200;
+        gbc.ipady=15;
+        settingGrBLayout(formPanel,gbc, 1, 0,numeroFacturaCliente);
+        settingGrBLayout(formPanel,gbc, 1, 1,fechaFacturaCliente);
+        settingGrBLayout(formPanel,gbc, 1, 2,idClienteFactura);
+        settingGrBLayout(formPanel,gbc, 1, 3,baseImponibleFacturaCliente);
+        settingGrBLayout(formPanel,gbc, 1, 4,ivaFacturaCliente);
+        settingGrBLayout(formPanel,gbc, 1, 5,totalFacturaCliente);
+        settingGrBLayout(formPanel,gbc, 1, 6,hashFacturaCliente);
+        settingGrBLayout(formPanel,gbc, 1, 7,qrFacturaCliente);
+        settingGrBLayout(formPanel,gbc, 1, 8,cobradaFactura);
+        settingGrBLayout(formPanel,gbc, 1, 9,formaCobroFactura);
+        settingGrBLayout(formPanel,gbc, 1, 10,fechaCobroFactura);
+        settingGrBLayout(formPanel,gbc, 1, 11,observacionesFacturaCliente);
+        gbc.ipadx=0;
+        gbc.ipady=0;
 
-        gbc.gridx = 0; gbc.gridy = 6;
-        add(hashFacturaClienteLabel, gbc);
-        gbc.gridx = 1; gbc.gridy = 6;
-        hashFacturaCliente.setPreferredSize(new Dimension(240, 40));
-        add(hashFacturaCliente, gbc);
-
-        gbc.gridx = 0; gbc.gridy = 7;
-        add(qrFacturaClienteLabel, gbc);
-        gbc.gridx = 1; gbc.gridy = 7;
-        qrFacturaCliente.setPreferredSize(new Dimension(240, 40));
-        add(qrFacturaCliente, gbc);
-
-        gbc.gridx = 0; gbc.gridy = 8;
-        add(cobradaFacturaLabel, gbc);
-        gbc.gridx = 1; gbc.gridy = 8;
-        cobradaFactura.setPreferredSize(new Dimension(240, 40));
-        add(cobradaFactura, gbc);
-
-        gbc.gridx = 0; gbc.gridy = 9;
-        add(formaCobroFacturaLabel, gbc);
-        gbc.gridx = 1; gbc.gridy = 9;
-        formaCobroFactura.setPreferredSize(new Dimension(240, 40));
-        add(formaCobroFactura, gbc);
-
-        gbc.gridx = 0; gbc.gridy = 10;
-        add(fechaCobroFacturaLabel, gbc);
-        gbc.gridx = 1; gbc.gridy = 10;
-        fechaCobroFactura.setPreferredSize(new Dimension(240, 40));
-        add(fechaCobroFactura, gbc);
-
-        gbc.gridx = 0; gbc.gridy = 11;
-        add(observacionesLabel, gbc);
-        gbc.gridx = 1; gbc.gridy = 11;
-        observacionesFacturaCliente.setPreferredSize(new Dimension(240, 40));
-        add(observacionesFacturaCliente, gbc);
+        add(formPanel,BorderLayout.WEST);
 
         //add(new JLabel());  Empty cell
 
 
         verLineaProductos = new JButton("Ver linea de productos");
-        gbc.gridx = 2; gbc.gridy = 10; gbc.gridwidth = 2; // Span across two columns
-        gbc.anchor = GridBagConstraints.CENTER; // Center the button
-        verLineaProductos.setPreferredSize(new Dimension(230, 40));
-        add(verLineaProductos, gbc);
-
         submitButton = new JButton("Crear factura");
-        gbc.gridx = 2; gbc.gridy = 11; gbc.gridwidth = 2;
-        gbc.anchor = GridBagConstraints.CENTER; // Center the button
-        submitButton.setPreferredSize(new Dimension(230, 40));
-        add(submitButton, gbc);
-
-        //listener en el JFrame
 
 
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+
+        buttonPanel.add(verLineaProductos);
+
+        buttonPanel.add(submitButton);
+
+        add(buttonPanel,BorderLayout.SOUTH);
 
 
 
+        Articulos articulo = new Articulos();
+        DefaultTableModel model = articulo.obtener_articulos();
+        JTable table = new JTable(model);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        // Set the model to the table
+        table.setModel(model);
+        JScrollPane scrollPane = new JScrollPane(table);
+     /*   gbc.gridx = 3;
+        gbc.gridy = 12;
+        gbc.ipadx = 500;
+        gbc.ipady = 80; */
+        scrollPane.setPreferredSize(new Dimension(650, 332));
+
+
+        add(scrollPane, BorderLayout.EAST);
 
 
         verLineaProductos.addActionListener(new ActionListener() {
@@ -245,14 +204,13 @@ public class FacturasFormInputData extends JFrame {
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if ( !Objects.equals(totalFacturaCliente.getText(), "") && totalFacturaCliente.isEnabled()){
+                if (!Objects.equals(totalFacturaCliente.getText(), "") && totalFacturaCliente.isEnabled()) {
                     insertFactura();
-                }else{
+                } else {
                     //mensaje de error
                 }
             }
         });
-
 
         this.setVisible(true);
     }
@@ -263,7 +221,7 @@ public class FacturasFormInputData extends JFrame {
 
         String query = "INSERT INTO facturasClientes (numeroFacturaCliente, fechaFacturaCliente, idClienteFactura," +
                 " baseImponibleFacturaCliente, ivaFacturaCliente, totalFacturaCliente, hasFacturaCliente," +
-                " qrFacturaCliente, cobradaFactura, formaCobroFactura, fechaCobroFactura" +
+                " qrFacturaCliente, cobradaFactura, formaCobroFactura, fechaCobroFactura," +
                 " observacionesFacturaCliente) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (
@@ -282,7 +240,7 @@ public class FacturasFormInputData extends JFrame {
             pstmt.setString(9, String.valueOf(cobradaFactura.getSelectedItem()));
             pstmt.setString(10, formaCobroFactura.getText());
             pstmt.setDouble(11, Double.valueOf(fechaCobroFactura.getText()));
-            pstmt.setString(13, observacionesFacturaCliente.getText());
+            pstmt.setString(12, observacionesFacturaCliente.getText());
 
 
             pstmt.executeUpdate();
@@ -309,5 +267,26 @@ public class FacturasFormInputData extends JFrame {
         fechaCobroFactura.setText("");
         observacionesFacturaCliente.setText("");
     }
+
+
+    public void settingGrBLayout(JPanel formPanel, GridBagConstraints constraints, int valorx, int valory, Object o) {
+
+        // int ancho, int alto      constraints.fill = GridBagConstraints.BOTH;     Fill both
+        constraints.gridx = valorx;
+        constraints.gridy = valory;
+        if (o instanceof JTextField) {
+           // ((JTextField) o).setPreferredSize(new Dimension(ancho, alto));
+            formPanel.add((JTextField) o, constraints);
+        } else if (o instanceof JComboBox<?>) {
+            //((JComboBox<?>) o).setPreferredSize(new Dimension(ancho, alto));
+            formPanel.add((JComboBox<?>) o, constraints);
+        } else if (o instanceof JLabel) {
+            //((JLabel) o).setPreferredSize(new Dimension(ancho, alto));
+            formPanel.add((JLabel) o, constraints);
+        }
+        //constraints.gridwidth=1;
+
+    }
+
 
 }

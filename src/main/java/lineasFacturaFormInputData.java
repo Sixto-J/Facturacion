@@ -2,9 +2,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.sql.*;
+import java.util.ArrayList;
 
 
 public class lineasFacturaFormInputData extends JFrame {
@@ -44,14 +45,6 @@ public class lineasFacturaFormInputData extends JFrame {
         String articulo_query = "SELECT idArticulo from articulos WHERE idArticulo ='" + buscadorArticulo.getText()+"';";
 
 
-
-
-
-
-
-
-
-
         // Create labels and text fields
         JLabel numeroFacturaClienteLabel = new JLabel("Número Factura de cliente");
         numeroFacturaCliente = new JTextField();
@@ -62,7 +55,47 @@ public class lineasFacturaFormInputData extends JFrame {
         add(numeroFacturaCliente);
 
 
-        add(new JLabel()); // Empty cell
+
+
+
+
+        try (ConexionDB cdb = new ConexionDB();
+             Connection connection = cdb.getConnection();
+             Statement statement = connection.createStatement()) {
+
+                // Execute SELECT query
+                String query_iva = "SELECT familiaArticulo FROM articulos"; // Replace with your table name
+                ResultSet resultSet_iva = statement.executeQuery(query_iva);
+
+                ArrayList<String> tiposIva = new ArrayList<>();
+
+                while (resultSet_iva.next()) {
+                    tiposIva.add(String.valueOf(resultSet_iva.getInt("idTipoIva")));
+                }
+
+                DefaultComboBoxModel<String> familiasArticulo = new DefaultComboBoxModel<>(tiposIva.toArray(new String[0]));
+                JComboBox<String> familiasCombo = new JComboBox<>(familiasArticulo);
+
+            // Add an ItemListener to the JComboBox
+            familiasCombo.addItemListener(new ItemListener() {
+                @Override
+                public void itemStateChanged(ItemEvent e) {
+                    if (e.getStateChange() == ItemEvent.SELECTED) {
+                        // Get the selected item
+                        String selectedItem = (String) familiasCombo.getSelectedItem();
+                        // Display the selected item
+                        System.out.println("Selected: " + selectedItem);
+                    }
+                }
+            });
+
+            add(familiasCombo);
+
+        }catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+
 
 
         backButton = new JButton("Volver");
@@ -90,31 +123,16 @@ public class lineasFacturaFormInputData extends JFrame {
 
 
 
-
-
-
-
             }
         });
 
 
         add(desplegableLinea);
 
-
-
         this.setVisible(true);
 
 
-
-
-
-
     }
-
-
-
-
-
 
 
 
@@ -151,9 +169,13 @@ public class lineasFacturaFormInputData extends JFrame {
         }
     }
 
+
+
     private void clearFields() {
         numeroFacturaCliente.setText("");
 
     }
+
+
 
 }
