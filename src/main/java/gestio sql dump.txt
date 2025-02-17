@@ -6,8 +6,6 @@ SHOW TABLES FROM gestion;
 DROP DATABASE gestion;
 DROP TABLE IF EXISTS clientes;
 
-INSERT INTO clientes (nombreCliente, direccionCliente, cpCliente, poblacionCliente, provinciaCliente, paisCliente, cifCliente, telCliente, emailCliente, ibanCliente, riesgoCliente, descuentoCliente, observacionesCliente)
-VALUES ('Tom B. Erichsen', 'Cardenal ReigSkagen 21', '07005', 'Palma', 'Stavanger', 'Norway', '12033440K', '9791277377', 'miemail@gmail.com', 'IBAN-02', 80, 20, 'Falta pagar la última cuota');
 
 SELECT * FROM clientes;
 
@@ -19,9 +17,9 @@ idFacturaCliente INT AUTO_INCREMENT PRIMARY KEY,
 numeroFacturaCliente INT NOT NULL UNIQUE,
 fechaFacturaCliente DATE NOT NULL,
 idClienteFactura INT NOT NULL,
-baseImponibleFacturaCliente DECIMAL(10,10) NOT NULL,
-ivaFacturaCliente DECIMAL(5,5) NOT NULL,
-totalFacturaCliente DECIMAL(10,10) NOT NULL,
+baseImponibleFacturaCliente DECIMAL(20,10) NOT NULL,
+ivaFacturaCliente DECIMAL(4,2) NOT NULL,
+totalFacturaCliente DECIMAL(20,10) NOT NULL,
 hashFacturaCiente VARCHAR(512),
 qrFacturaCliente VARCHAR(4256),
 cobradaFactura BOOLEAN NOT NULL,
@@ -124,7 +122,7 @@ observacionesCliente TEXT
 -- Tabla: tiposIVA
 CREATE TABLE IF NOT EXISTS tiposIva (
 idTipoIva INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-iva DECIMAL(10,10) NOT NULL,
+iva DECIMAL(4,2) NOT NULL,
 observacionesTipoIva TEXT
 );
 
@@ -164,3 +162,23 @@ observacionesProveedor TEXT
 );
 
 SHOW TABLES;
+
+
+
+
+-- inserts
+INSERT INTO clientes (nombreCliente, direccionCliente, cpCliente, poblacionCliente, provinciaCliente, paisCliente, cifCliente, telCliente, emailCliente, ibanCliente, riesgoCliente, descuentoCliente, observacionesCliente)
+VALUES ('Tom B. Erichsen', 'Cardenal ReigSkagen 21', '07005', 'Palma', 'Stavanger', 'Norway', '12033440K', '9791277377', 'miemail@gmail.com', 'IBAN-02', 80, 20, 'Falta pagar la última cuota');
+
+
+INSERT INTO tiposIVA(iva,observacionesTipoIva) VALUES (21.0,'General');
+INSERT INTO tiposIVA(iva,observacionesTipoIva) VALUES (10.0,'Reducido');
+INSERT INTO tiposIVA(iva,observacionesTipoIva) VALUES (4.0,'Superreducido');
+
+
+INSERT INTO familiaArticulos (codigoFamiliaArticulos, denominacionFamilias ) VALUES ('01','Material Oficina');
+INSERT INTO familiaArticulos (codigoFamiliaArticulos, denominacionFamilias ) VALUES ('02','Logistica');
+
+
+INSERT INTO proveedores(nombreProveedor, direccionProveedor, cpProveedor, poblacionProveedor, provinciaProveedor, paisProveedor, cifProveedor, telProveedor, emailProveedor, ibanProveedor, riesgoProveedor, descuentoProveedor, observacionesProveedor)
+VALUES ('Pepe Blanco','Olmos 34','07005','Palma','Balears','España','00000000E','971223344','pepe_blanco@gmail.com','IBAN-2',50,30,'Los pagos están al día');

@@ -158,7 +158,7 @@ public class Main extends JFrame {
                 new ArticulosInfoTable();
             }
             if(source.getText().equals("ListadoProveedores")){
-                //new ProveedoresInfoTable();
+                new ProveedoresInfoTable();
             }
             if(source.getText().equals("ListadoTiposIVA")){
                 //new TiposIVAInfoTable();
