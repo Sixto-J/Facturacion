@@ -143,7 +143,7 @@ public class Main extends JFrame {
                 new ArticulosFormInputData();
             }
             if(source.getText().equals("Proveedores")){
-                //new ProveedoresFormInputData();
+                new ProveedoresFormInputData();
             }
             if(source.getText().equals("TiposIVA")){
                 //new TiposIVAFormInputData();

@@ -1,50 +1,39 @@
 
 import javax.swing.*;
-        import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-        import java.awt.event.ActionEvent;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.*;
-import java.util.Vector;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
-public class ArticulosInfoTable {
+
+
+public class ProveedoresInfoTable {
 
     private DefaultTableModel model;
     private JTable table;
 
-    public ArticulosInfoTable() {
-
+    public ProveedoresInfoTable() {
         // Create a new JFrame
-        JFrame frame = new JFrame("Datos de artículos");
+        JFrame frame = new JFrame("Datos de proveedores");
         frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         frame.setSize(1600, 1000);
         frame.setLayout(new BorderLayout());
-
-/*
-        String[] columnNames = {"idArticulo", "codigoArticulo", "codigoBarrasArticulo", "descripcionArticulo",
-                "costeArticulo", "margenComercialArticulo", "pvpArticulo", "proveedorArticulo",
-                "stockArticulo", "observacionesArticulo", "familiaArticulo"};*/
+        
 
 
-
-
-
-        Articulos articulo = new Articulos();
-        model = articulo.obtener_articulos();
+        Proveedores proveedor = new Proveedores();
+        // Create a DefaultTableModel and JTable
+        model = proveedor.obtener_proveedores();
         table = new JTable(model);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         // Set the model to the table
         table.setModel(model);
 
-        // Add the JTable to a JScrollPane
-        JScrollPane scrollPane = new JScrollPane(table);
-        frame.add(scrollPane, BorderLayout.CENTER);
-
-
-        // Set the frame visibility
-        frame.setVisible(true);
 
 
         // Add a TableModelListener to handle edits
@@ -56,38 +45,21 @@ public class ArticulosInfoTable {
                     int row = e.getFirstRow();
                     int column = e.getColumn();
 
+                    if (column == 0 | column == 7){
 
-                    int[] numbers = {3, 4, 5, 6, 8, 9}; // Example array of numbers
-                    int valueToCheck = column; // The value you want to check
+                        JOptionPane.showMessageDialog(null,
+                                "No se puede actualizar este campo!\nPrueba a cambiar campos que no sean CIF o el id del proveedor",
+                                "Information",
+                                JOptionPane.INFORMATION_MESSAGE);
 
-                    boolean found = false; // Flag to indicate if the value is found
+                    }else {
+                        Object newValue = model.getValueAt(row, column);
+                        int id = (int) table.getValueAt(row, 0);
 
-                    // Loop through the array to check for the value
-                    for (int number : numbers) {
-                        if (number == valueToCheck) {
-                            found = true; // Set the flag to true if a match is found
-                            break; // Exit the loop early since we found a match
-                        }
+                        updateRowDatabase(id, column, newValue);
+
+                        System.out.println("Row " + row + " Column " + column + " edited. New value: " + newValue);
                     }
-
-
-                       if(found){
-
-                           Object newValue = model.getValueAt(row, column);
-                           int id = (int) table.getValueAt(row, 0);
-
-                           updateRowDatabase(id, column, newValue);
-
-
-                       }else{
-                           JOptionPane.showMessageDialog(null,
-                                   "No se puede actualizar este campo!\nPrueba a cambiar el stock, pvp, observaciones o coste",
-                                   "Information",
-                                   JOptionPane.INFORMATION_MESSAGE);
-                       }
-
-                    //System.out.println("Row " + row + " Column " + column + " edited. New value: " + newValue);
-                    // Trigger any additional action here
 
                 }
             }
@@ -95,7 +67,8 @@ public class ArticulosInfoTable {
 
 
 
-        // Create a delete button // JButton to eliminate row
+
+        // JButton to eliminate row // Create a delete button
         JButton deleteButton = new JButton("Delete Selected Row");
         deleteButton.setPreferredSize(new Dimension(120,50));
 
@@ -105,44 +78,61 @@ public class ArticulosInfoTable {
                 int selectedRow = table.getSelectedRow();
                 if (selectedRow != -1) {
                     int id = (int) model.getValueAt(selectedRow, 0); // Assuming the first column is the ID
-
                     deleteRowFromDatabase(id);
-
                     model.removeRow(selectedRow); // Remove from the table model
                 } else {
                     JOptionPane.showMessageDialog(frame, "Please select a row to delete.");
                 }
             }
         });
+        
+        
+        // Incluir un boton para eliminar el proveedor
         frame.add(deleteButton, BorderLayout.AFTER_LAST_LINE);
+
+
+
+        // Add the JTable to a JScrollPane
+        JScrollPane scrollPane = new JScrollPane(table);
+        frame.add(scrollPane, BorderLayout.CENTER);
+
+
+        // Set the frame visibility
+        frame.setVisible(true);
 
     }
 
     private static void updateRowDatabase(int id, int column, Object newValue) {
         String columnName = "";
         switch (column) {
+            case 1:
+                columnName = "nombreProveedor";
+                break;
+            case 2:
+                columnName = "direccionProveedor";
+                break;
             case 3:
-                columnName = "descripcionArticulo";
+                columnName = "cpProveedor";
                 break;
             case 4:
-                columnName = "costeArticulo";
+                columnName = "poblacionProveedor";
                 break;
             case 5:
-                columnName = "margenComercialArticulo";
+                columnName = "provinciaProveedor";
                 break;
             case 6:
-                columnName = "pvpArticulo";
+                columnName = "paisProveedor";
                 break;
 
             case 8:
-                columnName = "stockArticulo";
+                columnName = "telProveedor";
                 break;
             case 9:
-                columnName = "observacionesArticulo";
+                columnName = "emailProveedor";
                 break;
         }
 
-        String updateQuery = "UPDATE articulos SET " + columnName + " = ? WHERE id = ?"; // Replace with your table name
+        String updateQuery = "UPDATE proveedores SET " + columnName + " = ? WHERE id = ?"; // Replace with your table name
 
         try (
                 ConexionDB cdb = new ConexionDB();
@@ -164,7 +154,7 @@ public class ArticulosInfoTable {
 
 
     private static void deleteRowFromDatabase(int id) {
-        String deleteQuery = "DELETE FROM articulos WHERE id = ?"; // Replace with your table name
+        String deleteQuery = "DELETE FROM proveedores WHERE id = ?"; // Replace with your table name
 
         try (ConexionDB cdb = new ConexionDB();
              Connection connect = cdb.getConnection();
@@ -182,7 +172,6 @@ public class ArticulosInfoTable {
             e.printStackTrace();
         }
     }
-
 
 
 }

@@ -11,7 +11,13 @@ import java.util.ArrayList;
 public class lineasFacturaFormInputData extends JFrame {
 
 
-    private JTextField numeroFacturaCliente; // setted
+    private JComboBox familiasCombo;
+    private JComboBox codigosCombo;
+    private JButton desplegableLinea;
+    private JLabel buscadorFamiliasLabel;
+    private JLabel buscadorCodigoArticuloLabel;
+    private JLabel numeroFacturaClienteLabel;
+    private JLabel numeroFacturaCliente;
 
     private JTextField idArticulo; //select
     private JTextField descripcionArticulo; // select
@@ -20,7 +26,6 @@ public class lineasFacturaFormInputData extends JFrame {
     private JTextField ivaArticulo; // select
     private JTextField idProveedorArticulo; // select
     private JTextField nombreProveedorArticulo; // select
-
     private JLabel familiaArticuloLabel; //select
     private JLabel codigoArticuloLabel; // select
 
@@ -35,28 +40,25 @@ public class lineasFacturaFormInputData extends JFrame {
         setTitle("Lineas de la factura");
         setSize(1000, 900);
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        setLayout(new GridLayout(15, 4));
+        setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.BOTH;
 
 
 
 
+         buscadorFamiliasLabel = new JLabel("Indica familia del artículo");
+         buscadorCodigoArticuloLabel = new JLabel("Indica el codigo del artículo");
 
 
-        JLabel buscadorArticuloLabel = new JLabel("Buscar artículo");
-        JTextField buscadorArticulo = new JTextField();
 
-        String articulo_query = "SELECT idArticulo from articulos WHERE idArticulo ='" + buscadorArticulo.getText()+"';";
+        //String articulo_query = "SELECT idArticulo from articulos WHERE idArticulo ='" + buscadorArticulo.getText() + "';";
 
 
         // Create labels and text fields
-        JLabel numeroFacturaClienteLabel = new JLabel("Número Factura de cliente");
-        numeroFacturaCliente = new JTextField();
+        numeroFacturaClienteLabel = new JLabel("Número Factura de cliente:");
+        numeroFacturaCliente = new JLabel();
         numeroFacturaCliente.setText(numFactura);
-        numeroFacturaCliente.setEnabled(false);
-
-        add(numeroFacturaClienteLabel); // Add components to the frame
-        add(numeroFacturaCliente);
-
 
 
 
@@ -76,14 +78,12 @@ public class lineasFacturaFormInputData extends JFrame {
                 tiposFamilia.add(String.valueOf(resultSet_familia.getString("denominacionFamilias")));
             }
 
+
             DefaultComboBoxModel<String> familiasArticulo = new DefaultComboBoxModel<>(tiposFamilia.toArray(new String[0]));
-            JComboBox familiasCombo = new JComboBox<>(familiasArticulo);
 
+             familiasCombo = new JComboBox<>(familiasArticulo);
 
-
-
-
-            JComboBox codigosCombo = new JComboBox<>();
+             codigosCombo = new JComboBox<>();
 
             // Add an ItemListener to the JComboBox
             familiasCombo.addItemListener(new ItemListener() {
@@ -113,8 +113,7 @@ public class lineasFacturaFormInputData extends JFrame {
                             DefaultComboBoxModel<String> codigoArticulosModel = new DefaultComboBoxModel<>(codigoArticulos.toArray(new String[0]));
 
 
-                           codigosCombo.setModel(codigoArticulosModel);
-
+                            codigosCombo.setModel(codigoArticulosModel);
 
 
                         } catch (SQLException ex) {
@@ -125,97 +124,106 @@ public class lineasFacturaFormInputData extends JFrame {
 
             });
 
-            add(familiasCombo);
-            add(codigosCombo);
 
 
-
-
-        }catch (SQLException e) {
-         e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
 
+        backButton = new JButton("Volver");
+        backButton.setPreferredSize(new Dimension(100, 50));
 
+        // Add action listener for the submit button
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
 
-            backButton = new JButton("Volver");
+                //insertLinea();
 
-            // Add action listener for the submit button
-            backButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-
-                    insertLinea();
-
-                }
-
-            });
-
-            add(backButton);
-
-
-
-            JButton desplegableLinea;
-            desplegableLinea = new JButton("Añadir producto");
-            desplegableLinea.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-
-
-
-                }
-            });
-
-
-            add(desplegableLinea);
-
-            this.setVisible(true);
-
-
-        }
-
-
-
-        private void insertLinea() {
-
-
-
-            String query = "INSERT INTO facturasClientes (idLineaFacturaCliente, numeroFacturaCliente, idArticulo," +
-                    " descripcionArticulo, codigoArticulo, pvpArticulo, ivaArticulo," +
-                    " idProveedorArticulo, nombreProveedorArticulo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-            try (
-                    ConexionDB cdb = new ConexionDB();
-                    Connection conn = cdb.getConnection();
-                    PreparedStatement pstmt = conn.prepareStatement(query)) {
-
-                pstmt.setInt(1, Integer.valueOf(numeroFacturaCliente.getText()));
-                pstmt.setInt(2, Integer.valueOf(idArticulo.getText()));
-                pstmt.setString(3, descripcionArticulo.getText());
-                pstmt.setString(4, codigoArticulo.getText());
-                pstmt.setDouble(5, Double.valueOf(pvpArticulo.getText()));
-                pstmt.setDouble(6, Double.valueOf(ivaArticulo.getText()));
-                pstmt.setInt(7, Integer.valueOf(idProveedorArticulo.getText()));
-                pstmt.setString(8, nombreProveedorArticulo.getText());
-
-
-                pstmt.executeUpdate();
-
-                JOptionPane.showMessageDialog(this, "Customer added successfully!");
-                clearFields();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Error adding customer: " + ex.getMessage());
             }
-        }
+
+        });
 
 
 
-        private void clearFields() {
-            numeroFacturaCliente.setText("");
 
-        }
 
+
+        desplegableLinea = new JButton("Añadir linea de producto");
+        desplegableLinea.setPreferredSize(new Dimension(100, 50));
+        desplegableLinea.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+
+            }
+        });
+
+        // Add components to the frame
+        gbc.gridx = 0; gbc.gridy=0;
+        add(numeroFacturaClienteLabel,gbc);
+        gbc.gridx = 0; gbc.gridy=1;
+        add(buscadorFamiliasLabel,gbc);
+        gbc.gridx = 0; gbc.gridy=2;
+        add(buscadorCodigoArticuloLabel,gbc);
+
+        gbc.gridx = 1; gbc.gridy=0;
+        add(numeroFacturaCliente,gbc);
+        gbc.gridx = 1; gbc.gridy=1;
+        add(familiasCombo,gbc);
+        gbc.gridx = 1; gbc.gridy=2;
+        add(codigosCombo,gbc);
+        gbc.gridx=0; gbc.gridy=3;
+        add(backButton, gbc);
+        gbc.gridx=1; gbc.gridy=3;
+        add(desplegableLinea,gbc);
+
+        pack();
+        setLocationRelativeTo(null);
+        this.setVisible(true);
 
 
     }
+
+
+    private void insertLinea() {
+
+
+        String query = "INSERT INTO facturasClientes (idLineaFacturaCliente, numeroFacturaCliente, idArticulo," +
+                " descripcionArticulo, codigoArticulo, pvpArticulo, ivaArticulo," +
+                " idProveedorArticulo, nombreProveedorArticulo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try (
+                ConexionDB cdb = new ConexionDB();
+                Connection conn = cdb.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setInt(1, Integer.valueOf(numeroFacturaCliente.getText()));
+            pstmt.setInt(2, Integer.valueOf(idArticulo.getText()));
+            pstmt.setString(3, descripcionArticulo.getText());
+            pstmt.setString(4, codigoArticulo.getText());
+            pstmt.setDouble(5, Double.valueOf(pvpArticulo.getText()));
+            pstmt.setDouble(6, Double.valueOf(ivaArticulo.getText()));
+            pstmt.setInt(7, Integer.valueOf(idProveedorArticulo.getText()));
+            pstmt.setString(8, nombreProveedorArticulo.getText());
+
+
+            pstmt.executeUpdate();
+
+            JOptionPane.showMessageDialog(this, "Customer added successfully!");
+            clearFields();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error adding customer: " + ex.getMessage());
+        }
+    }
+
+
+    private void clearFields() {
+        numeroFacturaCliente.setText("");
+
+    }
+
+
+}

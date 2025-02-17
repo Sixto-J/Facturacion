@@ -6,7 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class ClientesFormInputData extends JFrame {
+public class ProveedoresFormInputData extends JFrame {
 
     private JTextField nombre;
     private JTextField direccion;
@@ -25,9 +25,9 @@ public class ClientesFormInputData extends JFrame {
     private JButton submitButton;
 
 
-    public ClientesFormInputData() {
+    public ProveedoresFormInputData() {
 
-        setTitle("Formulario de Clientes");
+        setTitle("Formulario de Proveedores");
         setSize(800, 800);
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         //setLayout(new GridLayout(15, 4));
@@ -67,7 +67,7 @@ public class ClientesFormInputData extends JFrame {
         observaciones = new JTextField();
 
 
-        submitButton = new JButton("Crear cliente");
+        submitButton = new JButton("Crear Proveedor");
 
         // Add components to the frame
 
@@ -163,7 +163,7 @@ public class ClientesFormInputData extends JFrame {
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                insertCustomer();
+                insertProveedor();
             }
         });
 
@@ -173,19 +173,21 @@ public class ClientesFormInputData extends JFrame {
 
 
 
-    private void insertCustomer() {
+    private void insertProveedor() {
 
 
 
-        String query = "INSERT INTO clientes (nombreCliente, direccionCliente, cpCliente, poblacionCliente," +
-                " provinciaCliente, paisCliente, cifCliente, telCliente, emailCliente," +
-                " ibanCliente, riesgoCliente, descuentoCliente," +
-                " observacionesCliente) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO proveedores (nombreProveedor, direccion, cpProveedor, poblacionProveedor," +
+                " provinciaProveedor, paisProveedor, cifProveedor, telProveedor, emailProveedor," +
+                " ibanProveedor, riesgoProveedor, descuentoProveedor," +
+                " observacionesProveedor) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        
+
 
         try (
                 ConexionDB cdb = new ConexionDB();
                 Connection conn = cdb.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+                PreparedStatement pstmt = conn.prepareStatement(query)) {
 
             pstmt.setString(1, nombre.getText());
             pstmt.setString(2, pais.getText());
@@ -204,11 +206,11 @@ public class ClientesFormInputData extends JFrame {
 
             pstmt.executeUpdate();
 
-            JOptionPane.showMessageDialog(this, "Customer added successfully!");
+            JOptionPane.showMessageDialog(this, "Provider added successfully!");
             clearFields();
         } catch (SQLException ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error adding customer: " + ex.getMessage());
+            JOptionPane.showMessageDialog(this, "Error adding provider: " + ex.getMessage());
         }
     }
 

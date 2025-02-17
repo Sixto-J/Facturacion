@@ -135,7 +135,7 @@ public class FacturasFormInputData extends JFrame {
 
         GridBagConstraints gbc = new GridBagConstraints();
         // Add components to the frame with gbc values
-        gbc.insets = new Insets(5, 10, 5, 10); // Add padding around components
+        gbc.insets = new Insets(5, 10, 2, 10); // Add padding around components
 
         JPanel formPanel = new JPanel(new GridBagLayout());
 
@@ -201,7 +201,7 @@ public class FacturasFormInputData extends JFrame {
         gbc.gridy = 12;
         gbc.ipadx = 500;
         gbc.ipady = 80; */
-        scrollPane.setPreferredSize(new Dimension(650, 332));
+        scrollPane.setPreferredSize(new Dimension(750, 332));
 
 
         add(scrollPane, BorderLayout.EAST);
@@ -228,6 +228,9 @@ public class FacturasFormInputData extends JFrame {
             }
         });
 
+
+        pack();
+        setLocationRelativeTo(null);
         this.setVisible(true);
     }
 

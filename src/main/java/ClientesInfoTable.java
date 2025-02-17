@@ -6,7 +6,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
-import java.util.Vector;
+
 
 public class ClientesInfoTable {
 
@@ -19,34 +19,6 @@ public class ClientesInfoTable {
             frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
             frame.setSize(1600, 1000);
             frame.setLayout(new BorderLayout());
-
-
-            //Sample client data
-            //String[] columnNames = {"Client ID", "Name", "Email", "Phone"};
-/*
-            String[] columnNames = {"id", "nombreCliente", "pais", "direccionCliente", "cpCliente", "poblacionCliente", "provinciaCliente",
-                    "cifCliente", "telCliente", "emailCliente", "ibanCliente",
-                    "riesgoCliente", "descuentoCliente", "observacionesCliente"};
-
-
-            Object[][] data = {
-                    {1, "John Doe", "john@example.com", "123-456-7890"},
-                    {2, "Jane Smith", "jane@example.com", "098-765-4321"},
-                    {3, "Alice Johnson", "alice@example.com", "555-123-4567"},
-                    {4, "Bob Brown", "bob@example.com", "444-987-6543"}
-            };
-
-
-            Clientes clientes_aux = new Clientes();
-            List <Clientes> lista_clientes = clientes_aux.obtenerClientes();
-            for (Clientes cliente : lista_clientes) { System.out.println(cliente); }
-            System.out.println("Tamaño del array bidimensional: "+ lista_clientes.size());
-
-            // Convert List<String> to String[][]
-            String[][] clientesArray = new String[lista_clientes.size()][1]; // 2D array with 1 column
-            for (int i = 0; i < lista_clientes.size(); i++) {
-                clientesArray[i][0] = lista_clientes.get(i).toString(); // Assign each customer to a row
-            }*/
 
 
             Clientes cliente = new Clientes();
@@ -84,14 +56,9 @@ public class ClientesInfoTable {
                             System.out.println("Row " + row + " Column " + column + " edited. New value: " + newValue);
                         }
 
-
-                        // Trigger any additional action here
-                      // String query = "UPDATE clientes SET ContactName =" + newValue +",  City = 'Frankfurt'" +
-                      //         "  WHERE CustomerID = 1;";
                     }
                 }
             });
-
 
 
 
@@ -114,12 +81,9 @@ public class ClientesInfoTable {
                     }
                 }
             });
+
             // Incluir un boton para eliminar el cliente (opcional)
             //frame.add(deleteButton, BorderLayout.AFTER_LAST_LINE);
-
-
-
-
 
 
             // Add the JTable to a JScrollPane
@@ -153,14 +117,24 @@ public class ClientesInfoTable {
             case 6:
                 columnName = "paisCliente";
                 break;
-            case 7:
-                columnName = "cifCliente";
-                break;
+
             case 8:
                 columnName = "telCliente";
                 break;
             case 9:
                 columnName = "emailCliente";
+                break;
+            case 10:
+                columnName = "ibanCliente";
+                break;
+            case 11:
+                columnName ="riesgoCliente";
+                break;
+            case 12:
+                columnName = "descuentoCliente";
+                break;
+            case 13:
+                columnName = "observacionesCliente";
                 break;
         }
 
@@ -206,5 +180,33 @@ public class ClientesInfoTable {
     }
 
 
-
     }
+
+            /*
+            Sample client data
+            String[] columnNames = {"Client ID", "Name", "Email", "Phone"};
+
+            String[] columnNames = {"id", "nombreCliente", "pais", "direccionCliente", "cpCliente",
+             "poblacionCliente", "provinciaCliente",
+                    "cifCliente", "telCliente", "emailCliente", "ibanCliente",
+                    "riesgoCliente", "descuentoCliente", "observacionesCliente"};
+            Object[][] data = {
+                    {1, "John Doe", "john@example.com", "123-456-7890"},
+                    {2, "Jane Smith", "jane@example.com", "098-765-4321"},
+                    {3, "Alice Johnson", "alice@example.com", "555-123-4567"},
+                    {4, "Bob Brown", "bob@example.com", "444-987-6543"}
+            };
+            Clientes clientes_aux = new Clientes();
+            List <Clientes> lista_clientes = clientes_aux.obtenerClientes();
+            for (Clientes cliente : lista_clientes) { System.out.println(cliente); }
+            System.out.println("Tamaño del array bidimensional: "+ lista_clientes.size());
+
+            // Convert List<String> to String[][]
+            String[][] clientesArray = new String[lista_clientes.size()][1]; // 2D array with 1 column
+            for (int i = 0; i < lista_clientes.size(); i++) {
+                clientesArray[i][0] = lista_clientes.get(i).toString(); // Assign each customer to a row
+            }
+
+            Trigger any additional action here
+            String query = "UPDATE clientes SET ContactName =" + newValue +",  City = 'Frankfurt'" +
+            "  WHERE CustomerID = 1;"; */
