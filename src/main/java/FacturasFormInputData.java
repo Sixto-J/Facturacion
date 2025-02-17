@@ -4,15 +4,19 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
+
 import java.util.Objects;
 
 
 public class FacturasFormInputData extends JFrame {
 
     private JTextField numeroFacturaCliente;
-    private JTextField fechaFacturaCliente;
+
     private JComboBox idClienteFactura;
+    private JSpinner fechaFacturaCliente;
     private JTextField baseImponibleFacturaCliente;
     private JComboBox ivaFacturaCliente;
     private JTextField totalFacturaCliente;
@@ -20,11 +24,13 @@ public class FacturasFormInputData extends JFrame {
     private JTextField qrFacturaCliente;
     private JComboBox cobradaFactura;
     private JTextField formaCobroFactura;
-    private JTextField fechaCobroFactura;
+    private JSpinner fechaCobroFactura;
     private JTextField observacionesFacturaCliente;
 
     private JButton submitButton;
     private JButton verLineaProductos;
+
+    LocalDate currentDate = LocalDate.now();
 
 
     public FacturasFormInputData() {
@@ -38,8 +44,21 @@ public class FacturasFormInputData extends JFrame {
         // Create labels and text fields
         JLabel numeroFacturaClienteLabel = new JLabel("Número Factura de cliente");
         numeroFacturaCliente = new JTextField();
+
+
+
         JLabel fechaFacturaClienteLabel = new JLabel("Fecha factura de cliente");
-        fechaFacturaCliente = new JTextField();
+        // Create a Spinner for date input
+        SpinnerDateModel model1 = new SpinnerDateModel();
+        fechaFacturaCliente = new JSpinner(model1);
+        JSpinner.DateEditor editor = new JSpinner.DateEditor(fechaFacturaCliente, "yyyy-MM-dd");
+        fechaFacturaCliente.setEditor(editor);
+
+        JLabel fechaCobroFacturaLabel = new JLabel("Fecha de cobro");
+        SpinnerDateModel model2 = new SpinnerDateModel();
+        fechaCobroFactura = new JSpinner(model2);
+        JSpinner.DateEditor editor2 = new JSpinner.DateEditor(fechaCobroFactura, "yyyy-MM-dd");
+        fechaCobroFactura.setEditor(editor2);
 
 
         JLabel idClienteFacturaLabel = new JLabel("Id Cliente");
@@ -111,11 +130,8 @@ public class FacturasFormInputData extends JFrame {
         cobradaFactura = new JComboBox<>(cobradaFacturaOptions);
         JLabel formaCobroFacturaLabel = new JLabel("Forma de cobro");
         formaCobroFactura = new JTextField();
-        JLabel fechaCobroFacturaLabel = new JLabel("Fecha de cobro");
-        fechaCobroFactura = new JTextField();
         JLabel observacionesLabel = new JLabel("Observaciones");
         observacionesFacturaCliente = new JTextField();
-
 
         GridBagConstraints gbc = new GridBagConstraints();
         // Add components to the frame with gbc values
@@ -230,7 +246,7 @@ public class FacturasFormInputData extends JFrame {
                 PreparedStatement pstmt = conn.prepareStatement(query)) {
 
             pstmt.setString(1, numeroFacturaCliente.getText());
-            pstmt.setString(2, fechaFacturaCliente.getText());
+            pstmt.setDate(2, (Date) fechaFacturaCliente.getValue());
             pstmt.setString(3, String.valueOf(idClienteFactura.getSelectedItem()));
             pstmt.setString(4, baseImponibleFacturaCliente.getText());
             pstmt.setString(5, String.valueOf(ivaFacturaCliente.getSelectedItem()));
@@ -239,7 +255,7 @@ public class FacturasFormInputData extends JFrame {
             pstmt.setString(8, qrFacturaCliente.getText());
             pstmt.setString(9, String.valueOf(cobradaFactura.getSelectedItem()));
             pstmt.setString(10, formaCobroFactura.getText());
-            pstmt.setDouble(11, Double.valueOf(fechaCobroFactura.getText()));
+            pstmt.setDate(11, (Date) fechaCobroFactura.getValue());
             pstmt.setString(12, observacionesFacturaCliente.getText());
 
 
@@ -255,7 +271,7 @@ public class FacturasFormInputData extends JFrame {
 
     private void clearFields() {
         numeroFacturaCliente.setText("");
-        fechaFacturaCliente.setText("");
+        fechaFacturaCliente.setValue(currentDate);
         idClienteFactura.setSelectedIndex(0);
         baseImponibleFacturaCliente.setText("");
         ivaFacturaCliente.setSelectedIndex(0);
@@ -264,7 +280,7 @@ public class FacturasFormInputData extends JFrame {
         qrFacturaCliente.setText("");
         cobradaFactura.setSelectedIndex(0);
         formaCobroFactura.setText("");
-        fechaCobroFactura.setText("");
+        fechaCobroFactura.setValue(currentDate);
         observacionesFacturaCliente.setText("");
     }
 
@@ -283,6 +299,8 @@ public class FacturasFormInputData extends JFrame {
         } else if (o instanceof JLabel) {
             //((JLabel) o).setPreferredSize(new Dimension(ancho, alto));
             formPanel.add((JLabel) o, constraints);
+        } else if(o instanceof JSpinner){
+            formPanel.add((JSpinner) o, constraints);
         }
         //constraints.gridwidth=1;
 

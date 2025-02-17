@@ -114,17 +114,8 @@ public class Main extends JFrame {
         //verInfoClientes = new JButton("InfoClientes");
         //verInfoArticulos = new JButton("InfoArticulos");
         //verFacturas = new JButton("InfoFacturas");
+        //generateFactura = new JButton("Generar Factura");
 
-
-        generateFactura = new JButton("Generar Factura");
-        generateFactura.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                //generateXML();
-                new FacturasFormInputData();
-            }
-        });
 
       /*  panel.add(generateFactura); panel.add(verFacturas); panel.add(generarFormularioClientes);
        panel.add(verInfoClientes); panel.add(generarFormularioArticulos); panel.add(verInfoArticulos);*/
@@ -178,6 +169,11 @@ public class Main extends JFrame {
             if(source.getText().equals("Ver Factura")){
                 new FacturasInfoTable();
             }
+            if(source.getText().equals("Crear Factura")){
+                new FacturasFormInputData();
+            }
+
+
 
             popupMenu.setVisible(false); // Hide the popup menu
 

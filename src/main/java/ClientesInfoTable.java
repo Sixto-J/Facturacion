@@ -67,23 +67,36 @@ public class ClientesInfoTable {
                     if (e.getType() == TableModelEvent.UPDATE) {
                         int row = e.getFirstRow();
                         int column = e.getColumn();
-                        Object newValue = model.getValueAt(row, column);
-                        int id = (int) table.getValueAt(row, 0);
 
-                        updateRowDatabase(id, column, newValue);
+                        if (column == 0 | column == 7){
+
+                            JOptionPane.showMessageDialog(null,
+                                    "No se puede actualizar este campo!\nPrueba a cambiar campos que no sean CIF o el id del cliente",
+                                    "Information",
+                                    JOptionPane.INFORMATION_MESSAGE);
+
+                        }else {
+                            Object newValue = model.getValueAt(row, column);
+                            int id = (int) table.getValueAt(row, 0);
+
+                            updateRowDatabase(id, column, newValue);
+
+                            System.out.println("Row " + row + " Column " + column + " edited. New value: " + newValue);
+                        }
 
 
-                        System.out.println("Row " + row + " Column " + column + " edited. New value: " + newValue);
                         // Trigger any additional action here
-
                       // String query = "UPDATE clientes SET ContactName =" + newValue +",  City = 'Frankfurt'" +
                       //         "  WHERE CustomerID = 1;";
                     }
                 }
             });
 
-            // JButton to eliminate row
 
+
+
+
+            // JButton to eliminate row
             // Create a delete button
             JButton deleteButton = new JButton("Delete Selected Row");
             deleteButton.setPreferredSize(new Dimension(120,50));
@@ -101,11 +114,18 @@ public class ClientesInfoTable {
                     }
                 }
             });
+            // Incluir un boton para eliminar el cliente (opcional)
+            //frame.add(deleteButton, BorderLayout.AFTER_LAST_LINE);
+
+
+
+
+
 
             // Add the JTable to a JScrollPane
             JScrollPane scrollPane = new JScrollPane(table);
             frame.add(scrollPane, BorderLayout.CENTER);
-            frame.add(deleteButton, BorderLayout.AFTER_LAST_LINE);
+
 
             // Set the frame visibility
             frame.setVisible(true);

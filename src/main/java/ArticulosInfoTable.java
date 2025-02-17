@@ -55,10 +55,36 @@ public class ArticulosInfoTable {
                 if (e.getType() == TableModelEvent.UPDATE) {
                     int row = e.getFirstRow();
                     int column = e.getColumn();
-                    Object newValue = model.getValueAt(row, column);
-                    int id = (int) table.getValueAt(row, 0);
 
-                    updateRowDatabase(id, column, newValue);
+
+                    int[] numbers = {3, 4, 5, 6, 8, 9}; // Example array of numbers
+                    int valueToCheck = column; // The value you want to check
+
+                    boolean found = false; // Flag to indicate if the value is found
+
+                    // Loop through the array to check for the value
+                    for (int number : numbers) {
+                        if (number == valueToCheck) {
+                            found = true; // Set the flag to true if a match is found
+                            break; // Exit the loop early since we found a match
+                        }
+                    }
+
+
+                       if(found){
+
+                           Object newValue = model.getValueAt(row, column);
+                           int id = (int) table.getValueAt(row, 0);
+
+                           updateRowDatabase(id, column, newValue);
+
+
+                       }else{
+                           JOptionPane.showMessageDialog(null,
+                                   "No se puede actualizar este campo!\nPrueba a cambiar el stock, pvp, observaciones o coste",
+                                   "Information",
+                                   JOptionPane.INFORMATION_MESSAGE);
+                       }
 
                     //System.out.println("Row " + row + " Column " + column + " edited. New value: " + newValue);
                     // Trigger any additional action here
