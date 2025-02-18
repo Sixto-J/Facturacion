@@ -199,11 +199,15 @@ public class lineasFacturaFormInputData extends JFrame {
 
 
         String idArticuloSelected = "";
-        String idArticulo = "";
 
+        String idArticulo = "";
         String descripcionArticulo = "";
         String pvpArticulo = "";
-        String proveedorArticulo;
+        String proveedorArticulo = "";
+
+        String ivaArticulo ="";
+        String nombreProveedorArticulo = "";
+
 
 
         String query_codigo = "SELECT idArticulo, descripcionArticulo, pvpArticulo, proveedorArticulo FROM articulos WHERE idArticulo = ?;";
@@ -231,20 +235,53 @@ public class lineasFacturaFormInputData extends JFrame {
 
 
 
+        String codigo_selected=(String)codigosCombo.getSelectedItem();
        //---------------------------------------------
 
 
 
-        String codigo_selected=(String)codigosCombo.getSelectedItem();
 
-        String query = "INSERT INTO numeroFacturaCliente, idArticulo, descripcionArticulo, codigoArticulo," +
+
+        String query_codigo1 = "SELECT nombreProveedor FROM articulos a INNER JOIN proveedores p" +
+                " ON a.proveedorArticulo = p.idProveedor  WHERE a.codigoArticulo = ?";
+
+        try (ConexionDB cdb = new ConexionDB();
+             Connection connection = cdb.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(query_codigo1)) {
+
+            pstmt.setString(1, codigo_selected);
+
+            ResultSet rs_codigo = pstmt.executeQuery();
+
+            while(rs_codigo.next()){
+                nombreProveedorArticulo = rs_codigo.getString("nombreProveedor");
+
+
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+
+
+
+
+
+        //---------------------------------------------
+
+
+
+
+
+        String query_codigo3 = "INSERT INTO numeroFacturaCliente, idArticulo, descripcionArticulo, codigoArticulo," +
                 " pvpArticulo, ivaArticulo, idProveedorArticulo, nombreProveedorArticulo" +
                 " ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (
                 ConexionDB cdb = new ConexionDB();
                 Connection conn = cdb.getConnection();
-                PreparedStatement pstmt = conn.prepareStatement(query)) {
+                PreparedStatement pstmt = conn.prepareStatement(query_codigo3)) {
 
             pstmt.setInt(1, Integer.valueOf(numeroFacturaCliente.getText()));
             pstmt.setInt(2, Integer.valueOf(idArticulo));

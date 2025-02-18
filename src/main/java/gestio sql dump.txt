@@ -1,11 +1,15 @@
 CREATE DATABASE IF NOT EXISTS gestion;
 USE gestion;
 SHOW TABLES FROM gestion;
-
-
 DROP DATABASE gestion;
+
+
+DROP TABLE IF EXISTS clientes;
+SELECT * FROM clientes;
 DROP TABLE IF EXISTS clientes;
 
+INSERT INTO clientes (nombreCliente, direccionCliente, cpCliente, poblacionCliente, provinciaCliente, paisCliente, cifCliente, telCliente, emailCliente, ibanCliente, riesgoCliente, descuentoCliente, observacionesCliente)
+VALUES ('Tom B. Erichsen', 'Cardenal ReigSkagen 21', '07005', 'Palma', 'Stavanger', 'Norway', '12033440K', '9791277377', 'miemail@gmail.com', 'IBAN-02', 80, 20, 'Falta pagar la última cuota');
 
 SELECT * FROM clientes;
 
@@ -29,6 +33,7 @@ observacionesFacturaClientes TEXT,
 KEY `idClienteFactura` (`idClienteFactura`),
 CONSTRAINT `facturasclientes_ibfk_1` FOREIGN KEY (`idClienteFactura`) REFERENCES `clientes` (`idCliente`)
 );
+DROP TABLE facturasClientes;
 
 -- Tabla: articulos
 CREATE TABLE articulos (
@@ -51,19 +56,16 @@ CONSTRAINT `articulos_ibfk_1` FOREIGN KEY (`familiaArticulo`) REFERENCES `famili
 CONSTRAINT `articulos_ibfk_2` FOREIGN KEY (`proveedorArticulo`) REFERENCES `proveedores` (`idProveedor`)
 );
 
-DROP TABLE articulos;
-
 
 -- Tabla: familiaArticulos
 CREATE TABLE IF NOT EXISTS familiaArticulos (
 idFamiliaArticulos INT AUTO_INCREMENT PRIMARY KEY,
 codigoFamiliaArticulos VARCHAR(40) NOT NULL UNIQUE,
 denominacionFamilias VARCHAR(80) NOT NULL UNIQUE,
-tipoIVA DECIMAL(4,2),
-
-KEY `tiposIVA` (`tiposIVA`),
-CONSTRAINT `tiposiva_ibfk_1` FOREIGN KEY (`tipoIVA`) REFERENCES `tiposIVA`(`iva`)
+tipoIVA INT,
+FOREIGN KEY (tipoIVA) REFERENCES tiposIVA(idTipoIvA)
 );
+
 
 -- Tabla: rectificativasClientes
 CREATE TABLE IF NOT EXISTS rectificativasClientes (
@@ -81,6 +83,8 @@ observacionesRectificativaCliente TEXT,
 KEY `idClienteRectificativaCliente` (`idClienteRectificativaCliente`),
 CONSTRAINT `rectificativasclientes_ibfk_1` FOREIGN KEY (`idClienteRectificativaCliente`) REFERENCES `clientes`(`idCliente`)
 );
+
+DROP TABLE rectificativasClientes;
 
 -- Tabla: lineasFacturasClientes
 CREATE TABLE IF NOT EXISTS lineasFacturasClientes (
@@ -100,6 +104,8 @@ CONSTRAINT `lineasfacturasclientes_ibfk_1` FOREIGN KEY (`numeroFacturaCliente`) 
 CONSTRAINT `lineasfacturasclientes_ibfk_2` FOREIGN KEY (`idArticulo`) REFERENCES `articulos` (`idArticulo`),
 CONSTRAINT `lineasfacturasclientes_ibfk_3` FOREIGN KEY (`idProveedorArticulo`) REFERENCES `proveedores` (`idProveedor`)
 );
+
+DROP TABLE lineasFacturasClientes;
 
 
 
@@ -123,12 +129,14 @@ descuentoCliente DECIMAL (6,4),
 observacionesCliente TEXT
 );
 
+DROP TABLE clientes;
+
 
 -- Tabla: tiposIVA
 CREATE TABLE IF NOT EXISTS tiposIva (
 idTipoIva INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 iva DECIMAL(4,2) NOT NULL,
-observacionesTipoIva TEXT
+observacionesTipoIva VARCHAR(40) UNIQUE
 );
 
 DROP TABLE tiposIVA;
@@ -166,24 +174,50 @@ descuentoProveedor DOUBLE,
 observacionesProveedor TEXT
 );
 
-SHOW TABLES;
+DROP TABLE proveedores;
 
 
 
-
--- inserts
 INSERT INTO clientes (nombreCliente, direccionCliente, cpCliente, poblacionCliente, provinciaCliente, paisCliente, cifCliente, telCliente, emailCliente, ibanCliente, riesgoCliente, descuentoCliente, observacionesCliente)
 VALUES ('Tom B. Erichsen', 'Cardenal ReigSkagen 21', '07005', 'Palma', 'Stavanger', 'Norway', '12033440K', '9791277377', 'miemail@gmail.com', 'IBAN-02', 80, 20, 'Falta pagar la última cuota');
-
 
 INSERT INTO tiposIVA(iva,observacionesTipoIva) VALUES (21.0,'General');
 INSERT INTO tiposIVA(iva,observacionesTipoIva) VALUES (10.0,'Reducido');
 INSERT INTO tiposIVA(iva,observacionesTipoIva) VALUES (4.0,'Superreducido');
-
+SELECT * FROM tiposIVA;
 
 INSERT INTO familiaArticulos (codigoFamiliaArticulos, denominacionFamilias ) VALUES ('01','Material Oficina');
 INSERT INTO familiaArticulos (codigoFamiliaArticulos, denominacionFamilias ) VALUES ('02','Logistica');
 
-
 INSERT INTO proveedores(nombreProveedor, direccionProveedor, cpProveedor, poblacionProveedor, provinciaProveedor, paisProveedor, cifProveedor, telProveedor, emailProveedor, ibanProveedor, riesgoProveedor, descuentoProveedor, observacionesProveedor)
 VALUES ('Pepe Blanco','Olmos 34','07005','Palma','Balears','España','00000000E','971223344','pepe_blanco@gmail.com','IBAN-2',50,30,'Los pagos están al día');
+
+INSERT INTO proveedores(nombreProveedor, direccionProveedor, cpProveedor, poblacionProveedor, provinciaProveedor, paisProveedor, cifProveedor, telProveedor, emailProveedor, ibanProveedor, riesgoProveedor, descuentoProveedor, observacionesProveedor)
+VALUES ('Nevado','Kasukabe','07006','Palma','Balears','España','111111E','desconocido','nevado@gmail.com','IBAN-2',50,30,'Los huesos están al día');
+
+
+SELECT nombreProveedor FROM proveedores p JOIN articulos a ON p.idProveedor = a.proveedorArticulo WHERE p.idProveedor = 0;
+SELECT * FROM proveedores;
+SELECT nombreProveedor FROM proveedores WHERE idProveedor = 1;
+SELECT nombreProveedor FROM articulos a INNER JOIN proveedores p ON a.proveedorArticulo = p.idProveedor  WHERE a.codigoArticulo = '555E';
+SELECT * FROM familiaArticulos;
+DROP TABLE familiaArticulos;
+
+INSERT INTO articulos (codigoArticulo, codigoBarrasArticulo, descripcionArticulo, costeArticulo, margenComercialArticulo, pvpArticulo, proveedorArticulo, stockArticulo, observacionesArticulo, familiaArticulo)
+VALUES('555E','678OR','Lapices',10.0, 5.3,15.3,1,500,'Estuche de 10 lápices', 01);
+INSERT INTO articulos (codigoArticulo, codigoBarrasArticulo, descripcionArticulo, costeArticulo, margenComercialArticulo, pvpArticulo, proveedorArticulo, stockArticulo, observacionesArticulo, familiaArticulo)
+VALUES('5455E','3368OR','Lapices',6070.3, 2500.5, 8570.8, 1, 1,'Furgoneta', 02);
+
+DROP TABLE articulos;
+
+SELECT ti.idTipoIva
+FROM tiposIVA ti
+WHERE ti.idTipoIva = (
+    SELECT fa.tipoIVA
+    FROM familiaArticulos fa
+    WHERE fa.idFamiliaArticulos = (
+        SELECT a.familiaArticulo
+        FROM articulos a
+        WHERE a.codigoArticulo = '5455E'
+    )
+);
