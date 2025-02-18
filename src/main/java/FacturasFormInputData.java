@@ -85,6 +85,7 @@ public class FacturasFormInputData extends JFrame {
 
         JLabel baseImponibleFacturaClienteLabel = new JLabel("Base Imponible");
         baseImponibleFacturaCliente = new JTextField();
+
         baseImponibleFacturaCliente.setEnabled(false);
 
 
@@ -93,7 +94,7 @@ public class FacturasFormInputData extends JFrame {
              Connection connection = cdb.getConnection();
              Statement statement = connection.createStatement()) {
             // Execute SELECT query
-            String query_iva = "SELECT idTipoIva FROM tiposIva"; // Replace with your table name
+            String query_iva = "SELECT idTipoIva FROM tiposIVA"; // Replace with your table name
             ResultSet resultSet_iva = statement.executeQuery(query_iva);
 
             ArrayList<String> tiposIva = new ArrayList<>();
@@ -112,6 +113,7 @@ public class FacturasFormInputData extends JFrame {
 
         JLabel totalFacturaClienteLabel = new JLabel("Total");
         totalFacturaCliente = new JTextField();
+
         totalFacturaCliente.setEnabled(false);
 
         Double total;
@@ -189,7 +191,7 @@ public class FacturasFormInputData extends JFrame {
         add(buttonPanel,BorderLayout.SOUTH);
 
 
-
+/*
         LineasFactura lineas_factura = new LineasFactura();
         DefaultTableModel model = lineas_factura.obtener_lineas_factura();
         JTable table = new JTable(model);
@@ -197,14 +199,17 @@ public class FacturasFormInputData extends JFrame {
         // Set the model to the table
         table.setModel(model);
         JScrollPane scrollPane = new JScrollPane(table);
-     /*   gbc.gridx = 3;
+        gbc.gridx = 3;
         gbc.gridy = 12;
         gbc.ipadx = 500;
-        gbc.ipady = 80; */
+        gbc.ipady = 80;
         scrollPane.setPreferredSize(new Dimension(750, 332));
 
 
         add(scrollPane, BorderLayout.EAST);
+
+        */
+
 
 
         verLineaProductos.addActionListener(new ActionListener() {

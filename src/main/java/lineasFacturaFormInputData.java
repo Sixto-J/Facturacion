@@ -164,7 +164,7 @@ public class lineasFacturaFormInputData extends JFrame {
 
     private void setCodigosCombo(JComboBox codigosCombo) {
 
-        String selectedItem = (String) familiasCombo.getSelectedItem();
+        String familia_selected= (String) familiasCombo.getSelectedItem();
         // Display the selected item
         String query_codigo ="SELECT codigoArticulo FROM articulos a JOIN familiaArticulos f" +
                 " ON a.familiaArticulo = f.idFamiliaArticulos WHERE f.denominacionFamilias = ?";
@@ -174,7 +174,7 @@ public class lineasFacturaFormInputData extends JFrame {
              PreparedStatement pstmt = connection.prepareStatement(query_codigo)) {
 
 
-            pstmt.setString(1, selectedItem);
+            pstmt.setString(1, familia_selected);
             ResultSet rs_codigo = pstmt.executeQuery();
 
             ArrayList<String> codigoArticulos = new ArrayList<>();
@@ -198,25 +198,22 @@ public class lineasFacturaFormInputData extends JFrame {
     private void insertLinea() {
 
 
-        String idArticuloSelected = "";
-
         String idArticulo = "";
         String descripcionArticulo = "";
         String pvpArticulo = "";
+        String ivaArticulo = "";
         String proveedorArticulo = "";
-
-        String ivaArticulo ="";
         String nombreProveedorArticulo = "";
 
 
 
-        String query_codigo = "SELECT idArticulo, descripcionArticulo, pvpArticulo, proveedorArticulo FROM articulos WHERE idArticulo = ?;";
+        String query_codigo = "SELECT idArticulo, descripcionArticulo, pvpArticulo, proveedorArticulo FROM articulos WHERE codigoArticulo = ?;";
 
         try (ConexionDB cdb = new ConexionDB();
              Connection connection = cdb.getConnection();
              PreparedStatement pstmt = connection.prepareStatement(query_codigo)) {
 
-            pstmt.setString(1, idArticuloSelected);
+            pstmt.setString(1, (String) codigosCombo.getSelectedItem().toString());
 
             ResultSet rs_codigo = pstmt.executeQuery();
 
@@ -235,10 +232,11 @@ public class lineasFacturaFormInputData extends JFrame {
 
 
 
-        String codigo_selected=(String)codigosCombo.getSelectedItem();
+
        //---------------------------------------------
 
-
+        String codigo_selected=(String)codigosCombo.getSelectedItem();
+        System.out.println("Codigo selected: "+codigo_selected);
 
 
 
@@ -264,6 +262,29 @@ public class lineasFacturaFormInputData extends JFrame {
         }
 
 
+        //------------------------------------------------------
+
+
+        String query_codigo2 = "SELECT ti.idTipoIva FROM tiposIVA ti WHERE ti.idTipoIva = (SELECT fa.tipoIVA FROM familiaArticulos fa " +
+                "WHERE fa.idFamiliaArticulos = (SELECT a.familiaArticulo FROM articulos a WHERE a.codigoArticulo = ? ) );";
+
+        try (ConexionDB cdb = new ConexionDB();
+             Connection connection = cdb.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(query_codigo2)) {
+
+            pstmt.setString(1, codigo_selected);
+
+            ResultSet rs_codigo = pstmt.executeQuery();
+
+            while(rs_codigo.next()){
+                ivaArticulo = rs_codigo.getString("ti.idTipoIva");
+                System.out.println("IVA articulo: "+ivaArticulo);
+
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
 
 
 
@@ -274,7 +295,7 @@ public class lineasFacturaFormInputData extends JFrame {
 
 
 
-        String query_codigo3 = "INSERT INTO numeroFacturaCliente, idArticulo, descripcionArticulo, codigoArticulo," +
+        String query_codigo3 = "INSERT INTO lineasFacturasClientes (numeroFacturaCliente, idArticulo, descripcionArticulo, codigoArticulo," +
                 " pvpArticulo, ivaArticulo, idProveedorArticulo, nombreProveedorArticulo" +
                 " ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -289,7 +310,7 @@ public class lineasFacturaFormInputData extends JFrame {
             pstmt.setString(4, codigo_selected);
             pstmt.setDouble(5, Double.valueOf(pvpArticulo));
 
-            pstmt.setDouble(6, Double.valueOf(String.valueOf(ivaArticulo)));
+            pstmt.setDouble(6, Double.valueOf(ivaArticulo));
             // query anidada entre tiposIva, familiaArticulo y articulo
 
             pstmt.setInt(7, Integer.valueOf(proveedorArticulo));
