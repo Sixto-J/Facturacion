@@ -53,11 +53,16 @@ CONSTRAINT `articulos_ibfk_2` FOREIGN KEY (`proveedorArticulo`) REFERENCES `prov
 
 DROP TABLE articulos;
 
+
 -- Tabla: familiaArticulos
 CREATE TABLE IF NOT EXISTS familiaArticulos (
 idFamiliaArticulos INT AUTO_INCREMENT PRIMARY KEY,
 codigoFamiliaArticulos VARCHAR(40) NOT NULL UNIQUE,
-denominacionFamilias VARCHAR(80) NOT NULL UNIQUE
+denominacionFamilias VARCHAR(80) NOT NULL UNIQUE,
+tipoIVA DECIMAL(4,2),
+
+KEY `tiposIVA` (`tiposIVA`),
+CONSTRAINT `tiposiva_ibfk_1` FOREIGN KEY (`tipoIVA`) REFERENCES `tiposIVA`(`iva`)
 );
 
 -- Tabla: rectificativasClientes

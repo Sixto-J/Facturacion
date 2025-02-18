@@ -19,13 +19,6 @@ public class lineasFacturaFormInputData extends JFrame {
     private JLabel numeroFacturaClienteLabel;
     private JLabel numeroFacturaCliente;
 
-    private JTextField idArticulo; //select
-    private JTextField descripcionArticulo; // select
-    private JTextField codigoArticulo; // select
-    private JTextField pvpArticulo; // select
-    private JTextField ivaArticulo; // select
-    private JTextField idProveedorArticulo; // select
-    private JTextField nombreProveedorArticulo; // select
     private JLabel familiaArticuloLabel; //select
     private JLabel codigoArticuloLabel; // select
 
@@ -47,8 +40,8 @@ public class lineasFacturaFormInputData extends JFrame {
 
 
 
-         buscadorFamiliasLabel = new JLabel("Indica familia del artículo");
-         buscadorCodigoArticuloLabel = new JLabel("Indica el codigo del artículo");
+        buscadorFamiliasLabel = new JLabel("Indica familia del artículo");
+        buscadorCodigoArticuloLabel = new JLabel("Indica el codigo del artículo");
 
 
 
@@ -81,9 +74,17 @@ public class lineasFacturaFormInputData extends JFrame {
 
             DefaultComboBoxModel<String> familiasArticulo = new DefaultComboBoxModel<>(tiposFamilia.toArray(new String[0]));
 
-             familiasCombo = new JComboBox<>(familiasArticulo);
+            familiasCombo = new JComboBox<>(familiasArticulo);
 
-             codigosCombo = new JComboBox<>();
+
+
+
+
+
+            codigosCombo = new JComboBox<>();
+
+            setCodigosCombo(codigosCombo);
+
 
             // Add an ItemListener to the JComboBox
             familiasCombo.addItemListener(new ItemListener() {
@@ -91,34 +92,7 @@ public class lineasFacturaFormInputData extends JFrame {
                 public void itemStateChanged(ItemEvent e) {
                     if (e.getStateChange() == ItemEvent.SELECTED) {
                         // Get the selected item
-                        String selectedItem = (String) familiasCombo.getSelectedItem();
-                        // Display the selected item
-                        String query_codigo = "SELECT codigoArticulo FROM articulos WHERE familiaArticulos IN(" +
-                                " SELECT idFamiliaArticulos FROM familiaArticulos WHERE denominacionFamilias = ?);";
-
-                        try (ConexionDB cdb = new ConexionDB();
-                             Connection connection = cdb.getConnection();
-                             PreparedStatement pstmt = connection.prepareStatement(query_codigo)) {
-
-
-                            pstmt.setString(1, selectedItem);
-                            ResultSet rs_codigo = pstmt.executeQuery();
-
-                            ArrayList<String> codigoArticulos = new ArrayList<>();
-
-                            while (rs_codigo.next()) {
-                                codigoArticulos.add(String.valueOf(rs_codigo.getString("codigoArticulo")));
-                            }
-
-                            DefaultComboBoxModel<String> codigoArticulosModel = new DefaultComboBoxModel<>(codigoArticulos.toArray(new String[0]));
-
-
-                            codigosCombo.setModel(codigoArticulosModel);
-
-
-                        } catch (SQLException ex) {
-                            ex.printStackTrace();
-                        }
+                        setCodigosCombo(codigosCombo);
                     }
                 }
 
@@ -139,7 +113,7 @@ public class lineasFacturaFormInputData extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                //insertLinea();
+
 
             }
 
@@ -152,10 +126,12 @@ public class lineasFacturaFormInputData extends JFrame {
 
         desplegableLinea = new JButton("Añadir linea de producto");
         desplegableLinea.setPreferredSize(new Dimension(100, 50));
+
         desplegableLinea.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
+                insertLinea();
 
             }
         });
@@ -186,13 +162,84 @@ public class lineasFacturaFormInputData extends JFrame {
 
     }
 
+    private void setCodigosCombo(JComboBox codigosCombo) {
+
+        String selectedItem = (String) familiasCombo.getSelectedItem();
+        // Display the selected item
+        String query_codigo ="SELECT codigoArticulo FROM articulos a JOIN familiaArticulos f" +
+                " ON a.familiaArticulo = f.idFamiliaArticulos WHERE f.denominacionFamilias = ?";
+
+        try (ConexionDB cdb = new ConexionDB();
+             Connection connection = cdb.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(query_codigo)) {
+
+
+            pstmt.setString(1, selectedItem);
+            ResultSet rs_codigo = pstmt.executeQuery();
+
+            ArrayList<String> codigoArticulos = new ArrayList<>();
+
+            while (rs_codigo.next()) {
+                codigoArticulos.add(String.valueOf(rs_codigo.getString("codigoArticulo")));
+            }
+
+            DefaultComboBoxModel<String> codigoArticulosModel = new DefaultComboBoxModel<>(codigoArticulos.toArray(new String[0]));
+
+
+            codigosCombo.setModel(codigoArticulosModel);
+
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
 
     private void insertLinea() {
 
 
-        String query = "INSERT INTO facturasClientes (idLineaFacturaCliente, numeroFacturaCliente, idArticulo," +
-                " descripcionArticulo, codigoArticulo, pvpArticulo, ivaArticulo," +
-                " idProveedorArticulo, nombreProveedorArticulo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String idArticuloSelected = "";
+        String idArticulo = "";
+
+        String descripcionArticulo = "";
+        String pvpArticulo = "";
+        String proveedorArticulo;
+
+
+        String query_codigo = "SELECT idArticulo, descripcionArticulo, pvpArticulo, proveedorArticulo FROM articulos WHERE idArticulo = ?;";
+
+        try (ConexionDB cdb = new ConexionDB();
+             Connection connection = cdb.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(query_codigo)) {
+
+            pstmt.setString(1, idArticuloSelected);
+
+            ResultSet rs_codigo = pstmt.executeQuery();
+
+            while(rs_codigo.next()){
+               idArticulo = rs_codigo.getString("idArticulo");
+               descripcionArticulo = rs_codigo.getString("descripcionArticulo");
+               pvpArticulo = rs_codigo.getString("pvpArticulo");
+               proveedorArticulo = rs_codigo.getString("proveedorArticulo");
+
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+
+
+
+       //---------------------------------------------
+
+
+
+        String codigo_selected=(String)codigosCombo.getSelectedItem();
+
+        String query = "INSERT INTO numeroFacturaCliente, idArticulo, descripcionArticulo, codigoArticulo," +
+                " pvpArticulo, ivaArticulo, idProveedorArticulo, nombreProveedorArticulo" +
+                " ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (
                 ConexionDB cdb = new ConexionDB();
@@ -200,23 +247,29 @@ public class lineasFacturaFormInputData extends JFrame {
                 PreparedStatement pstmt = conn.prepareStatement(query)) {
 
             pstmt.setInt(1, Integer.valueOf(numeroFacturaCliente.getText()));
-            pstmt.setInt(2, Integer.valueOf(idArticulo.getText()));
-            pstmt.setString(3, descripcionArticulo.getText());
-            pstmt.setString(4, codigoArticulo.getText());
-            pstmt.setDouble(5, Double.valueOf(pvpArticulo.getText()));
-            pstmt.setDouble(6, Double.valueOf(ivaArticulo.getText()));
-            pstmt.setInt(7, Integer.valueOf(idProveedorArticulo.getText()));
-            pstmt.setString(8, nombreProveedorArticulo.getText());
+            pstmt.setInt(2, Integer.valueOf(idArticulo));
+            pstmt.setString(3, descripcionArticulo);
+            pstmt.setString(4, codigo_selected);
+            pstmt.setDouble(5, Double.valueOf(pvpArticulo));
 
+            pstmt.setDouble(6, Double.valueOf(String.valueOf(ivaArticulo)));
+            // query anidada entre tiposIva, familiaArticulo y articulo
+
+            pstmt.setInt(7, Integer.valueOf(proveedorArticulo));
+
+            pstmt.setString(8, nombreProveedorArticulo);
+            // query entre articulos y proveedores a partir de clave foranea ProveedorArticulo = idProveedor
 
             pstmt.executeUpdate();
 
-            JOptionPane.showMessageDialog(this, "Customer added successfully!");
+            JOptionPane.showMessageDialog(this, "Article added successfully!");
             clearFields();
+
         } catch (SQLException ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error adding customer: " + ex.getMessage());
+            JOptionPane.showMessageDialog(this, "Error adding article: " + ex.getMessage());
         }
+
     }
 
 

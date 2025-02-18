@@ -190,8 +190,8 @@ public class FacturasFormInputData extends JFrame {
 
 
 
-        Articulos articulo = new Articulos();
-        DefaultTableModel model = articulo.obtener_articulos();
+        LineasFactura lineas_factura = new LineasFactura();
+        DefaultTableModel model = lineas_factura.obtener_lineas_factura();
         JTable table = new JTable(model);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         // Set the model to the table
