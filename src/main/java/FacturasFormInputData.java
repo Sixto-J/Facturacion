@@ -1,5 +1,4 @@
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -7,7 +6,7 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
-
+import javax.swing.table.DefaultTableModel;
 import java.util.Objects;
 
 
@@ -18,7 +17,7 @@ public class FacturasFormInputData extends JFrame {
     private JComboBox idClienteFactura;
     private JSpinner fechaFacturaCliente;
     private JTextField baseImponibleFacturaCliente;
-    private JComboBox ivaFacturaCliente;
+    private JTextField ivaFacturaCliente;
     private JTextField totalFacturaCliente;
     private JTextField hashFacturaCliente;
     private JTextField qrFacturaCliente;
@@ -46,13 +45,13 @@ public class FacturasFormInputData extends JFrame {
         numeroFacturaCliente = new JTextField();
 
 
-
         JLabel fechaFacturaClienteLabel = new JLabel("Fecha factura de cliente");
         // Create a Spinner for date input
         SpinnerDateModel model1 = new SpinnerDateModel();
         fechaFacturaCliente = new JSpinner(model1);
         JSpinner.DateEditor editor = new JSpinner.DateEditor(fechaFacturaCliente, "yyyy-MM-dd");
         fechaFacturaCliente.setEditor(editor);
+
 
         JLabel fechaCobroFacturaLabel = new JLabel("Fecha de cobro");
         SpinnerDateModel model2 = new SpinnerDateModel();
@@ -83,44 +82,40 @@ public class FacturasFormInputData extends JFrame {
         }
 
 
+
+        double base_imponible = 0;
+        double suma_iva_articulos = 0;
+
         JLabel baseImponibleFacturaClienteLabel = new JLabel("Base Imponible");
         baseImponibleFacturaCliente = new JTextField();
-
         baseImponibleFacturaCliente.setEnabled(false);
+        if(submitButton.isEnabled()){
+            // bucle sobre array de  objetos de linea de factura para sumar pvpArticulo a la base_imponible
+            baseImponibleFacturaCliente.setText(String.valueOf(base_imponible));
+        }
+
 
 
         JLabel ivaFacturaClienteLabel = new JLabel("IVA");
-        try (ConexionDB cdb = new ConexionDB();
-             Connection connection = cdb.getConnection();
-             Statement statement = connection.createStatement()) {
-            // Execute SELECT query
-            String query_iva = "SELECT idTipoIva FROM tiposIVA"; // Replace with your table name
-            ResultSet resultSet_iva = statement.executeQuery(query_iva);
-
-            ArrayList<String> tiposIva = new ArrayList<>();
-
-            while (resultSet_iva.next()) {
-                tiposIva.add(String.valueOf(resultSet_iva.getInt("idTipoIva")));
-
-            }
-            DefaultComboBoxModel<String> model_iva = new DefaultComboBoxModel<>(tiposIva.toArray(new String[0]));
-            ivaFacturaCliente = new JComboBox<>(model_iva);
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        ivaFacturaCliente = new JTextField();
+        ivaFacturaCliente.setEnabled(false);
+        if(submitButton.isEnabled()){
+            // bucle sobre array de  objetos de linea de factura para sumar ivaArticulo a la variable suma_iva_articulos
+            ivaFacturaCliente.setText(String.valueOf(suma_iva_articulos);
         }
+
 
 
         JLabel totalFacturaClienteLabel = new JLabel("Total");
         totalFacturaCliente = new JTextField();
-
         totalFacturaCliente.setEnabled(false);
 
         Double total;
         if (totalFacturaCliente.isEnabled()) {
-            total = Double.valueOf(baseImponibleFacturaCliente.getText()) * Double.valueOf(String.valueOf(ivaFacturaCliente.getSelectedItem()));
+            total = Double.valueOf(baseImponibleFacturaCliente.getText()) + Double.valueOf(String.valueOf(ivaFacturaCliente.getText()));
             totalFacturaCliente.setText(String.valueOf(total));
         }
+
 
 
         JLabel hashFacturaClienteLabel = new JLabel("Hash");
@@ -140,6 +135,8 @@ public class FacturasFormInputData extends JFrame {
         gbc.insets = new Insets(5, 10, 2, 10); // Add padding around components
 
         JPanel formPanel = new JPanel(new GridBagLayout());
+
+
 
         settingGrBLayout(formPanel,gbc, 0, 0,numeroFacturaClienteLabel);
         settingGrBLayout(formPanel,gbc, 0, 1,fechaFacturaClienteLabel);
@@ -191,33 +188,13 @@ public class FacturasFormInputData extends JFrame {
         add(buttonPanel,BorderLayout.SOUTH);
 
 
-/*
-        LineasFactura lineas_factura = new LineasFactura();
-        DefaultTableModel model = lineas_factura.obtener_lineas_factura();
-        JTable table = new JTable(model);
-        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        // Set the model to the table
-        table.setModel(model);
-        JScrollPane scrollPane = new JScrollPane(table);
-        gbc.gridx = 3;
-        gbc.gridy = 12;
-        gbc.ipadx = 500;
-        gbc.ipady = 80;
-        scrollPane.setPreferredSize(new Dimension(750, 332));
-
-
-        add(scrollPane, BorderLayout.EAST);
-
-        */
-
-
 
         verLineaProductos.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
                 String numFactura = numeroFacturaCliente.getText();
-                new lineasFacturaFormInputData(numFactura);
+                new LineasFacturaFormInputData(numFactura);
             }
         });
 
@@ -225,8 +202,13 @@ public class FacturasFormInputData extends JFrame {
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
                 if (!Objects.equals(totalFacturaCliente.getText(), "") && totalFacturaCliente.isEnabled()) {
-                    insertFactura();
+                   insertFactura();
+                   LineasFacturaFormInputData lf = new LineasFacturaFormInputData();
+                   lf.insertLinea();
+                   lf.clearFields();
+
                 } else {
                     //mensaje de error
                 }
@@ -257,7 +239,7 @@ public class FacturasFormInputData extends JFrame {
             pstmt.setDate(2, (Date) fechaFacturaCliente.getValue());
             pstmt.setString(3, String.valueOf(idClienteFactura.getSelectedItem()));
             pstmt.setString(4, baseImponibleFacturaCliente.getText());
-            pstmt.setString(5, String.valueOf(ivaFacturaCliente.getSelectedItem()));
+            pstmt.setString(5, String.valueOf(ivaFacturaCliente.getText()));
             pstmt.setString(6, totalFacturaCliente.getText());
             pstmt.setString(7, hashFacturaCliente.getText());
             pstmt.setString(8, qrFacturaCliente.getText());
@@ -282,7 +264,7 @@ public class FacturasFormInputData extends JFrame {
         fechaFacturaCliente.setValue(currentDate);
         idClienteFactura.setSelectedIndex(0);
         baseImponibleFacturaCliente.setText("");
-        ivaFacturaCliente.setSelectedIndex(0);
+        ivaFacturaCliente.setText("");
         totalFacturaCliente.setText("");
         hashFacturaCliente.setText("");
         qrFacturaCliente.setText("");
@@ -316,3 +298,41 @@ public class FacturasFormInputData extends JFrame {
 
 
 }
+
+
+
+
+       /*  dropdown de IVA no usado
+        try (ConexionDB cdb = new ConexionDB();
+            Connection connection = cdb.getConnection();
+            Statement statement = connection.createStatement()) {
+            //Execute SELECT query
+            String query_iva = "SELECT idTipoIva FROM tiposIVA"; // Replace with your table name
+            ResultSet resultSet_iva = statement.executeQuery(query_iva);
+            ArrayList<String> tiposIva = new ArrayList<>();
+            while (resultSet_iva.next()) {
+                tiposIva.add(String.valueOf(resultSet_iva.getInt("idTipoIva")));
+            }
+            DefaultComboBoxModel<String> model_iva = new DefaultComboBoxModel<>(tiposIva.toArray(new String[0]));
+            ivaFacturaCliente = new JComboBox<>(model_iva);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+       */
+
+
+       /* Tabla no usada
+        LineasFactura lineas_factura = new LineasFactura();
+        DefaultTableModel model = lineas_factura.obtener_lineas_factura();
+        JTable table = new JTable(model);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        // Set the model to the table
+        table.setModel(model);
+        JScrollPane scrollPane = new JScrollPane(table);
+        gbc.gridx = 3;
+        gbc.gridy = 12;
+        gbc.ipadx = 500;
+        gbc.ipady = 80;
+        scrollPane.setPreferredSize(new Dimension(750, 332));
+        add(scrollPane, BorderLayout.EAST);
+       */

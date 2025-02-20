@@ -8,12 +8,12 @@ import java.sql.*;
 import java.util.ArrayList;
 
 
-public class lineasFacturaFormInputData extends JFrame {
+public class LineasFacturaFormInputData extends JFrame {
 
 
     private JComboBox familiasCombo;
     private JComboBox codigosCombo;
-    private JButton desplegableLinea;
+    private JButton AgregarLinea;
     private JLabel buscadorFamiliasLabel;
     private JLabel buscadorCodigoArticuloLabel;
     private JLabel numeroFacturaClienteLabel;
@@ -22,13 +22,13 @@ public class lineasFacturaFormInputData extends JFrame {
     private JLabel familiaArticuloLabel; //select
     private JLabel codigoArticuloLabel; // select
 
-    //hay que controlar que el id, nombre, codigo, pvp, iva existan en proveedores y articulos
-
-
     private JButton backButton;
 
 
-    public lineasFacturaFormInputData(String numFactura) {
+    //hay que controlar que el id, nombre, codigo, pvp, iva existan en proveedores y articulos
+
+    public LineasFacturaFormInputData(String numFactura) {
+
 
         setTitle("Lineas de la factura");
         setSize(1000, 900);
@@ -38,21 +38,15 @@ public class lineasFacturaFormInputData extends JFrame {
         gbc.fill = GridBagConstraints.BOTH;
 
 
-
-
         buscadorFamiliasLabel = new JLabel("Indica familia del artículo");
         buscadorCodigoArticuloLabel = new JLabel("Indica el codigo del artículo");
-
-
-
-        //String articulo_query = "SELECT idArticulo from articulos WHERE idArticulo ='" + buscadorArticulo.getText() + "';";
-
-
         // Create labels and text fields
         numeroFacturaClienteLabel = new JLabel("Número Factura de cliente:");
         numeroFacturaCliente = new JLabel();
         numeroFacturaCliente.setText(numFactura);
 
+
+        //String articulo_query = "SELECT idArticulo from articulos WHERE idArticulo ='" + buscadorArticulo.getText() + "';";
 
 
 
@@ -60,7 +54,6 @@ public class lineasFacturaFormInputData extends JFrame {
         try (ConexionDB cdb = new ConexionDB();
              Connection connection = cdb.getConnection();
              Statement statement = connection.createStatement()) {
-
             // Execute SELECT query
             String query_familia = "SELECT denominacionFamilias FROM familiaArticulos"; // Replace with your table name
             ResultSet resultSet_familia = statement.executeQuery(query_familia);
@@ -70,10 +63,7 @@ public class lineasFacturaFormInputData extends JFrame {
             while (resultSet_familia.next()) {
                 tiposFamilia.add(String.valueOf(resultSet_familia.getString("denominacionFamilias")));
             }
-
-
             DefaultComboBoxModel<String> familiasArticulo = new DefaultComboBoxModel<>(tiposFamilia.toArray(new String[0]));
-
             familiasCombo = new JComboBox<>(familiasArticulo);
 
 
@@ -82,10 +72,7 @@ public class lineasFacturaFormInputData extends JFrame {
 
 
             codigosCombo = new JComboBox<>();
-
             setCodigosCombo(codigosCombo);
-
-
             // Add an ItemListener to the JComboBox
             familiasCombo.addItemListener(new ItemListener() {
                 @Override
@@ -95,8 +82,9 @@ public class lineasFacturaFormInputData extends JFrame {
                         setCodigosCombo(codigosCombo);
                     }
                 }
-
             });
+
+
 
 
 
@@ -105,6 +93,8 @@ public class lineasFacturaFormInputData extends JFrame {
         }
 
 
+
+        // Botones y listeners
         backButton = new JButton("Volver");
         backButton.setPreferredSize(new Dimension(100, 50));
 
@@ -114,20 +104,14 @@ public class lineasFacturaFormInputData extends JFrame {
             public void actionPerformed(ActionEvent e) {
 
 
-
             }
-
         });
 
 
+        AgregarLinea = new JButton("Añadir linea de producto");
+        AgregarLinea.setPreferredSize(new Dimension(100, 50));
 
-
-
-
-        desplegableLinea = new JButton("Añadir linea de producto");
-        desplegableLinea.setPreferredSize(new Dimension(100, 50));
-
-        desplegableLinea.addActionListener(new ActionListener() {
+        AgregarLinea.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
@@ -135,6 +119,9 @@ public class lineasFacturaFormInputData extends JFrame {
 
             }
         });
+
+
+
 
         // Add components to the frame
         gbc.gridx = 0; gbc.gridy=0;
@@ -153,14 +140,15 @@ public class lineasFacturaFormInputData extends JFrame {
         gbc.gridx=0; gbc.gridy=3;
         add(backButton, gbc);
         gbc.gridx=1; gbc.gridy=3;
-        add(desplegableLinea,gbc);
+        add(AgregarLinea,gbc);
 
         pack();
         setLocationRelativeTo(null);
         this.setVisible(true);
 
-
     }
+
+
 
     private void setCodigosCombo(JComboBox codigosCombo) {
 
@@ -195,7 +183,8 @@ public class lineasFacturaFormInputData extends JFrame {
     }
 
 
-    private void insertLinea() {
+
+    public void insertLinea() {
 
 
         String idArticulo = "";
@@ -331,9 +320,14 @@ public class lineasFacturaFormInputData extends JFrame {
     }
 
 
-    private void clearFields() {
+    protected void clearFields() {
         numeroFacturaCliente.setText("");
 
+    }
+
+
+    public LineasFacturaFormInputData() {
+        // Empty constructor
     }
 
 
