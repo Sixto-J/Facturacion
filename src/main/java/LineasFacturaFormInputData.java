@@ -24,10 +24,19 @@ public class LineasFacturaFormInputData extends JFrame {
 
     private JButton backButton;
 
+    FacturasFormInputData ffid;
+
+    ArrayList<LineasFactura> llf = new ArrayList<>();
+
 
     //hay que controlar que el id, nombre, codigo, pvp, iva existan en proveedores y articulos
 
-    public LineasFacturaFormInputData(String numFactura) {
+
+    public LineasFacturaFormInputData() {
+        // Empty constructor
+    }
+
+    public LineasFacturaFormInputData(FacturasFormInputData ffid) {
 
 
         setTitle("Lineas de la factura");
@@ -43,7 +52,7 @@ public class LineasFacturaFormInputData extends JFrame {
         // Create labels and text fields
         numeroFacturaClienteLabel = new JLabel("Número Factura de cliente:");
         numeroFacturaCliente = new JLabel();
-        numeroFacturaCliente.setText(numFactura);
+        numeroFacturaCliente.setText(ffid.getNumeroFacturaCliente());
 
 
         //String articulo_query = "SELECT idArticulo from articulos WHERE idArticulo ='" + buscadorArticulo.getText() + "';";
@@ -102,10 +111,15 @@ public class LineasFacturaFormInputData extends JFrame {
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                ffid.habilitarFactura(llf);
 
+                dispose();
+
+                clearFields();
 
             }
         });
+
 
 
         AgregarLinea = new JButton("Añadir linea de producto");
@@ -115,7 +129,7 @@ public class LineasFacturaFormInputData extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                insertLinea();
+                crearLinea();
 
             }
         });
@@ -183,9 +197,7 @@ public class LineasFacturaFormInputData extends JFrame {
     }
 
 
-
-    public void insertLinea() {
-
+    public void crearLinea(){
 
         String idArticulo = "";
         String descripcionArticulo = "";
@@ -193,8 +205,6 @@ public class LineasFacturaFormInputData extends JFrame {
         String ivaArticulo = "";
         String proveedorArticulo = "";
         String nombreProveedorArticulo = "";
-
-
 
         String query_codigo = "SELECT idArticulo, descripcionArticulo, pvpArticulo, proveedorArticulo FROM articulos WHERE codigoArticulo = ?;";
 
@@ -207,10 +217,10 @@ public class LineasFacturaFormInputData extends JFrame {
             ResultSet rs_codigo = pstmt.executeQuery();
 
             while(rs_codigo.next()){
-               idArticulo = rs_codigo.getString("idArticulo");
-               descripcionArticulo = rs_codigo.getString("descripcionArticulo");
-               pvpArticulo = rs_codigo.getString("pvpArticulo");
-               proveedorArticulo = rs_codigo.getString("proveedorArticulo");
+                idArticulo = rs_codigo.getString("idArticulo");
+                descripcionArticulo = rs_codigo.getString("descripcionArticulo");
+                pvpArticulo = rs_codigo.getString("pvpArticulo");
+                proveedorArticulo = rs_codigo.getString("proveedorArticulo");
 
             }
 
@@ -219,10 +229,7 @@ public class LineasFacturaFormInputData extends JFrame {
         }
 
 
-
-
-
-       //---------------------------------------------
+        //---------------------------------------------
 
         String codigo_selected=(String)codigosCombo.getSelectedItem();
         System.out.println("Codigo selected: "+codigo_selected);
@@ -254,7 +261,7 @@ public class LineasFacturaFormInputData extends JFrame {
         //------------------------------------------------------
 
 
-        String query_codigo2 = "SELECT ti.idTipoIva FROM tiposIVA ti WHERE ti.idTipoIva = (SELECT fa.tipoIVA FROM familiaArticulos fa " +
+        String query_codigo2 = "SELECT ti.iva FROM tiposIVA ti WHERE ti.idTipoIva = (SELECT fa.tipoIVA FROM familiaArticulos fa " +
                 "WHERE fa.idFamiliaArticulos = (SELECT a.familiaArticulo FROM articulos a WHERE a.codigoArticulo = ? ) );";
 
         try (ConexionDB cdb = new ConexionDB();
@@ -266,8 +273,8 @@ public class LineasFacturaFormInputData extends JFrame {
             ResultSet rs_codigo = pstmt.executeQuery();
 
             while(rs_codigo.next()){
-                ivaArticulo = rs_codigo.getString("ti.idTipoIva");
-                System.out.println("IVA articulo: "+ivaArticulo);
+                ivaArticulo = rs_codigo.getString("ti.iva");
+
 
             }
 
@@ -276,59 +283,24 @@ public class LineasFacturaFormInputData extends JFrame {
         }
 
 
+        String codigoArticulo = codigosCombo.getSelectedItem().toString();
+        LineasFactura lf = new LineasFactura(Integer.valueOf(numeroFacturaCliente.getText()),Integer.valueOf(idArticulo),descripcionArticulo,codigoArticulo,Double.valueOf(pvpArticulo),Double.valueOf(ivaArticulo),Integer.valueOf(proveedorArticulo),nombreProveedorArticulo);
+
+        System.out.println(lf.toString());
 
 
-        //---------------------------------------------
+        llf.add(lf);
 
 
-
-
-
-        String query_codigo3 = "INSERT INTO lineasFacturasClientes (numeroFacturaCliente, idArticulo, descripcionArticulo, codigoArticulo," +
-                " pvpArticulo, ivaArticulo, idProveedorArticulo, nombreProveedorArticulo" +
-                " ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-
-        try (
-                ConexionDB cdb = new ConexionDB();
-                Connection conn = cdb.getConnection();
-                PreparedStatement pstmt = conn.prepareStatement(query_codigo3)) {
-
-            pstmt.setInt(1, Integer.valueOf(numeroFacturaCliente.getText()));
-            pstmt.setInt(2, Integer.valueOf(idArticulo));
-            pstmt.setString(3, descripcionArticulo);
-            pstmt.setString(4, codigo_selected);
-            pstmt.setDouble(5, Double.valueOf(pvpArticulo));
-
-            pstmt.setDouble(6, Double.valueOf(ivaArticulo));
-            // query anidada entre tiposIva, familiaArticulo y articulo
-
-            pstmt.setInt(7, Integer.valueOf(proveedorArticulo));
-
-            pstmt.setString(8, nombreProveedorArticulo);
-            // query entre articulos y proveedores a partir de clave foranea ProveedorArticulo = idProveedor
-
-            pstmt.executeUpdate();
-
-            JOptionPane.showMessageDialog(this, "Article added successfully!");
-            clearFields();
-
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error adding article: " + ex.getMessage());
-        }
 
     }
+
 
 
     protected void clearFields() {
         numeroFacturaCliente.setText("");
-
+        familiasCombo.setSelectedIndex(0);
+        codigosCombo.setSelectedIndex(0);
     }
-
-
-    public LineasFacturaFormInputData() {
-        // Empty constructor
-    }
-
 
 }

@@ -4,9 +4,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Calendar;
-import javax.swing.table.DefaultTableModel;
 import java.util.Objects;
 
 
@@ -22,14 +21,20 @@ public class FacturasFormInputData extends JFrame {
     private JTextField hashFacturaCliente;
     private JTextField qrFacturaCliente;
     private JComboBox cobradaFactura;
-    private JTextField formaCobroFactura;
+    private JComboBox formaCobroFactura;
     private JSpinner fechaCobroFactura;
     private JTextField observacionesFacturaCliente;
 
-    private JButton submitButton;
-    private JButton verLineaProductos;
+    private JButton CrearFacturaButton = new JButton("Crear factura");
+    private JButton verLineasButton;
 
     LocalDate currentDate = LocalDate.now();
+    java.util.Date currentTime = Date.from(currentDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+    ArrayList<LineasFactura> llf;
+
+    double base_imponible = 0;
+    double suma_iva_articulos = 0;
 
 
     public FacturasFormInputData() {
@@ -40,7 +45,15 @@ public class FacturasFormInputData extends JFrame {
         //getContentPane().setLayout(new GridBagLayout());
         setLayout(new BorderLayout());
 
+
+
+        CrearFacturaButton.setEnabled(false);
+
+
+
         // Create labels and text fields
+
+
         JLabel numeroFacturaClienteLabel = new JLabel("Número Factura de cliente");
         numeroFacturaCliente = new JTextField();
 
@@ -82,61 +95,69 @@ public class FacturasFormInputData extends JFrame {
         }
 
 
-
-        double base_imponible = 0;
-        double suma_iva_articulos = 0;
-
         JLabel baseImponibleFacturaClienteLabel = new JLabel("Base Imponible");
         baseImponibleFacturaCliente = new JTextField();
         baseImponibleFacturaCliente.setEnabled(false);
-        if(submitButton.isEnabled()){
-            // bucle sobre array de  objetos de linea de factura para sumar pvpArticulo a la base_imponible
-            baseImponibleFacturaCliente.setText(String.valueOf(base_imponible));
-        }
-
-
 
         JLabel ivaFacturaClienteLabel = new JLabel("IVA");
         ivaFacturaCliente = new JTextField();
         ivaFacturaCliente.setEnabled(false);
-        if(submitButton.isEnabled()){
-            // bucle sobre array de  objetos de linea de factura para sumar ivaArticulo a la variable suma_iva_articulos
-            ivaFacturaCliente.setText(String.valueOf(suma_iva_articulos);
-        }
-
-
 
         JLabel totalFacturaClienteLabel = new JLabel("Total");
         totalFacturaCliente = new JTextField();
         totalFacturaCliente.setEnabled(false);
-
-        Double total;
-        if (totalFacturaCliente.isEnabled()) {
-            total = Double.valueOf(baseImponibleFacturaCliente.getText()) + Double.valueOf(String.valueOf(ivaFacturaCliente.getText()));
-            totalFacturaCliente.setText(String.valueOf(total));
-        }
-
 
 
         JLabel hashFacturaClienteLabel = new JLabel("Hash");
         hashFacturaCliente = new JTextField();
         JLabel qrFacturaClienteLabel = new JLabel("QR");
         qrFacturaCliente = new JTextField();
+
+
         JLabel cobradaFacturaLabel = new JLabel("Cobrada");
         String[] cobradaFacturaOptions = {"yes", "no"};
         cobradaFactura = new JComboBox<>(cobradaFacturaOptions);
+
+
         JLabel formaCobroFacturaLabel = new JLabel("Forma de cobro");
-        formaCobroFactura = new JTextField();
+
+        try (ConexionDB cdb = new ConexionDB();
+             Connection connection = cdb.getConnection();
+             Statement statement = connection.createStatement()) {
+            // Execute SELECT query
+            String query_cliente = "SELECT DISTINCT tipoFormaPago FROM formaPago"; // Replace with your table name
+            ResultSet resultSet_formaPago = statement.executeQuery(query_cliente);
+
+            ArrayList<String> formaPagoList = new ArrayList<>();
+
+            while (resultSet_formaPago.next()) {
+                formaPagoList.add(String.valueOf(resultSet_formaPago.getString("tipoFormaPago")));
+
+            }
+            DefaultComboBoxModel<String> model_forma_pago = new DefaultComboBoxModel<>(formaPagoList.toArray(new String[0]));
+            formaCobroFactura = new JComboBox<>(model_forma_pago);
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+
         JLabel observacionesLabel = new JLabel("Observaciones");
         observacionesFacturaCliente = new JTextField();
 
-        GridBagConstraints gbc = new GridBagConstraints();
+
+
+
+
+
+
+
         // Add components to the frame with gbc values
+        GridBagConstraints gbc = new GridBagConstraints();
+
         gbc.insets = new Insets(5, 10, 2, 10); // Add padding around components
 
         JPanel formPanel = new JPanel(new GridBagLayout());
-
-
 
         settingGrBLayout(formPanel,gbc, 0, 0,numeroFacturaClienteLabel);
         settingGrBLayout(formPanel,gbc, 0, 1,fechaFacturaClienteLabel);
@@ -144,13 +165,12 @@ public class FacturasFormInputData extends JFrame {
         settingGrBLayout(formPanel,gbc, 0, 3,baseImponibleFacturaClienteLabel);
         settingGrBLayout(formPanel,gbc, 0, 4,ivaFacturaClienteLabel);
         settingGrBLayout(formPanel,gbc, 0, 5,totalFacturaClienteLabel);
-        settingGrBLayout(formPanel,gbc, 0, 6,hashFacturaClienteLabel);
-        settingGrBLayout(formPanel,gbc, 0, 7,qrFacturaClienteLabel);
-        settingGrBLayout(formPanel,gbc, 0, 8,cobradaFacturaLabel);
-        settingGrBLayout(formPanel,gbc, 0, 9,formaCobroFacturaLabel);
-        settingGrBLayout(formPanel,gbc, 0, 10,fechaCobroFacturaLabel);
-        settingGrBLayout(formPanel,gbc, 0, 11,observacionesLabel);
-
+        //settingGrBLayout(formPanel,gbc, 0, 6,hashFacturaClienteLabel);
+        //settingGrBLayout(formPanel,gbc, 0, 7,qrFacturaClienteLabel);
+        settingGrBLayout(formPanel,gbc, 0, 6,cobradaFacturaLabel);
+        settingGrBLayout(formPanel,gbc, 0, 7,formaCobroFacturaLabel);
+        settingGrBLayout(formPanel,gbc, 0, 8,fechaCobroFacturaLabel);
+        settingGrBLayout(formPanel,gbc, 0, 9,observacionesLabel);
 
 
         gbc.ipadx=200;
@@ -161,12 +181,12 @@ public class FacturasFormInputData extends JFrame {
         settingGrBLayout(formPanel,gbc, 1, 3,baseImponibleFacturaCliente);
         settingGrBLayout(formPanel,gbc, 1, 4,ivaFacturaCliente);
         settingGrBLayout(formPanel,gbc, 1, 5,totalFacturaCliente);
-        settingGrBLayout(formPanel,gbc, 1, 6,hashFacturaCliente);
-        settingGrBLayout(formPanel,gbc, 1, 7,qrFacturaCliente);
-        settingGrBLayout(formPanel,gbc, 1, 8,cobradaFactura);
-        settingGrBLayout(formPanel,gbc, 1, 9,formaCobroFactura);
-        settingGrBLayout(formPanel,gbc, 1, 10,fechaCobroFactura);
-        settingGrBLayout(formPanel,gbc, 1, 11,observacionesFacturaCliente);
+        //settingGrBLayout(formPanel,gbc, 1, 6,hashFacturaCliente);
+        //settingGrBLayout(formPanel,gbc, 1, 7,qrFacturaCliente);
+        settingGrBLayout(formPanel,gbc, 1, 6,cobradaFactura);
+        settingGrBLayout(formPanel,gbc, 1, 7,formaCobroFactura);
+        settingGrBLayout(formPanel,gbc, 1, 8,fechaCobroFactura);
+        settingGrBLayout(formPanel,gbc, 1, 9,observacionesFacturaCliente);
         gbc.ipadx=0;
         gbc.ipady=0;
 
@@ -175,40 +195,37 @@ public class FacturasFormInputData extends JFrame {
         //add(new JLabel());  Empty cell
 
 
-        verLineaProductos = new JButton("Ver linea de productos");
-        submitButton = new JButton("Crear factura");
 
 
+
+
+        verLineasButton = new JButton("Ver linea de productos");
         JPanel buttonPanel = new JPanel(new FlowLayout());
-
-        buttonPanel.add(verLineaProductos);
-
-        buttonPanel.add(submitButton);
-
+        buttonPanel.add(verLineasButton);
+        buttonPanel.add(CrearFacturaButton);
         add(buttonPanel,BorderLayout.SOUTH);
 
-
-
-        verLineaProductos.addActionListener(new ActionListener() {
+        verLineasButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                String numFactura = numeroFacturaCliente.getText();
-                new LineasFacturaFormInputData(numFactura);
+                //String numFactura = numeroFacturaCliente.getText(); variable usada inicialmente
+                new LineasFacturaFormInputData(FacturasFormInputData.this);
             }
         });
 
+
+
         // Add action listener for the submit button
-        submitButton.addActionListener(new ActionListener() {
+        CrearFacturaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
-                if (!Objects.equals(totalFacturaCliente.getText(), "") && totalFacturaCliente.isEnabled()) {
-                   insertFactura();
-                   LineasFacturaFormInputData lf = new LineasFacturaFormInputData();
-                   lf.insertLinea();
-                   lf.clearFields();
-
+                if (!Objects.equals(totalFacturaCliente.getText(), "")) {
+                    if(CrearFacturaButton.isEnabled()){
+                        insertFactura();
+                        insertLinea(llf);
+                        clearFields();
+                    }
                 } else {
                     //mensaje de error
                 }
@@ -222,56 +239,105 @@ public class FacturasFormInputData extends JFrame {
     }
 
 
+
     private void insertFactura() {
 
-
         String query = "INSERT INTO facturasClientes (numeroFacturaCliente, fechaFacturaCliente, idClienteFactura," +
-                " baseImponibleFacturaCliente, ivaFacturaCliente, totalFacturaCliente, hasFacturaCliente," +
-                " qrFacturaCliente, cobradaFactura, formaCobroFactura, fechaCobroFactura," +
-                " observacionesFacturaCliente) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                " baseImponibleFacturaCliente, ivaFacturaCliente, totalFacturaCliente, cobradaFactura, formaCobroFactura, fechaCobroFactura," +
+                " observacionesFacturaClientes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        // hasFacturaCliente," + " qrFacturaCliente,
 
         try (
                 ConexionDB cdb = new ConexionDB();
                 Connection conn = cdb.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(query)) {
 
+
             pstmt.setString(1, numeroFacturaCliente.getText());
-            pstmt.setDate(2, (Date) fechaFacturaCliente.getValue());
+
+
+            //System.out.println("Valor de fecha elegida 1: "+fechaFacturaCliente.getValue());
+            //System.out.println("Tipo del valor fechaFacturaCliente: " + fechaFacturaCliente.getValue().getClass());
+
+
+            java.util.Date selectedDate1 = (java.util.Date)fechaFacturaCliente.getValue();
+            // Convert java.util.Date to java.sql.Date
+            java.sql.Date sqlDate1 = new java.sql.Date(selectedDate1.getTime());
+
+            pstmt.setDate(2, sqlDate1);
+
             pstmt.setString(3, String.valueOf(idClienteFactura.getSelectedItem()));
             pstmt.setString(4, baseImponibleFacturaCliente.getText());
             pstmt.setString(5, String.valueOf(ivaFacturaCliente.getText()));
             pstmt.setString(6, totalFacturaCliente.getText());
-            pstmt.setString(7, hashFacturaCliente.getText());
-            pstmt.setString(8, qrFacturaCliente.getText());
-            pstmt.setString(9, String.valueOf(cobradaFactura.getSelectedItem()));
-            pstmt.setString(10, formaCobroFactura.getText());
-            pstmt.setDate(11, (Date) fechaCobroFactura.getValue());
-            pstmt.setString(12, observacionesFacturaCliente.getText());
+
+            //pstmt.setString(7, hashFacturaCliente.getText());
+            //pstmt.setString(8, qrFacturaCliente.getText());
+
+            pstmt.setBoolean(7, Boolean.parseBoolean(String.valueOf(cobradaFactura.getSelectedItem())));
+            pstmt.setString(8, (String) formaCobroFactura.getSelectedItem());
+
+            java.util.Date selectedDate2 = (java.util.Date) fechaCobroFactura.getValue();
+            // Convert java.util.Date to java.sql.Date
+            java.sql.Date sqlDate2 = new java.sql.Date(selectedDate2.getTime());
+
+            pstmt.setDate(9, sqlDate2);
+
+            pstmt.setString(10, observacionesFacturaCliente.getText());
 
 
             pstmt.executeUpdate();
 
-            JOptionPane.showMessageDialog(this, "Customer added successfully!");
+            JOptionPane.showMessageDialog(this, "Bill added successfully!");
             clearFields();
         } catch (SQLException ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error adding customer: " + ex.getMessage());
+            JOptionPane.showMessageDialog(this, "Error adding bill: " + ex.getMessage());
         }
     }
 
-    private void clearFields() {
-        numeroFacturaCliente.setText("");
-        fechaFacturaCliente.setValue(currentDate);
-        idClienteFactura.setSelectedIndex(0);
-        baseImponibleFacturaCliente.setText("");
-        ivaFacturaCliente.setText("");
-        totalFacturaCliente.setText("");
-        hashFacturaCliente.setText("");
-        qrFacturaCliente.setText("");
-        cobradaFactura.setSelectedIndex(0);
-        formaCobroFactura.setText("");
-        fechaCobroFactura.setValue(currentDate);
-        observacionesFacturaCliente.setText("");
+
+    public void insertLinea(ArrayList<LineasFactura> llf) {
+
+        for (int i = 0; i < llf.size(); i++) {
+
+            LineasFactura linea = llf.get(i);
+
+
+            String query_codigo3 = "INSERT INTO lineasFacturasClientes (numeroFacturaCliente, idArticulo, descripcionArticulo, codigoArticulo," +
+                    " pvpArticulo, ivaArticulo, idProveedorArticulo, nombreProveedorArticulo" +
+                    " ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+            try (
+                    ConexionDB cdb = new ConexionDB();
+                    Connection conn = cdb.getConnection();
+                    PreparedStatement pstmt = conn.prepareStatement(query_codigo3)) {
+
+                pstmt.setInt(1, Integer.valueOf(numeroFacturaCliente.getText()));
+                pstmt.setInt(2, Integer.valueOf(linea.getIdArticulo()));
+                pstmt.setString(3, linea.getDescripcionArticulo());
+                pstmt.setString(4, linea.getCodigoArticulo());
+                pstmt.setDouble(5, Double.valueOf(linea.getPvpArticulo()));
+
+                pstmt.setDouble(6, Double.valueOf(linea.getIvaArticulo()));
+                // query anidada entre tiposIva, familiaArticulo y articulo
+
+                pstmt.setInt(7, Integer.valueOf(linea.getIdProveedorArticulo()));
+
+                pstmt.setString(8, linea.getNombreProveedorArticulo());
+                // query entre articulos y proveedores a partir de clave foranea ProveedorArticulo = idProveedor
+
+                pstmt.executeUpdate();
+
+                JOptionPane.showMessageDialog(this, "Article added successfully!");
+                clearFields();
+
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Error adding article: " + ex.getMessage());
+            }
+        }
     }
 
 
@@ -281,7 +347,7 @@ public class FacturasFormInputData extends JFrame {
         constraints.gridx = valorx;
         constraints.gridy = valory;
         if (o instanceof JTextField) {
-           // ((JTextField) o).setPreferredSize(new Dimension(ancho, alto));
+            // ((JTextField) o).setPreferredSize(new Dimension(ancho, alto));
             formPanel.add((JTextField) o, constraints);
         } else if (o instanceof JComboBox<?>) {
             //((JComboBox<?>) o).setPreferredSize(new Dimension(ancho, alto));
@@ -294,6 +360,91 @@ public class FacturasFormInputData extends JFrame {
         }
         //constraints.gridwidth=1;
 
+    }
+
+
+    public String getNumeroFacturaCliente() {
+        return numeroFacturaCliente.getText();
+    }
+
+
+    public void habilitarFactura(ArrayList<LineasFactura> lineasFacturaList){
+
+
+        // Evaluamos la condicion de si hay lineas de producto
+        System.out.println("lista longitud "+lineasFacturaList.size());
+
+        if(lineasFacturaList.size() > 0){
+            CrearFacturaButton.setEnabled(true);
+
+        }
+
+        llf = lineasFacturaList;
+        setearImportesFactura();
+
+    }
+
+    private void setearImportesFactura() {
+        double total = 0.0;
+        double totalIVA = 0.0;
+        double total_factura;
+
+        // DecimalFormat df = new DecimalFormat("#.###"); Clase no usada, por consultar para aplicar correctamente
+
+
+        if(CrearFacturaButton.isEnabled()){
+            // bucle sobre array de  objetos de linea de factura para sumar pvpArticulo a la base_imponible
+
+            for (int i = 0; i < llf.size() ; i++) {
+
+              LineasFactura lf = llf.get(i);
+
+              double precio_articulo = lf.getPvpArticulo();
+
+              total+=precio_articulo;
+
+              double iva_articulo=lf.getIvaArticulo();
+
+              iva_articulo=iva_articulo/100;
+                System.out.println("IVA: "+iva_articulo);
+
+
+              totalIVA+=precio_articulo*iva_articulo;
+                System.out.println("Se ha seteado un valor total de iva: "+totalIVA);
+
+
+            }
+
+
+            //base_imponible= Double.parseDouble(df.format(total).replaceAll("[^\\d.]", ""));
+            base_imponible=total;
+            baseImponibleFacturaCliente.setText(String.valueOf(base_imponible));
+            //suma_iva_articulos= Double.valueOf(df.format(base_imponible*0.21).replaceAll("[^\\d.]", ""));
+            suma_iva_articulos=totalIVA;
+            ivaFacturaCliente.setText(String.valueOf(suma_iva_articulos));
+
+            //total = Double.valueOf(baseImponibleFacturaCliente.getText()) + Double.valueOf(String.valueOf(ivaFacturaCliente.getText()));
+
+
+            //total_factura = Double.valueOf(df.format(base_imponible+suma_iva_articulos).replaceAll("[^\\d.]", ""));
+            total_factura = base_imponible + suma_iva_articulos;
+            totalFacturaCliente.setText(String.valueOf(total_factura));
+        }
+    }
+
+    private void clearFields() {
+        numeroFacturaCliente.setText("");
+        fechaFacturaCliente.setValue(currentTime);
+        idClienteFactura.setSelectedIndex(0);
+        baseImponibleFacturaCliente.setText("");
+        ivaFacturaCliente.setText("");
+        totalFacturaCliente.setText("");
+        hashFacturaCliente.setText("");
+        qrFacturaCliente.setText("");
+        cobradaFactura.setSelectedIndex(0);
+        formaCobroFactura.setSelectedIndex(0);
+        fechaCobroFactura.setValue(currentTime);
+        observacionesFacturaCliente.setText("");
     }
 
 
