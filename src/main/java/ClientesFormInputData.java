@@ -167,6 +167,7 @@ public class ClientesFormInputData extends JFrame {
             }
         });
 
+        pack();
         this.setVisible(true);
     }
 

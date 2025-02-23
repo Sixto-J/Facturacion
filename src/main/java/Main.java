@@ -121,6 +121,7 @@ public class Main extends JFrame {
        panel.add(verInfoClientes); panel.add(generarFormularioArticulos); panel.add(verInfoArticulos);*/
 
         add(panel, BorderLayout.CENTER);
+        pack();
     }
 
     class MenuItemActionListener implements ActionListener {
@@ -172,8 +173,6 @@ public class Main extends JFrame {
             if(source.getText().equals("Crear Factura")){
                 new FacturasFormInputData();
             }
-
-
 
             popupMenu.setVisible(false); // Hide the popup menu
 

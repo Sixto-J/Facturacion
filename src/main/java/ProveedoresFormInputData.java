@@ -156,7 +156,7 @@ public class ProveedoresFormInputData extends JFrame {
         gbc.anchor = GridBagConstraints.CENTER; // Center the button
         submitButton.setPreferredSize(new Dimension(150, 40));
         add(submitButton, gbc);
-
+        pack();
 
         //listener en el JFrame
         // Add action listener for the submit button

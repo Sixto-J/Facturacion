@@ -48,13 +48,6 @@ public class Facturas {
     }
 
 
-    public boolean isCobradaFactura() {
-        return cobradaFactura;
-    }
-    public void crearFacturas() {} // calculo IVA y total
-    public void verFacturas() {}
-
-
 
     public DefaultTableModel obtener_facturas(){
 
@@ -96,8 +89,6 @@ public class Facturas {
         }
 
         return model;
-
-
     }
 
 

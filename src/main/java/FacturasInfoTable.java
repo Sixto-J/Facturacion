@@ -5,6 +5,8 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.*;
 import java.util.Vector;
 
@@ -46,6 +48,26 @@ public class FacturasInfoTable {
 
         // Set the frame visibility
         frame.setVisible(true);
+
+
+
+        table.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                // Get the selected row index
+                int row = table.getSelectedRow();
+                if (row != -1) {
+
+                    // Retrieve data from the selected row
+                  int idFacturaCliente = (int) table.getValueAt(row, 0);
+
+
+                    // Create and show a new JFrame with the row data
+                    new LineasFacturaInfoTable(idFacturaCliente);
+                }
+            }
+        });
+
 
     }
 

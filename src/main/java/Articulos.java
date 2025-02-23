@@ -10,7 +10,7 @@ public class Articulos {
 
     private int idArticulo;
     private String codigoArticulo;
-    private String codigoBarrasArticulo;
+    //private String codigoBarrasArticulo;
     private String descripcionArticulo;
     private double costeArticulo;
     private double margenComercialArticulo;
@@ -23,13 +23,14 @@ public class Articulos {
     private DefaultTableModel model;
 
 
-    public Articulos(int idArticulo, String codigoArticulo,
-                     String codigoBarrasArticulo, String descripcionArticulo, double costeArticulo,
+    public Articulos(int idArticulo, String codigoArticulo, String descripcionArticulo, double costeArticulo,
                      double margenComercialArticulo, double pvpArticulo, int proveedorArticulo,
                      int stockArticulo, String observacionesArticulo, int familiaArticulo) {
+
+        //String codigoBarrasArticulo,
         this.idArticulo = idArticulo;
         this.codigoArticulo = codigoArticulo;
-        this.codigoBarrasArticulo = codigoBarrasArticulo;
+        //this.codigoBarrasArticulo = codigoBarrasArticulo;
         this.descripcionArticulo = descripcionArticulo;
         this.costeArticulo = costeArticulo;
         this.margenComercialArticulo = margenComercialArticulo;
@@ -43,15 +44,6 @@ public class Articulos {
     public Articulos(){
 
     }
-
-
-    public void crearArticulo() {}
-    public void modificarArticulo() {}
-    public void verArticulo() {}
-
-
-
-
 
 
     public DefaultTableModel obtener_articulos() {
@@ -100,9 +92,12 @@ public class Articulos {
 
     public List<Articulos> obtener_articulos_v1(){
         List<Articulos> lista_articulos = new ArrayList<>();
-        String query = "SELECT idArticulo, codigoArticulo, codigoBarrasArticulo, descripcionArticulo, costeArticulo," +
+        String query = "SELECT idArticulo, codigoArticulo, descripcionArticulo, costeArticulo," +
                 " margenComercialArticulo, pvpArticulo, proveedorArticulo, stockArticulo," +
                 " observacionesArticulo, familiaArticulo FROM articulos";
+
+        //codigoBarrasArticulo,
+
 
 
         try (ConexionDB conn = new ConexionDB()) {
@@ -126,7 +121,7 @@ public class Articulos {
                     while (resultSet.next()) {
                         idArticulo = resultSet.getInt("idArticulo");
                         codigoArticulo = resultSet.getString("codigoArticulo");
-                        codigoBarrasArticulo = resultSet.getString("codigoBarrasArticulo");
+                        //codigoBarrasArticulo = resultSet.getString("codigoBarrasArticulo");
                         descripcionArticulo = resultSet.getString("codigonArticulo");
                         costeArticulo = resultSet.getDouble("costeArticulo");
                         margenComercialArticulo = resultSet.getDouble("margenComercialArticulo");
@@ -136,10 +131,10 @@ public class Articulos {
                         observacionesArticulo = resultSet.getString("observacionesArticulo");
                         familiaArticulo = resultSet.getInt("familiaArticulo");
 
-                        Articulos articulo = new Articulos(idArticulo, codigoArticulo, codigoBarrasArticulo,
-                                descripcionArticulo,
-                                costeArticulo, margenComercialArticulo, pvpArticulo, proveedorArticulo, stockArticulo, observacionesArticulo,
+                        Articulos articulo = new Articulos(idArticulo, codigoArticulo, descripcionArticulo, costeArticulo,
+                                margenComercialArticulo, pvpArticulo, proveedorArticulo, stockArticulo, observacionesArticulo,
                                 familiaArticulo
+                                //codigoBarrasArticulo,
                         );
                         lista_articulos.add(articulo);
                     }

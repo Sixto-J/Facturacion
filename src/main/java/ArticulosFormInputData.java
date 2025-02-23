@@ -41,16 +41,21 @@ public class ArticulosFormInputData extends JFrame {
         // Create labels and text fields
         JLabel codigoArticuloLabel = new JLabel("codigoArticulo");
         codigoArticulo = new JTextField();
-        JLabel codigoBarrasArticuloLabel = new JLabel("codigoBarrasArticulo");
-        codigoBarrasArticulo = new JTextField();
+        codigoArticulo.setPreferredSize(new Dimension(250, 40));
+        //JLabel codigoBarrasArticuloLabel = new JLabel("codigoBarrasArticulo");
+        //codigoBarrasArticulo = new JTextField();
         JLabel descripcionArticuloLabel = new JLabel("descripcionArticulo");
         descripcionArticulo = new JTextField();
+        descripcionArticulo.setPreferredSize(new Dimension(250, 40));
         JLabel costeArticuloLabel = new JLabel("costeArticulo");
         costeArticulo = new JTextField();
+        costeArticulo.setPreferredSize(new Dimension(250, 40));
         JLabel margenComercialArticuloLabel = new JLabel("margenComercialArticulo");
         margenComercialArticulo = new JTextField();
+        margenComercialArticulo.setPreferredSize(new Dimension(250, 40));
         JLabel pvpArticuloLabel = new JLabel("pvpArticulo");
         pvpArticulo = new JTextField();
+        pvpArticulo.setPreferredSize(new Dimension(250, 40));
 
 
         JLabel proveedorArticuloLabel = new JLabel("proveedorArticulo");
@@ -81,6 +86,7 @@ public class ArticulosFormInputData extends JFrame {
             DefaultComboBoxModel<String> model_proveedores = new DefaultComboBoxModel<>(proveedores.toArray(new String[0]));
             proveedorArticulo = new JComboBox<>(model_proveedores);
             nombreProveedorAuxLabel.setText(nombre_proveedores.getFirst());
+            proveedorArticulo.setPreferredSize(new Dimension(250, 50));
 
 
         } catch (SQLException e) {
@@ -139,6 +145,7 @@ public class ArticulosFormInputData extends JFrame {
 
             DefaultComboBoxModel<String> model_familia = new DefaultComboBoxModel<>(familia_articulo.toArray(new String[0]));
             familiaArticulo = new JComboBox<>(model_familia);
+            familiaArticulo.setPreferredSize(new Dimension(250, 50));
             nombreFamiliaAuxLabel.setText(nombre_articulo.getFirst());
 
         } catch (SQLException e) {
@@ -195,15 +202,24 @@ public class ArticulosFormInputData extends JFrame {
 
         JLabel stockArticuloLabel = new JLabel("stockArticulo");
         stockArticulo = new JTextField();
+        stockArticulo.setPreferredSize(new Dimension(250, 40));
 
 
         JLabel observacionesArticuloLabel = new JLabel("observacionesArticulo");
         observacionesArticulo = new JTextField();
+        observacionesArticulo.setPreferredSize(new Dimension(250, 40));
 
 
         submitButton = new JButton("Crear artículo");
+        submitButton.setPreferredSize(new Dimension(150, 40));
 
-
+        // Add action listener for the submit button
+        submitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                insertArticulo();
+            }
+        });
 
 
 
@@ -217,13 +233,13 @@ public class ArticulosFormInputData extends JFrame {
         gbc.gridy = 0;
         add(codigoArticulo, gbc);
 
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        add(codigoBarrasArticuloLabel, gbc);
+        //gbc.gridx = 0;
+        //gbc.gridy = 1;
+        //add(codigoBarrasArticuloLabel, gbc);
 
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        add(codigoBarrasArticulo, gbc);
+        //gbc.gridx = 1;
+        //gbc.gridy = 1;
+        //add(codigoBarrasArticulo, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 2;
@@ -308,15 +324,7 @@ public class ArticulosFormInputData extends JFrame {
 
         add(submitButton, gbc);
 
-
-        // Add action listener for the submit button
-        submitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                insertArticulo();
-            }
-        });
-
+        pack();
 
         this.setVisible(true);
     }
@@ -324,9 +332,11 @@ public class ArticulosFormInputData extends JFrame {
 
     private void insertArticulo() {
 
-        String query = "INSERT INTO codigoArticulo, codigoBarrasArticulo, descripcionArticulo, costeArticulo, margenComercialArticulo," +
+        String query = "INSERT INTO codigoArticulo, descripcionArticulo, costeArticulo, margenComercialArticulo," +
                 " pvpArticulo, proveedorArticulo, stockArticulo, observacionesArticulo, familiaArticulo," +
                 " ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        //codigoBarrasArticulo,
 
         try (
                 ConexionDB cdb = new ConexionDB();
@@ -334,7 +344,7 @@ public class ArticulosFormInputData extends JFrame {
                 PreparedStatement pstmt = conn.prepareStatement(query)) {
 
             pstmt.setString(1, codigoArticulo.getText());
-            pstmt.setString(2, codigoBarrasArticulo.getText());
+            //pstmt.setString(2, codigoBarrasArticulo.getText());
             pstmt.setString(3, descripcionArticulo.getText());
             pstmt.setDouble(4, Double.valueOf(costeArticulo.getText()));
             pstmt.setDouble(5, Double.valueOf(margenComercialArticulo.getText()));
@@ -357,7 +367,7 @@ public class ArticulosFormInputData extends JFrame {
 
     private void clearFields() {
         codigoArticulo.setText("");
-        codigoBarrasArticulo.setText("");
+        //codigoBarrasArticulo.setText("");
         descripcionArticulo.setText("");
         costeArticulo.setText("");
         margenComercialArticulo.setText("");

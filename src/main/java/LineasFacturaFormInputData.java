@@ -78,8 +78,6 @@ public class LineasFacturaFormInputData extends JFrame {
 
 
 
-
-
             codigosCombo = new JComboBox<>();
             setCodigosCombo(codigosCombo);
             // Add an ItemListener to the JComboBox
@@ -92,10 +90,6 @@ public class LineasFacturaFormInputData extends JFrame {
                     }
                 }
             });
-
-
-
-
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -274,8 +268,6 @@ public class LineasFacturaFormInputData extends JFrame {
 
             while(rs_codigo.next()){
                 ivaArticulo = rs_codigo.getString("ti.iva");
-
-
             }
 
         } catch (SQLException ex) {
@@ -288,14 +280,8 @@ public class LineasFacturaFormInputData extends JFrame {
 
         System.out.println(lf.toString());
 
-
         llf.add(lf);
-
-
-
     }
-
-
 
     protected void clearFields() {
         numeroFacturaCliente.setText("");

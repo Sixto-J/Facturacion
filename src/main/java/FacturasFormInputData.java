@@ -35,6 +35,9 @@ public class FacturasFormInputData extends JFrame {
 
     double base_imponible = 0;
     double suma_iva_articulos = 0;
+    double total_factura;
+
+    String aux_nfc = "";
 
 
     public FacturasFormInputData() {
@@ -210,7 +213,17 @@ public class FacturasFormInputData extends JFrame {
             public void actionPerformed(ActionEvent e) {
 
                 //String numFactura = numeroFacturaCliente.getText(); variable usada inicialmente
-                new LineasFacturaFormInputData(FacturasFormInputData.this);
+
+                String nf = numeroFacturaCliente.getText();
+                boolean digit = nf.matches("\\d+");
+
+                if(nf.isEmpty()){
+                    JOptionPane.showMessageDialog(FacturasFormInputData.this, "Campo numeroFacturaCliente está vacío!");
+                }else if(!digit){
+                    JOptionPane.showMessageDialog(FacturasFormInputData.this, "Campo numeroFacturaCliente debe tener sólo dígitos!");
+                }else {
+                    new LineasFacturaFormInputData(FacturasFormInputData.this);
+                }
             }
         });
 
@@ -256,6 +269,7 @@ public class FacturasFormInputData extends JFrame {
 
             pstmt.setString(1, numeroFacturaCliente.getText());
 
+            aux_nfc = numeroFacturaCliente.getText();
 
             //System.out.println("Valor de fecha elegida 1: "+fechaFacturaCliente.getValue());
             //System.out.println("Tipo del valor fechaFacturaCliente: " + fechaFacturaCliente.getValue().getClass());
@@ -268,9 +282,10 @@ public class FacturasFormInputData extends JFrame {
             pstmt.setDate(2, sqlDate1);
 
             pstmt.setString(3, String.valueOf(idClienteFactura.getSelectedItem()));
-            pstmt.setString(4, baseImponibleFacturaCliente.getText());
-            pstmt.setString(5, String.valueOf(ivaFacturaCliente.getText()));
-            pstmt.setString(6, totalFacturaCliente.getText());
+
+            pstmt.setDouble(4, Double.parseDouble(baseImponibleFacturaCliente.getText()));
+            pstmt.setDouble(5, Double.parseDouble(ivaFacturaCliente.getText()));
+            pstmt.setDouble(6, Double.parseDouble(totalFacturaCliente.getText()));
 
             //pstmt.setString(7, hashFacturaCliente.getText());
             //pstmt.setString(8, qrFacturaCliente.getText());
@@ -288,7 +303,6 @@ public class FacturasFormInputData extends JFrame {
 
 
             pstmt.executeUpdate();
-
             JOptionPane.showMessageDialog(this, "Bill added successfully!");
             clearFields();
         } catch (SQLException ex) {
@@ -300,38 +314,39 @@ public class FacturasFormInputData extends JFrame {
 
     public void insertLinea(ArrayList<LineasFactura> llf) {
 
-        for (int i = 0; i < llf.size(); i++) {
+        for (LineasFactura linea : llf) {
 
-            LineasFactura linea = llf.get(i);
+            System.out.println("LINEAS: " + linea);
 
-
-            String query_codigo3 = "INSERT INTO lineasFacturasClientes (numeroFacturaCliente, idArticulo, descripcionArticulo, codigoArticulo," +
+            String query = "INSERT INTO lineasFacturasClientes (numeroFacturaCliente, idArticulo, descripcionArticulo, codigoArticulo," +
                     " pvpArticulo, ivaArticulo, idProveedorArticulo, nombreProveedorArticulo" +
                     " ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
             try (
                     ConexionDB cdb = new ConexionDB();
                     Connection conn = cdb.getConnection();
-                    PreparedStatement pstmt = conn.prepareStatement(query_codigo3)) {
+                    PreparedStatement pstmt = conn.prepareStatement(query)) {
 
-                pstmt.setInt(1, Integer.valueOf(numeroFacturaCliente.getText()));
-                pstmt.setInt(2, Integer.valueOf(linea.getIdArticulo()));
+                pstmt.setInt(1, Integer.parseInt(aux_nfc));
+                pstmt.setInt(2, linea.getIdArticulo());
                 pstmt.setString(3, linea.getDescripcionArticulo());
                 pstmt.setString(4, linea.getCodigoArticulo());
-                pstmt.setDouble(5, Double.valueOf(linea.getPvpArticulo()));
+                pstmt.setDouble(5, linea.getPvpArticulo());
+                pstmt.setDouble(6, linea.getIvaArticulo());
 
-                pstmt.setDouble(6, Double.valueOf(linea.getIvaArticulo()));
-                // query anidada entre tiposIva, familiaArticulo y articulo
-
-                pstmt.setInt(7, Integer.valueOf(linea.getIdProveedorArticulo()));
-
+                // necesita una query anidada entre tiposIva, familiaArticulo y articulo
+                pstmt.setInt(7, linea.getIdProveedorArticulo());
                 pstmt.setString(8, linea.getNombreProveedorArticulo());
                 // query entre articulos y proveedores a partir de clave foranea ProveedorArticulo = idProveedor
 
-                pstmt.executeUpdate();
+                int rowsAffected = pstmt.executeUpdate();
 
-                JOptionPane.showMessageDialog(this, "Article added successfully!");
-                clearFields();
+                if (rowsAffected > 0) {
+                    JOptionPane.showMessageDialog(this, "Article added successfully!");
+                } else {
+                    JOptionPane.showMessageDialog(this, "No Article added!");
+                }
+                //clearFields();
 
             } catch (SQLException ex) {
                 ex.printStackTrace();
@@ -384,13 +399,13 @@ public class FacturasFormInputData extends JFrame {
 
     }
 
+
     private void setearImportesFactura() {
+
         double total = 0.0;
         double totalIVA = 0.0;
-        double total_factura;
 
         // DecimalFormat df = new DecimalFormat("#.###"); Clase no usada, por consultar para aplicar correctamente
-
 
         if(CrearFacturaButton.isEnabled()){
             // bucle sobre array de  objetos de linea de factura para sumar pvpArticulo a la base_imponible
@@ -417,18 +432,23 @@ public class FacturasFormInputData extends JFrame {
 
 
             //base_imponible= Double.parseDouble(df.format(total).replaceAll("[^\\d.]", ""));
-            base_imponible=total;
-            baseImponibleFacturaCliente.setText(String.valueOf(base_imponible));
             //suma_iva_articulos= Double.valueOf(df.format(base_imponible*0.21).replaceAll("[^\\d.]", ""));
-            suma_iva_articulos=totalIVA;
-            ivaFacturaCliente.setText(String.valueOf(suma_iva_articulos));
-
+            //total_factura = Double.valueOf(df.format(base_imponible+suma_iva_articulos).replaceAll("[^\\d.]", ""));
             //total = Double.valueOf(baseImponibleFacturaCliente.getText()) + Double.valueOf(String.valueOf(ivaFacturaCliente.getText()));
 
+            base_imponible=total;
+            base_imponible = Math.floor(base_imponible * 100) / 100;
+            baseImponibleFacturaCliente.setText(String.valueOf(base_imponible));
 
-            //total_factura = Double.valueOf(df.format(base_imponible+suma_iva_articulos).replaceAll("[^\\d.]", ""));
+            suma_iva_articulos=totalIVA;
+            suma_iva_articulos = Math.floor(suma_iva_articulos * 100) / 100;
+            ivaFacturaCliente.setText(String.valueOf(suma_iva_articulos));
+
+
             total_factura = base_imponible + suma_iva_articulos;
+            total_factura = Math.floor(total_factura * 100) / 100;
             totalFacturaCliente.setText(String.valueOf(total_factura));
+
         }
     }
 
@@ -449,9 +469,6 @@ public class FacturasFormInputData extends JFrame {
 
 
 }
-
-
-
 
        /*  dropdown de IVA no usado
         try (ConexionDB cdb = new ConexionDB();
