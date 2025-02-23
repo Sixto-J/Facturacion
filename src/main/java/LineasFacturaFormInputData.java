@@ -14,17 +14,15 @@ public class LineasFacturaFormInputData extends JFrame {
     private JComboBox familiasCombo;
     private JComboBox codigosCombo;
     private JButton AgregarLinea;
+    private JButton VaciarLinea;
+    private JButton backButton;
     private JLabel buscadorFamiliasLabel;
     private JLabel buscadorCodigoArticuloLabel;
     private JLabel numeroFacturaClienteLabel;
     private JLabel numeroFacturaCliente;
 
-    private JLabel familiaArticuloLabel; //select
-    private JLabel codigoArticuloLabel; // select
 
-    private JButton backButton;
 
-    FacturasFormInputData ffid;
 
     ArrayList<LineasFactura> llf = new ArrayList<>();
 
@@ -99,7 +97,7 @@ public class LineasFacturaFormInputData extends JFrame {
 
         // Botones y listeners
         backButton = new JButton("Volver");
-        backButton.setPreferredSize(new Dimension(100, 50));
+        backButton.setPreferredSize(new Dimension(50, 50));
 
         // Add action listener for the submit button
         backButton.addActionListener(new ActionListener() {
@@ -116,7 +114,7 @@ public class LineasFacturaFormInputData extends JFrame {
 
 
 
-        AgregarLinea = new JButton("Añadir linea de producto");
+        AgregarLinea = new JButton("Añadir linea");
         AgregarLinea.setPreferredSize(new Dimension(100, 50));
 
         AgregarLinea.addActionListener(new ActionListener() {
@@ -124,6 +122,17 @@ public class LineasFacturaFormInputData extends JFrame {
             public void actionPerformed(ActionEvent e) {
 
                 crearLinea();
+
+            }
+        });
+
+        VaciarLinea = new JButton("Vaciar lineas");
+        VaciarLinea.setPreferredSize(new Dimension(150, 50));
+        VaciarLinea.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                vaciarLinea();
 
             }
         });
@@ -142,13 +151,17 @@ public class LineasFacturaFormInputData extends JFrame {
         gbc.gridx = 1; gbc.gridy=0;
         add(numeroFacturaCliente,gbc);
         gbc.gridx = 1; gbc.gridy=1;
+
         add(familiasCombo,gbc);
         gbc.gridx = 1; gbc.gridy=2;
         add(codigosCombo,gbc);
+
         gbc.gridx=0; gbc.gridy=3;
         add(backButton, gbc);
         gbc.gridx=1; gbc.gridy=3;
         add(AgregarLinea,gbc);
+        gbc.gridx=2; gbc.gridy=3;
+        add(VaciarLinea,gbc);
 
         pack();
         setLocationRelativeTo(null);
@@ -156,6 +169,9 @@ public class LineasFacturaFormInputData extends JFrame {
 
     }
 
+    private void vaciarLinea() {
+        llf.clear();
+    }
 
 
     private void setCodigosCombo(JComboBox codigosCombo) {

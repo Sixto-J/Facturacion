@@ -18,8 +18,8 @@ public class FacturasFormInputData extends JFrame {
     private JTextField baseImponibleFacturaCliente;
     private JTextField ivaFacturaCliente;
     private JTextField totalFacturaCliente;
-    private JTextField hashFacturaCliente;
-    private JTextField qrFacturaCliente;
+    //private JTextField hashFacturaCliente;
+    //private JTextField qrFacturaCliente;
     private JComboBox cobradaFactura;
     private JComboBox formaCobroFactura;
     private JSpinner fechaCobroFactura;
@@ -110,11 +110,11 @@ public class FacturasFormInputData extends JFrame {
         totalFacturaCliente = new JTextField();
         totalFacturaCliente.setEnabled(false);
 
-
+/*
         JLabel hashFacturaClienteLabel = new JLabel("Hash");
         hashFacturaCliente = new JTextField();
         JLabel qrFacturaClienteLabel = new JLabel("QR");
-        qrFacturaCliente = new JTextField();
+        qrFacturaCliente = new JTextField();*/
 
 
         JLabel cobradaFacturaLabel = new JLabel("Cobrada");
@@ -218,7 +218,7 @@ public class FacturasFormInputData extends JFrame {
                 boolean digit = nf.matches("\\d+");
 
                 if(nf.isEmpty()){
-                    JOptionPane.showMessageDialog(FacturasFormInputData.this, "Campo numeroFacturaCliente está vacío!");
+                    JOptionPane.showMessageDialog(FacturasFormInputData.this, "Campo numeroFacturaCliente no puede estar vacío!");
                 }else if(!digit){
                     JOptionPane.showMessageDialog(FacturasFormInputData.this, "Campo numeroFacturaCliente debe tener sólo dígitos!");
                 }else {
@@ -257,7 +257,7 @@ public class FacturasFormInputData extends JFrame {
 
         String query = "INSERT INTO facturasClientes (numeroFacturaCliente, fechaFacturaCliente, idClienteFactura," +
                 " baseImponibleFacturaCliente, ivaFacturaCliente, totalFacturaCliente, cobradaFactura, formaCobroFactura, fechaCobroFactura," +
-                " observacionesFacturaClientes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                " observacionesFacturaCliente) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         // hasFacturaCliente," + " qrFacturaCliente,
 
@@ -346,7 +346,6 @@ public class FacturasFormInputData extends JFrame {
                 } else {
                     JOptionPane.showMessageDialog(this, "No Article added!");
                 }
-                //clearFields();
 
             } catch (SQLException ex) {
                 ex.printStackTrace();
@@ -459,8 +458,8 @@ public class FacturasFormInputData extends JFrame {
         baseImponibleFacturaCliente.setText("");
         ivaFacturaCliente.setText("");
         totalFacturaCliente.setText("");
-        hashFacturaCliente.setText("");
-        qrFacturaCliente.setText("");
+        //hashFacturaCliente.setText("");
+        //qrFacturaCliente.setText("");
         cobradaFactura.setSelectedIndex(0);
         formaCobroFactura.setSelectedIndex(0);
         fechaCobroFactura.setValue(currentTime);

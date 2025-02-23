@@ -10,13 +10,9 @@ import java.util.Arrays;
 
 public class Main extends JFrame {
 
+    private JButton generateFactura, verInfoClientes, verInfoArticulos, verFacturas, generarFormularioClientes, generarFormularioArticulos;
 
     private JTextArea textArea;
-
-    private JButton generateFactura, verInfoClientes, verInfoArticulos, verFacturas,
-            generarFormularioClientes, generarFormularioArticulos;
-
-
     private JTextField fichasField = null;
     private JTextField FacturasField = null;
     private JTextField RectificativasField= null;
@@ -35,14 +31,14 @@ public class Main extends JFrame {
     private JTextField[] textFields = {fichasField,FacturasField,RectificativasField,ListadosField,ConfiguracionField,AyudaField};
     private JPopupMenu[] popupMenus = {popupMenuFichas,popupMenuFacturas,popupMenuRectificativas,popupMenuListados,popupMenuConfiguracion,popupMenuAyuda};
 
-    private String[] itemsFichas = {"Clientes", "Articulos", "Proveedores", "TiposIVA","FamiliaProductos"};
+    private String[] itemsFichas = {"Clientes", "Articulos", "Proveedores"}; //"TiposIVA", "FamiliaProductos",
     private String[] itemsFacturas = {"Crear Factura","Ver Factura"};
     private String[] itemsRectificativas = {"Crear Rectificativa","Ver Rectificativa"};
-    private String[] itemsListados = {"ListadoClientes","ListadoArticulos","ListadoProveedores","ListadoTiposIVA","ListadoFamiliaProductos"};
+    private String[] itemsListados = {"ListadoClientes","ListadoArticulos","ListadoProveedores"}; //"ListadoTiposIVA", "ListadoFamiliaProductos",
     private String[] itemsConfiguracion = {"Datos de la empresa"};
     private String[] itemsAyuda = {"Manual de usuario","Acerca de"};
 
-    private ArrayList<String[]> items_lista = new ArrayList<>(Arrays.asList(itemsFichas,itemsFacturas,itemsRectificativas, itemsListados,itemsConfiguracion,itemsAyuda));
+    private ArrayList<String[]> items_lista = new ArrayList<>(Arrays.asList(itemsFichas,itemsFacturas,itemsRectificativas,itemsListados,itemsConfiguracion,itemsAyuda));
 
 
 
@@ -109,17 +105,6 @@ public class Main extends JFrame {
 
         }
 
-        //generarFormularioClientes = new JButton("Crear Clientes");
-        //generarFormularioArticulos= new JButton("Crear Articulos");
-        //verInfoClientes = new JButton("InfoClientes");
-        //verInfoArticulos = new JButton("InfoArticulos");
-        //verFacturas = new JButton("InfoFacturas");
-        //generateFactura = new JButton("Generar Factura");
-
-
-      /*  panel.add(generateFactura); panel.add(verFacturas); panel.add(generarFormularioClientes);
-       panel.add(verInfoClientes); panel.add(generarFormularioArticulos); panel.add(verInfoArticulos);*/
-
         add(panel, BorderLayout.CENTER);
         pack();
     }
@@ -146,12 +131,6 @@ public class Main extends JFrame {
             if(source.getText().equals("Proveedores")){
                 new ProveedoresFormInputData();
             }
-            if(source.getText().equals("TiposIVA")){
-                //new TiposIVAFormInputData();
-            }
-            if(source.getText().equals("FamiliaProductos")){
-                //new FamiliaProductosFormInputData();
-            }
             if(source.getText().equals("ListadoClientes")){
                 new ClientesInfoTable();
             }
@@ -161,17 +140,29 @@ public class Main extends JFrame {
             if(source.getText().equals("ListadoProveedores")){
                 new ProveedoresInfoTable();
             }
-            if(source.getText().equals("ListadoTiposIVA")){
-                //new TiposIVAInfoTable();
-            }
-            if(source.getText().equals("ListadoFamiliaProductos")){
-                //new FamiliaProductosInfoTable();
-            }
             if(source.getText().equals("Ver Factura")){
                 new FacturasInfoTable();
             }
             if(source.getText().equals("Crear Factura")){
                 new FacturasFormInputData();
+            }
+            if(source.getText().equals("Ver Rectificativa")){
+                new RectificativasInfoTable();
+            }
+            if(source.getText().equals("Crear Rectificativa")){
+                new RectificativasFormInputData();
+            }
+            if(source.getText().equals("TiposIVA")){
+                //new TiposIVAFormInputData();
+            }
+            if(source.getText().equals("FamiliaProductos")){
+                //new FamiliaProductosFormInputData();
+            }
+            if(source.getText().equals("ListadoTiposIVA")){
+                //new TiposIVAInfoTable();
+            }
+            if(source.getText().equals("ListadoFamiliaProductos")){
+                //new FamiliaProductosInfoTable();
             }
 
             popupMenu.setVisible(false); // Hide the popup menu
@@ -182,3 +173,15 @@ public class Main extends JFrame {
     }
 
 }
+
+
+//generarFormularioClientes = new JButton("Crear Clientes");
+//generarFormularioArticulos= new JButton("Crear Articulos");
+//verInfoClientes = new JButton("InfoClientes");
+//verInfoArticulos = new JButton("InfoArticulos");
+//verFacturas = new JButton("InfoFacturas");
+//generateFactura = new JButton("Generar Factura");
+
+
+/*  panel.add(generateFactura); panel.add(verFacturas); panel.add(generarFormularioClientes);
+    panel.add(verInfoClientes); panel.add(generarFormularioArticulos); panel.add(verInfoArticulos);*/
