@@ -38,36 +38,70 @@ public class ProveedoresFormInputData extends JFrame {
         gbc.insets = new Insets(5, 20, 5, 20);
         gbc.weightx=2;
 
+        Utilidades u = new Utilidades();
+
         // Create labels and text fields
         JLabel nombreLabel = new JLabel("Nombre");
         nombre = new JTextField();
+
         JLabel paisLabel = new JLabel("Pais");
         pais = new JTextField();
+
         JLabel direccionLabel = new JLabel("Direccion");
         direccion = new JTextField();
+
         JLabel cpLabel = new JLabel("CP");
         cp = new JTextField();
+        u.CheckInputListener(cp);
+
         JLabel poblacionLabel = new JLabel("Poblacion");
         poblacion = new JTextField();
+
         JLabel provinciaLabel = new JLabel("Provincia");
         provincia = new JTextField();
+
         JLabel CIFLabel = new JLabel("CIF");
         CIF = new JTextField();
+
         JLabel telefonoLabel = new JLabel("Telefono");
         telefono = new JTextField();
+        u.CheckInputListener(telefono);
+
         JLabel emailLabel = new JLabel("Email");
         email = new JTextField();
+
         JLabel ibanLabel = new JLabel("IBAN:");
         IBAN = new JTextField();
+
         JLabel riesgoLabel = new JLabel("Riesgo");
         riesgo = new JTextField();
+        u.CheckInputListener(riesgo);
+
         JLabel descuentoLabel = new JLabel("Descuento");
         descuento = new JTextField();
+        u.CheckInputListener(descuento);
+
         JLabel observacionesLabel = new JLabel("Observaciones");
         observaciones = new JTextField();
 
 
         submitButton = new JButton("Crear Proveedor");
+
+
+
+        //listener en el JFrame
+        // Add action listener for the submit button
+        submitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                if(u.areFieldsFilled(nombre,direccion,cp,poblacion,provincia,pais,CIF)){
+                    insertProveedor();
+                }
+
+            }
+        });
+
 
         // Add components to the frame
 
@@ -155,18 +189,17 @@ public class ProveedoresFormInputData extends JFrame {
         gbc.gridx = 2; gbc.gridy = 13; gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER; // Center the button
         submitButton.setPreferredSize(new Dimension(150, 40));
+
+
         add(submitButton, gbc);
+
+
+        Font defaultFont = UIManager.getFont("Label.font");
+        System.out.println("Default Font: " + defaultFont);
+        Font font = new Font("Lucida Grande", Font.PLAIN, 14);
+        u.setFontRecursively(ProveedoresFormInputData.this, font);
+
         pack();
-
-        //listener en el JFrame
-        // Add action listener for the submit button
-        submitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                insertProveedor();
-            }
-        });
-
         this.setVisible(true);
     }
 

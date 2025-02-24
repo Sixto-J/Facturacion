@@ -35,6 +35,10 @@ public class Rectificativas {
         //  this.hashRectificativaCliente = hashRectificativaCliente;
     }
 
+    public Rectificativas(){
+
+    }
+
 
     public DefaultTableModel obtener_rectificativas(){
         //TODO

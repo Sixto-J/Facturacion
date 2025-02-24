@@ -53,12 +53,14 @@ public class FacturasFormInputData extends JFrame {
         CrearFacturaButton.setEnabled(false);
 
 
+        Utilidades u = new Utilidades();
 
         // Create labels and text fields
 
 
         JLabel numeroFacturaClienteLabel = new JLabel("Número Factura de cliente");
         numeroFacturaCliente = new JTextField();
+        u.CheckInputListener(numeroFacturaCliente);
 
 
         JLabel fechaFacturaClienteLabel = new JLabel("Fecha factura de cliente");
@@ -233,18 +235,20 @@ public class FacturasFormInputData extends JFrame {
         CrearFacturaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!Objects.equals(totalFacturaCliente.getText(), "")) {
-                    if(CrearFacturaButton.isEnabled()){
-                        insertFactura();
-                        insertLinea(llf);
-                        clearFields();
-                    }
-                } else {
-                    //mensaje de error
+
+                if(u.areFieldsFilled(numeroFacturaCliente) && CrearFacturaButton.isEnabled()) {
+                    insertFactura();
+                    insertLinea(llf);
+                    clearFields();
                 }
+                //if (!Objects.equals(totalFacturaCliente.getText(), "")) {
             }
         });
 
+        Font defaultFont = UIManager.getFont("Label.font");
+        System.out.println("Default Font: " + defaultFont);
+        Font font = new Font("Lucida Grande", Font.PLAIN, 14);
+        u.setFontRecursively(FacturasFormInputData.this, font);
 
         pack();
         setLocationRelativeTo(null);

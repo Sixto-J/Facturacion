@@ -38,31 +38,50 @@ public class ArticulosFormInputData extends JFrame {
         gbc.weightx = 2;
 
 
+
         // Create labels and text fields
+
+        Utilidades u = new Utilidades();
+
         JLabel codigoArticuloLabel = new JLabel("codigoArticulo");
         codigoArticulo = new JTextField();
         codigoArticulo.setPreferredSize(new Dimension(250, 40));
+
         //JLabel codigoBarrasArticuloLabel = new JLabel("codigoBarrasArticulo");
         //codigoBarrasArticulo = new JTextField();
+
         JLabel descripcionArticuloLabel = new JLabel("descripcionArticulo");
         descripcionArticulo = new JTextField();
         descripcionArticulo.setPreferredSize(new Dimension(250, 40));
+
         JLabel costeArticuloLabel = new JLabel("costeArticulo");
         costeArticulo = new JTextField();
+        u.CheckInputListener(costeArticulo);
         costeArticulo.setPreferredSize(new Dimension(250, 40));
+
         JLabel margenComercialArticuloLabel = new JLabel("margenComercialArticulo");
         margenComercialArticulo = new JTextField();
+        u.CheckInputListener(margenComercialArticulo);
         margenComercialArticulo.setPreferredSize(new Dimension(250, 40));
+
         JLabel pvpArticuloLabel = new JLabel("pvpArticulo");
         pvpArticulo = new JTextField();
+        u.CheckInputListener(pvpArticulo);
         pvpArticulo.setPreferredSize(new Dimension(250, 40));
 
 
-        JLabel proveedorArticuloLabel = new JLabel("proveedorArticulo");
-        JLabel familiaArticuloLabel = new JLabel("familiaArticulo");
+
+
+
+        // Estos labels muestran los nombres relativos a los valores id que elijamos de sus respectivos JComboBox
         JLabel nombreProveedorAuxLabel = new JLabel();
         JLabel nombreFamiliaAuxLabel = new JLabel();
 
+
+
+
+
+        JLabel proveedorArticuloLabel = new JLabel("proveedorArticulo");
 
         try (ConexionDB cdb = new ConexionDB();
              Connection connection = cdb.getConnection();
@@ -124,9 +143,7 @@ public class ArticulosFormInputData extends JFrame {
 
 
 
-
-
-
+        JLabel familiaArticuloLabel = new JLabel("familiaArticulo");
 
         try (ConexionDB cdb = new ConexionDB();
              Connection connection = cdb.getConnection();
@@ -151,9 +168,6 @@ public class ArticulosFormInputData extends JFrame {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
-
-
 
 
 
@@ -202,7 +216,9 @@ public class ArticulosFormInputData extends JFrame {
 
         JLabel stockArticuloLabel = new JLabel("stockArticulo");
         stockArticulo = new JTextField();
+        u.CheckInputListener(stockArticulo);
         stockArticulo.setPreferredSize(new Dimension(250, 40));
+
 
 
         JLabel observacionesArticuloLabel = new JLabel("observacionesArticulo");
@@ -217,7 +233,9 @@ public class ArticulosFormInputData extends JFrame {
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                insertArticulo();
+                if(u.areFieldsFilled(codigoArticulo,costeArticulo,margenComercialArticulo,pvpArticulo,stockArticulo)){
+                    insertArticulo();
+                }
             }
         });
 
@@ -323,6 +341,14 @@ public class ArticulosFormInputData extends JFrame {
         gbc.anchor = GridBagConstraints.CENTER; // Center the button
 
         add(submitButton, gbc);
+
+
+
+        Font defaultFont = UIManager.getFont("Label.font");
+        System.out.println("Default Font: " + defaultFont);
+        Font font = new Font("Lucida Grande", Font.PLAIN, 14);
+        u.setFontRecursively(ArticulosFormInputData.this, font);
+
 
         pack();
 

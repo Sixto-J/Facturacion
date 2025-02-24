@@ -56,18 +56,18 @@ observacionesFormaPago TEXT
 
 
 -- Tabla: facturasClientes
-CREATE TABLE facturasClientes (
+CREATE TABLE IF NOT EXISTS facturasClientes (
 idFacturaCliente INT AUTO_INCREMENT PRIMARY KEY,
 numeroFacturaCliente INT NOT NULL UNIQUE,
 fechaFacturaCliente DATE NOT NULL,
 idClienteFactura INT NOT NULL,
-baseImponibleFacturaCliente DECIMAL(20,10) NOT NULL,
-ivaFacturaCliente DECIMAL(4,2) NOT NULL,
-totalFacturaCliente DECIMAL(20,10) NOT NULL,
+baseImponibleFacturaCliente DECIMAL(65,10) NOT NULL,
+ivaFacturaCliente DECIMAL(65,8) NOT NULL,
+totalFacturaCliente DECIMAL(65,10) NOT NULL,
 cobradaFactura BOOLEAN NOT NULL,
 formaCobroFactura VARCHAR(20) NOT NULL,
 fechaCobroFactura DATE NOT NULL,
-observacionesFacturaClientes TEXT,
+observacionesFacturaCliente TEXT,
 KEY `idClienteFactura` (`idClienteFactura`),
 CONSTRAINT `facturasclientes_ibfk_1` FOREIGN KEY (`idClienteFactura`) REFERENCES `clientes` (`idCliente`)
 );
@@ -88,20 +88,20 @@ FOREIGN KEY (tipoIVA) REFERENCES tiposIVA(idTipoIva)
 
 -- Tabla: rectificativasClientes
 CREATE TABLE IF NOT EXISTS rectificativasClientes (
-idRectificativaCliente INT AUTO_INCREMENT PRIMARY KEY,
-numeroRectificativaCliente INT NOT NULL UNIQUE,
-fechaRectificativaCliente DATE NOT NULL,
-idClienteRectificativaCliente INT NOT NULL,
-idFacturaRectificativaCliente INT NOT NULL,
-baseImponibleRectificativaCliente DOUBLE NOT NULL,
-ivaRectificativaCliente DOUBLE NOT NULL,
-totalRectificativaCliente DOUBLE NOT NULL,
-observacionesRectificativaCliente TEXT,
+idRectificativa INT AUTO_INCREMENT PRIMARY KEY,
+numeroRectificativa INT NOT NULL UNIQUE,
+fechaRectificativa DATE NOT NULL,
+idClienteRectificativa INT NOT NULL,
+idFacturaRectificativa INT NOT NULL,
+baseImponibleRectificativa DOUBLE NOT NULL,
+ivaRectificativa DOUBLE NOT NULL,
+totalRectificativa DOUBLE NOT NULL,
+observacionesRectificativa TEXT,
 
-KEY `idClienteRectificativaCliente` (`idClienteRectificativaCliente`),
-KEY `idFacturaRectificativaCliente` (`idFacturaRectificativaCliente`),
-CONSTRAINT `rectificativasclientes_ibfk_1` FOREIGN KEY (`idClienteRectificativaCliente`) REFERENCES `clientes`(`idCliente`),
-CONSTRAINT `rectificativasfacturas_ibfk_2` FOREIGN KEY (`idFacturaRectificativaCliente`) REFERENCES `facturasClientes`(`idFacturaCliente`)
+KEY `idClienteRectificativa` (`idClienteRectificativa`),
+KEY `idFacturaRectificativa` (`idFacturaRectificativa`),
+CONSTRAINT `rectificativasclientes_ibfk_1` FOREIGN KEY (`idClienteRectificativa`) REFERENCES `clientes`(`idCliente`),
+CONSTRAINT `rectificativasfacturas_ibfk_2` FOREIGN KEY (`idFacturaRectificativa`) REFERENCES `facturasClientes`(`idFacturaCliente`)
 );
 -- hashRectificativaCliente VARCHAR(128), qrRectificativaCliente VARCHAR(4296),
 
@@ -141,7 +141,6 @@ pvpArticulo DOUBLE NOT NULL,
 ivaArticulo DOUBLE NOT NULL,
 idProveedorArticulo INT NOT NULL,
 nombreProveedorArticulo VARCHAR(80),
-
 KEY `numeroFacturaCliente` (`numeroFacturaCliente`),
 KEY `idArticulo` (`idArticulo`),
 KEY `idProveedorArticulo` (`idProveedorArticulo`),
@@ -219,5 +218,14 @@ SELECT ti.observacionesTipoIva FROM tiposIVA ti WHERE ti.idTipoIva = (SELECT fa.
 SELECT ti.iva FROM tiposIVA ti WHERE ti.idTipoIva = (SELECT fa.tipoIVA FROM familiaArticulos fa WHERE fa.idFamiliaArticulos = (SELECT a.familiaArticulo FROM articulos a WHERE a.codigoArticulo = '555E' ) );
 
 
-SET FOREIGN_KEY_CHECKS = 0;
+SET FOREIGN_KEY_CHECKS = 1;
 DROP TABLE articulos;
+
+
+DROP TABLE facturasClientes;
+DROP TABLE lineasFacturasClientes;
+DROP TABLE rectificativasClientes;
+
+SELECT MAX(idLineaFacturaCliente) AS last_used_id FROM lineasFacturasClientes;
+ALTER TABLE lineasFacturasClientes AUTO_INCREMENT = 1;
+SELECT idLineaFacturaCliente FROM lineasFacturasClientes ORDER BY idLineaFacturaCliente;

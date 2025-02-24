@@ -163,6 +163,11 @@ public class LineasFacturaFormInputData extends JFrame {
         gbc.gridx=2; gbc.gridy=3;
         add(VaciarLinea,gbc);
 
+
+        Utilidades u = new Utilidades();
+        Font font = new Font("Lucida Grande", Font.PLAIN, 14);
+        u.setFontRecursively(LineasFacturaFormInputData.this, font);
+
         pack();
         setLocationRelativeTo(null);
         this.setVisible(true);

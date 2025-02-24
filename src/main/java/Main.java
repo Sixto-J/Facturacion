@@ -10,8 +10,6 @@ import java.util.Arrays;
 
 public class Main extends JFrame {
 
-    private JButton generateFactura, verInfoClientes, verInfoArticulos, verFacturas, generarFormularioClientes, generarFormularioArticulos;
-
     private JTextArea textArea;
     private JTextField fichasField = null;
     private JTextField FacturasField = null;
@@ -152,23 +150,26 @@ public class Main extends JFrame {
             if(source.getText().equals("Crear Rectificativa")){
                 new RectificativasFormInputData();
             }
-            if(source.getText().equals("TiposIVA")){
-                //new TiposIVAFormInputData();
+
+        /*  if(source.getText().equals("TiposIVA")){
+                new TiposIVAFormInputData();
             }
             if(source.getText().equals("FamiliaProductos")){
-                //new FamiliaProductosFormInputData();
+                new FamiliaProductosFormInputData();
             }
             if(source.getText().equals("ListadoTiposIVA")){
-                //new TiposIVAInfoTable();
+                new TiposIVAInfoTable();
             }
             if(source.getText().equals("ListadoFamiliaProductos")){
-                //new FamiliaProductosInfoTable();
+                new FamiliaProductosInfoTable();
             }
+        */
 
-            popupMenu.setVisible(false); // Hide the popup menu
 
-            //fichasField.setText(source.getText());
-            // Set the selected item in the text field
+            popupMenu.setVisible(false);
+            // Hide the popup menu
+
+
         }
     }
 
@@ -184,4 +185,7 @@ public class Main extends JFrame {
 
 
 /*  panel.add(generateFactura); panel.add(verFacturas); panel.add(generarFormularioClientes);
-    panel.add(verInfoClientes); panel.add(generarFormularioArticulos); panel.add(verInfoArticulos);*/
+    panel.add(verInfoClientes); panel.add(generarFormularioArticulos); panel.add(verInfoArticulos);
+
+    private JButton generateFactura, verInfoClientes, verInfoArticulos, verFacturas, generarFormularioClientes, generarFormularioArticulos;
+*/
