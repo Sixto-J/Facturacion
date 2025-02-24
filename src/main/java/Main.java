@@ -70,7 +70,6 @@ public class Main extends JFrame {
         // Loop para crear los menus desplegables con su respectivas cabeceras, elementos desplegables, a su vez con listeners para cada elemento
         for (int i = 0; i < nombresFichas.length; i++) {
 
-
             // Create a text field for Fichas
             textFields[i] = new JTextField(15);
             textFields[i].setText(nombresFichas[i]);
@@ -82,11 +81,11 @@ public class Main extends JFrame {
 
             String[] posicion_lista=items_lista.get(i);
 
-                for (String item: posicion_lista ){
-                    JMenuItem menuItem = new JMenuItem(item);
-                    menuItem.addActionListener(new MenuItemActionListener(popupMenus[i]));
-                    popupMenus[i].add(menuItem);
-                }
+            for (String item: posicion_lista ){
+                JMenuItem menuItem = new JMenuItem(item);
+                menuItem.addActionListener(new MenuItemActionListener(popupMenus[i]));
+                popupMenus[i].add(menuItem);
+            }
 
 
             final int index = i;
@@ -106,8 +105,7 @@ public class Main extends JFrame {
         add(panel, BorderLayout.CENTER);
         pack();
     }
-
-    class MenuItemActionListener implements ActionListener {
+    private class MenuItemActionListener implements ActionListener {
 
         private JPopupMenu popupMenu;
 

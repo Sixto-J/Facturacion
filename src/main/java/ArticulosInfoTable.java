@@ -9,32 +9,22 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
 import java.util.Arrays;
-import java.util.Objects;
-import java.util.Vector;
+
 
 public class ArticulosInfoTable {
 
     private DefaultTableModel model;
     private JTable table;
     private Object originalValue;
-    Utilidades u = new Utilidades();
 
 
     public ArticulosInfoTable() {
-
-
 
         // Create a new JFrame
         JFrame frame = new JFrame("Datos de artículos");
         frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         frame.setSize(1600, 1000);
         frame.setLayout(new BorderLayout());
-
-/*
-        String[] columnNames = {"idArticulo", "codigoArticulo", "codigoBarrasArticulo", "descripcionArticulo",
-                "costeArticulo", "margenComercialArticulo", "pvpArticulo", "proveedorArticulo",
-                "stockArticulo", "observacionesArticulo", "familiaArticulo"};*/
-
 
         Articulos articulo = new Articulos();
         model = articulo.obtener_articulos();
@@ -51,16 +41,21 @@ public class ArticulosInfoTable {
             }
         };
 
-
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
-
         // Set the model to the table
         table.setModel(model);
 
         // Add the JTable to a JScrollPane
         JScrollPane scrollPane = new JScrollPane(table);
         frame.add(scrollPane, BorderLayout.CENTER);
+
+        // Create a delete button // JButton to eliminate row
+        JButton deleteButton = new JButton("Delete Selected Row");
+        deleteButton.setPreferredSize(new Dimension(120,60));
+
+
+        frame.add(deleteButton, BorderLayout.AFTER_LAST_LINE); // Add button to the panel
+
         // Set the frame visibility
         frame.setVisible(true);
 
@@ -74,9 +69,7 @@ public class ArticulosInfoTable {
                     int row = e.getFirstRow();
                     int column = e.getColumn();
 
-                    if(isResettingValue) {
-
-                    }else{
+                    if(!isResettingValue) {
                         validateCell(row, column);
                     }
 
@@ -104,10 +97,6 @@ public class ArticulosInfoTable {
         }
 
 
-        // Create a delete button // JButton to eliminate row
-        JButton deleteButton = new JButton("Delete Selected Row");
-        deleteButton.setPreferredSize(new Dimension(120,50));
-
         deleteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -123,7 +112,6 @@ public class ArticulosInfoTable {
                 }
             }
         });
-        frame.add(deleteButton, BorderLayout.AFTER_LAST_LINE);
 
     }
 
@@ -173,12 +161,12 @@ public class ArticulosInfoTable {
 
                         try {
 
-                            if (stringValue.matches("^\\d+$")) {
+                            if (stringValue.matches("^\\d+(\\.\\d+)?$")) {
 
                                 updateRowDatabase(id, column, newValue);
 
                             }else{
-                                throw new NumberFormatException("No has introducido sólamente dígitos.");
+                                throw new NumberFormatException("No has introducido sólamente dígitos y puntos para decimales.");
                             }
                         } catch (NumberFormatException e) {
                             // Show an error message
@@ -189,9 +177,7 @@ public class ArticulosInfoTable {
                             isResettingValue=false;
 
                         }
-
                     }
-
                 }
 
 
@@ -210,7 +196,6 @@ public class ArticulosInfoTable {
                 isResettingValue=false;
             }
 
-            //u.CheckInputListener((JTextField) newValue);
 
         }else{
             JOptionPane.showMessageDialog(table,
@@ -228,9 +213,7 @@ public class ArticulosInfoTable {
         //System.out.println("Row " + row + " Column " + column + " edited. New value: " + newValue);
         // Trigger any additional action here
 
-
     }
-
 
 
     private void updateRowDatabase(int id, int column, Object newValue) {
@@ -286,8 +269,9 @@ public class ArticulosInfoTable {
     }
 
 
-    private static void deleteRowFromDatabase(int id) {
-        String deleteQuery = "DELETE FROM articulos WHERE id = ?"; // Replace with your table name
+    private void deleteRowFromDatabase(int id) {
+
+        String deleteQuery = "DELETE FROM articulos WHERE idArticulo = ?"; // Replace with your table name
 
         try (ConexionDB cdb = new ConexionDB();
              Connection connect = cdb.getConnection();
@@ -296,7 +280,10 @@ public class ArticulosInfoTable {
             preparedStatement.setInt(1, id);
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected > 0) {
+
                 System.out.println("Deleted row with ID: " + id);
+                JOptionPane.showMessageDialog(table, " Se ha borrado con éxito el registro",
+                        "Information", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 System.out.println("No row found with ID: " + id);
             }
@@ -308,3 +295,8 @@ public class ArticulosInfoTable {
 
 
 }
+
+/*
+        String[] columnNames = {"idArticulo", "codigoArticulo", "codigoBarrasArticulo", "descripcionArticulo",
+                "costeArticulo", "margenComercialArticulo", "pvpArticulo", "proveedorArticulo",
+                "stockArticulo", "observacionesArticulo", "familiaArticulo"};*/

@@ -9,13 +9,14 @@ import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-
+import java.util.Arrays;
 
 
 public class ProveedoresInfoTable {
 
     private DefaultTableModel model;
     private JTable table;
+    private Object originalValue;
 
     public ProveedoresInfoTable() {
         // Create a new JFrame
@@ -25,7 +26,6 @@ public class ProveedoresInfoTable {
         frame.setLayout(new BorderLayout());
         
 
-
         Proveedores proveedor = new Proveedores();
         // Create a DefaultTableModel and JTable
         model = proveedor.obtener_proveedores();
@@ -34,6 +34,19 @@ public class ProveedoresInfoTable {
         // Set the model to the table
         table.setModel(model);
 
+        // Add the JTable to a JScrollPane
+        JScrollPane scrollPane = new JScrollPane(table);
+        frame.add(scrollPane, BorderLayout.CENTER);
+
+        // JButton to eliminate row // Create a delete button
+        JButton deleteButton = new JButton("Delete Selected Row");
+        deleteButton.setPreferredSize(new Dimension(120,50));
+
+        // Incluir un boton para eliminar el proveedor
+        frame.add(deleteButton, BorderLayout.AFTER_LAST_LINE);
+
+        // Set the frame visibility
+        frame.setVisible(true);
 
 
         // Add a TableModelListener to handle edits
@@ -45,32 +58,31 @@ public class ProveedoresInfoTable {
                     int row = e.getFirstRow();
                     int column = e.getColumn();
 
-                    if (column == 0 | column == 7){
-
-                        JOptionPane.showMessageDialog(null,
-                                "No se puede actualizar este campo!\nPrueba a cambiar campos que no sean CIF o el id del proveedor",
-                                "Information",
-                                JOptionPane.INFORMATION_MESSAGE);
-
-                    }else {
-                        Object newValue = model.getValueAt(row, column);
-                        int id = (int) table.getValueAt(row, 0);
-
-                        updateRowDatabase(id, column, newValue);
-
-                        System.out.println("Row " + row + " Column " + column + " edited. New value: " + newValue);
+                    if(!isResettingValue) {
+                        validateCell(row, column);
                     }
 
                 }
             }
         });
 
+        // Set a custom cell editor for all columns
+        for (int i = 0; i < model.getColumnCount(); i++) {
+            table.getColumnModel().getColumn(i).setCellEditor(new DefaultCellEditor(new JTextField()) {
+                @Override
+                public boolean stopCellEditing() {
+                    boolean valid = super.stopCellEditing();
+                    if (!valid) {
+                        // If the value is invalid, revert to the original value
+                        int row = table.getSelectedRow();
+                        int column = table.getSelectedColumn();
 
-
-
-        // JButton to eliminate row // Create a delete button
-        JButton deleteButton = new JButton("Delete Selected Row");
-        deleteButton.setPreferredSize(new Dimension(120,50));
+                        model.setValueAt(originalValue, row, column);
+                    }
+                    return valid;
+                }
+            });
+        }
 
         deleteButton.addActionListener(new ActionListener() {
             @Override
@@ -85,25 +97,106 @@ public class ProveedoresInfoTable {
                 }
             }
         });
-        
-        
-        // Incluir un boton para eliminar el proveedor
-        frame.add(deleteButton, BorderLayout.AFTER_LAST_LINE);
-
-
-
-        // Add the JTable to a JScrollPane
-        JScrollPane scrollPane = new JScrollPane(table);
-        frame.add(scrollPane, BorderLayout.CENTER);
-
-
-        // Set the frame visibility
-        frame.setVisible(true);
 
     }
 
-    private static void updateRowDatabase(int id, int column, Object newValue) {
+    boolean isResettingValue = false; // Flag to prevent re-triggering validation
+
+    private void validateCell(int row, int column) {
+
+
+        int[] numbers = {1,2,3,4,5,6,8,9,10,11,12,13}; // Example array of numbers
+        // The value you want to check
+
+        boolean found = false; // Flag to indicate if the value is found
+
+        // Loop through the array to check for the value
+        for (int number : numbers) {
+            if (number == column) {
+                found = true; // Set the flag to true if a match is found
+                break; // Exit the loop early since we found a match
+            }
+        }
+
+        if(found){
+
+            Object newValue = model.getValueAt(row, column);
+            int id = (int) table.getValueAt(row, 0);
+
+            System.out.println("New Value: "+newValue.toString().trim());
+            // if(!Objects.equals(((JTextField) newValue).getText(), "")){
+            if (!newValue.toString().trim().isEmpty()) {
+
+
+                int[] digit_columns = {11,12};
+                int[] string_columns = {1,2,3,4,5,6,8,9,10,13};
+
+                boolean is_a_digit_column = Arrays.stream(digit_columns).anyMatch(num -> num == column);
+                boolean is_a_string_column = Arrays.stream(string_columns).anyMatch(num -> num == column);
+
+                System.out.println("ID: "+id);
+
+                if(is_a_digit_column){
+
+                    if(newValue instanceof String){
+
+                        String stringValue = (String) newValue;
+
+                        try {
+
+                            if (stringValue.matches("^\\d+(\\.\\d+)?$")) {
+
+                                updateRowDatabase(id, column, newValue);
+
+                            }else{
+                                throw new NumberFormatException("No has introducido sólamente dígitos y puntos para decimales.");
+                            }
+                        } catch (NumberFormatException e) {
+                            // Show an error message
+                            JOptionPane.showMessageDialog(table, e.getMessage(), "Input Error", JOptionPane.WARNING_MESSAGE);
+                            // Revert to the original value
+                            isResettingValue=true;
+                            model.setValueAt(originalValue, row, column);
+                            isResettingValue=false;
+
+                        }
+                    }
+                }
+
+
+                if(is_a_string_column){
+                    updateRowDatabase(id, column, newValue);
+                }
+
+
+            }else{
+                JOptionPane.showMessageDialog(null, "No puede quedar el campo vacío",
+                        "Information", JOptionPane.INFORMATION_MESSAGE);
+
+                isResettingValue=true;
+                model.setValueAt(originalValue, row, column);
+                isResettingValue=false;
+            }
+
+        }else{
+            JOptionPane.showMessageDialog(table,
+                    "No se puede actualizar este campo!\nPrueba a cambiar campos que no sean CifCliente o idCliente",
+                    "Information",
+                    JOptionPane.INFORMATION_MESSAGE);
+
+            isResettingValue=true;
+            model.setValueAt(originalValue, row, column);
+            isResettingValue=false;
+
+        }
+        //System.out.println("Row " + row + " Column " + column + " edited. New value: " + newValue); // Trigger any additional action here
+    }
+
+
+    private void updateRowDatabase(int id, int column, Object newValue) {
+
         String columnName = "";
+
         switch (column) {
             case 1:
                 columnName = "nombreProveedor";
@@ -123,16 +216,31 @@ public class ProveedoresInfoTable {
             case 6:
                 columnName = "paisProveedor";
                 break;
-
             case 8:
                 columnName = "telProveedor";
                 break;
             case 9:
                 columnName = "emailProveedor";
                 break;
+            case 10:
+                columnName = "ibanProveedor";
+                break;
+            case 11:
+                columnName = "riesgoProveedor";
+                break;
+            case 12:
+                columnName = "descuentoProveedor";
+                break;
+            case 13:
+                columnName = "observacionesProveedor";
+                break;
+            default:
+                System.out.println("Invalid column index: " + column);
+                return; // Exit the method if the column index is invalid
+
         }
 
-        String updateQuery = "UPDATE proveedores SET " + columnName + " = ? WHERE id = ?"; // Replace with your table name
+        String updateQuery = "UPDATE proveedores SET " + columnName + " = ? WHERE idProveedor = ?"; // Replace with your table name
 
         try (
                 ConexionDB cdb = new ConexionDB();
@@ -146,6 +254,9 @@ public class ProveedoresInfoTable {
 
             System.out.println("Updated " + columnName + " for ID " + id + " to " + newValue);
 
+            JOptionPane.showMessageDialog(table, " Se ha realizado con éxito la modificación",
+                    "Information", JOptionPane.INFORMATION_MESSAGE);
+
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -153,8 +264,8 @@ public class ProveedoresInfoTable {
     }
 
 
-    private static void deleteRowFromDatabase(int id) {
-        String deleteQuery = "DELETE FROM proveedores WHERE id = ?"; // Replace with your table name
+    private void deleteRowFromDatabase(int id) {
+        String deleteQuery = "DELETE FROM proveedores WHERE idProveedor = ?"; // Replace with your table name
 
         try (ConexionDB cdb = new ConexionDB();
              Connection connect = cdb.getConnection();
@@ -164,6 +275,8 @@ public class ProveedoresInfoTable {
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected > 0) {
                 System.out.println("Deleted row with ID: " + id);
+                JOptionPane.showMessageDialog(table, " Se ha borrado con éxito el registro",
+                        "Information", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 System.out.println("No row found with ID: " + id);
             }
